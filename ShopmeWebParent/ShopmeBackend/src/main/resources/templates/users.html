@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragment/head :: head}">
+</head>
+<body>
+	<nav th:replace="~{fragment/navbar :: navbar}"></nav>
+	<div class="container">
+		<h2 class="my-3 text-primary">Manager Users</h2>
+		
+		<div class="alert alert-success" th:if="${savedUser}">
+			<span th:text="${savedUserName}"></span> is saved successfully.
+		</div>
+		<div class="alert alert-success" th:if="${userDeleted}">
+			User is deleted successfully.
+		</div>
+		
+		<!-- Table Start -->
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">User Id</th>
+					<th scope="col">First Name</th>
+					<th scope="col">Last Name</th>
+					<th scope="col">Email</th>
+					<th scope="col">Enabled</th>
+					<th scope="col">Roles</th>
+					<th scope="col"><a th:href="@{'/users/create'}" class="btn btn-dark"> <img
+							alt="plus" th:src="@{'/image/plus.svg'}" class="icon" />
+					</a></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="user:${users}">
+					<th scope="row" th:text="${user.id}"></th>
+					<td th:text="${user.firstname}"></td>
+					<td th:text="${user.lastname}"></td>
+					<td th:text="${user.email}"></td>
+					<td th:text="${user.enabled}"></td>
+					<td th:text="${user.roles}"></td>
+					<td>
+						<a href="#" class="btn btn-warning">Edit</a>
+						<a th:href="@{/users/delete/{id}(id=${user.id})}" class="btn btn-danger">Delete</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<!-- Table end  -->
+	</div>
+	<footer th:replace="~{fragment/footer :: footer}"></footer>
+</body>
+</html>

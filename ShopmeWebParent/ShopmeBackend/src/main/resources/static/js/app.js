@@ -1,3 +1,3 @@
-function change(){
+$("button").on('click',()=>{
 	$("#para").css('color','red');
-}
+});

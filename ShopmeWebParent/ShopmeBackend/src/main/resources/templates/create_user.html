@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragment/head :: head}">
+</head>
+<body>
+	<nav th:replace="~{fragment/navbar :: navbar}"></nav>
+
+	<div class="container">
+		<h2 class="my-3 text-primary">Create New User</h2>
+		<form class="card p-2" th:action="@{'/users/save'}" method="post" th:object="${user}">
+			<div>
+				<label for="firstname">First Name</label>
+				<input type="text" class="form-control" name="firstname" id="firstname" th:field="*{firstname}" min="2" max="25" required/>
+			</div>
+			<br/>
+			<div>
+				<label for="lastname">Last Name</label>
+				<input type="text" class="form-control" name="lastname" id="lastname" th:field="*{lastname}" min="2" max="25" required/>
+			</div>
+			<br/>
+			<div>
+				<label for="email">Email</label>
+				<input type="email" class="form-control" name="email" id="email" th:field="*{email}" min="10" max="100" required/>
+			</div>
+			<br/>
+			<div>
+				<label for="password">Password</label>
+				<input type="password" class="form-control" name="password" id="password" th:field="*{password}" min="6" max="25" required/>
+			</div>
+			<br/>
+			<div>
+				<label for="roles">Roles</label><br/>
+				<select name="roles" id="roles" th:field="*{roles}" multiple required class="form-control">
+					<option th:each="role:${roles}" th:text="${role.name}" th:value="${role.id}"></option>
+				</select>
+			</div>
+			<br/>
+			<div>
+				<input type="checkbox" name="enabled" id="enabled" th:field="*{enabled}" required/>
+				<label for="enabled">Enabled</label>
+			</div>
+			<br/>
+			<div>
+				<label for="photo">Photo</label>
+				<input type="file" class="form-control" name="photo" id="photo"/>
+			</div>
+			<br/>
+			<div>
+				<button type="submit" class="btn btn-primary">Create</button>
+				<button type="reset" class="btn btn-danger">Clean</button>
+			</div>
+		</form>
+	</div>
+
+	<footer th:replace="~{fragment/footer :: footer}"></footer>
+</body>
+</html>
