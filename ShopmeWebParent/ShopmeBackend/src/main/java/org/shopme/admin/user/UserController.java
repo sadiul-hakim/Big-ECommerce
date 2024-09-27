@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.RequiredArgsConstructor;
@@ -38,14 +39,20 @@ public class UserController {
 		model.addObject("user", new User());
 		model.addObject("roles", roles);
 		model.setViewName("create_user");
+		model.addObject("updatingUser", false);
 
 		return model;
 	}
 
 	@PostMapping("/save")
-	public ModelAndView save(@ModelAttribute User user, @RequestParam boolean updating, ModelAndView model) {
+	public ModelAndView save(
+			@ModelAttribute User user,
+			@RequestParam boolean updating,
+			@RequestParam MultipartFile file,
+			ModelAndView model
+			) {
 
-		var result = updating ? userService.updateUser(user) : userService.save(user);
+		var result = updating ? userService.updateUser(user,file) : userService.save(user,file);
 		model.addObject("savedSuccessfully", result.type().equals(JpaResultType.SUCCESSFUL));
 		model.addObject("savingUser", true);
 		model.addObject("message", result.message());

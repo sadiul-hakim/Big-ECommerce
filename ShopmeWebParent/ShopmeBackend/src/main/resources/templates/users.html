@@ -3,6 +3,8 @@
 <head th:replace="~{fragment/head :: head}">
 </head>
 <body>
+	<link rel="stylesheet" th:href="@{/css/dataTable.bootstrap5.css}"/>
+	
 	<nav th:replace="~{fragment/navbar :: navbar}"></nav>
 	<div class="container">
 		<h2 class="my-3 text-primary">Manager Users</h2>
@@ -19,7 +21,7 @@
 		
 		<!-- Table Start -->
 
-		<table class="table">
+		<table class="table" id="richTable">
 			<thead>
 				<tr class="text-center">
 					<th scope="col">Photo</th>
@@ -38,7 +40,7 @@
 					<td>
 						<img 
 						alt="user" 
-						th:src="@{${user.photo == null || user.photo.equals('default_user.svg') ? '/image/user/default.svg' : user.photo}}"
+						th:src="@{${user.photo == null || user.photo.equals('default_user.svg') ? '/image/user/default.svg' : '/image/user/'+user.photo}}"
 						width="50"
 						height="50"
 						/>
@@ -62,4 +64,11 @@
 	</div>
 	<footer th:replace="~{fragment/footer :: footer}"></footer>
 </body>
+
+<script th:src="@{/js/dataTable.js}"></script>
+<script th:src="@{/js/dataTable.bootstrap5.js}"></script>
+<script>
+	$("#richTable").DataTable();
+</script>
+
 </html>
