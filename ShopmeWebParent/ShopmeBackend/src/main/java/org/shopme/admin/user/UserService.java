@@ -1,13 +1,18 @@
 package org.shopme.admin.user;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.shopme.admin.util.FileUtil;
 import org.shopme.common.entity.User;
 import org.shopme.common.pojo.ChangePasswordPojo;
+import org.shopme.common.pojo.PaginationResult;
 import org.shopme.common.util.JpaResult;
 import org.shopme.common.util.JpaResultType;
+import org.shopme.common.util.PageUtil;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -21,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class UserService {
 	private static final String USER_FILE_PATH = "/image/user/";
+	private static final int USER_LIST_LIMIT = 10;
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder encoder;
@@ -115,6 +121,16 @@ public class UserService {
 	public Optional<User> findByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
+	
+	public PaginationResult findAllPaginated(int pageNumber) {
+		var page = userRepository.findAll(PageRequest.of(pageNumber, USER_LIST_LIMIT));
+		return PageUtil.prepareResult(page);
+	}
+	
+	public PaginationResult searchUser(String text,int pageNum) {
+		var page = userRepository.findAllByFirstnameContainingOrLastnameContainingOrEmailContaining(text,text,text, PageRequest.of(pageNum, 10_000));
+		return PageUtil.prepareResult(page);
+	}
 
 	public List<User> findAll() {
 		return userRepository.findAll();
@@ -123,5 +139,30 @@ public class UserService {
 	public JpaResult delete(int id) {
 		userRepository.deleteById(id);
 		return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully deleted user.");
+	}
+	
+	public byte[] csvData() {
+		var users = findAll();
+		StringBuilder data = new StringBuilder("Id,First Name,Last Name,Email,Photo,Enables,Roles,Joined\n");
+		for(var user:users) {
+			data.append(user.getId())
+			.append(",")
+			.append(user.getFirstname())
+			.append(",")
+			.append(user.getLastname())
+			.append(",")
+			.append(user.getEmail())
+			.append(",")
+			.append(user.getPhoto())
+			.append(",")
+			.append(user.isEnabled())
+			.append(",")
+			.append(user.getRoles())
+			.append(",")
+			.append(user.getJoined())
+			.append("\n");
+		}
+		
+		return data.toString().getBytes(StandardCharsets.UTF_8);
 	}
 }

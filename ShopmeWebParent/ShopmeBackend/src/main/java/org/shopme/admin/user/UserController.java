@@ -4,6 +4,9 @@ import org.shopme.admin.role.RoleService;
 import org.shopme.common.entity.User;
 import org.shopme.common.pojo.ChangePasswordPojo;
 import org.shopme.common.util.JpaResultType;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -24,9 +27,19 @@ public class UserController {
 	private final RoleService roleService;
 
 	@GetMapping
-	public ModelAndView usersPage(ModelAndView model) {
-		var users = userService.findAll();
-		model.addObject("users", users);
+	public ModelAndView usersPage(@RequestParam(defaultValue = "0") int page,ModelAndView model) {
+		var userResult = userService.findAllPaginated(page);
+		model.addObject("userResult", userResult);
+		model.setViewName("users");
+
+		return model;
+	}
+	
+	@GetMapping("/search")
+	public ModelAndView searchUsers(@RequestParam(defaultValue = "") String text,@RequestParam(defaultValue = "0") int page,ModelAndView model) {
+		var userResult = userService.searchUser(text,page);
+		System.out.println(userResult);
+		model.addObject("userResult", userResult);
 		model.setViewName("users");
 
 		return model;
@@ -137,5 +150,15 @@ public class UserController {
 		model.addObject("users", users);
 		model.setViewName("users");
 		return model;
+	}
+	
+	@GetMapping("/export-csv")
+	public ResponseEntity<byte[]> exportCsv(){
+		var data = userService.csvData();
+		HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=users.csv");
+        headers.add(HttpHeaders.CONTENT_TYPE, "text/csv");
+        
+        return new ResponseEntity<>(data,headers,HttpStatus.OK);
 	}
 }
