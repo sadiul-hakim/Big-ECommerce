@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class ShopmeBackendApplication implements CommandLineRunner{
 //	private final RoleRepository roleRepository;
 //	private final UserRepository userRepository;
-//	private final PasswordEncoder password;
+//  private final PasswordEncoder password;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ShopmeBackendApplication.class, args);
@@ -45,5 +45,6 @@ public class ShopmeBackendApplication implements CommandLineRunner{
 //				);
 //		
 //		userRepository.save(admin);
+		
 	}
 }
