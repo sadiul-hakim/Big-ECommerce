@@ -3,6 +3,7 @@ package org.shopme.admin.user;
 import org.shopme.admin.role.RoleService;
 import org.shopme.common.entity.User;
 import org.shopme.common.pojo.ChangePasswordPojo;
+import org.shopme.common.pojo.TableUrlPojo;
 import org.shopme.common.util.JpaResultType;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,10 @@ public class UserController {
 	public ModelAndView usersPage(@RequestParam(defaultValue = "0") int page,ModelAndView model) {
 		var userResult = userService.findAllPaginated(page);
 		model.addObject("userResult", userResult);
+		
+		var pageUrl = new TableUrlPojo("/users/search","/users");
+		model.addObject("tableUrl", pageUrl);
+		
 		model.setViewName("users");
 
 		return model;
@@ -38,8 +43,11 @@ public class UserController {
 	@GetMapping("/search")
 	public ModelAndView searchUsers(@RequestParam(defaultValue = "") String text,@RequestParam(defaultValue = "0") int page,ModelAndView model) {
 		var userResult = userService.searchUser(text,page);
-		System.out.println(userResult);
 		model.addObject("userResult", userResult);
+		
+		var pageUrl = new TableUrlPojo("/users/search","/users");
+		model.addObject("tableUrl", pageUrl);
+		
 		model.setViewName("users");
 
 		return model;
