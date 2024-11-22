@@ -77,6 +77,9 @@ public class UserController {
 		model.addObject("savedSuccessfully", result.type().equals(JpaResultType.SUCCESSFUL));
 		model.addObject("savingUser", true);
 		model.addObject("message", result.message());
+		
+		var pageUrl = new TableUrlPojo("/users/search","/users");
+		model.addObject("tableUrl", pageUrl);
 
 		if (result.type().equals(JpaResultType.NOT_UNIQUE)) {
 			var roles = roleService.findAll();
@@ -84,8 +87,8 @@ public class UserController {
 			model.addObject("roles", roles);
 			model.setViewName("create_user");
 		} else {
-			var users = userService.findAll();
-			model.addObject("users", users);
+			var userResult = userService.findAllPaginated(0);
+			model.addObject("userResult", userResult);
 			model.setViewName("users");
 		}
 		return model;
@@ -97,6 +100,8 @@ public class UserController {
 		var user = userService.findById(userId);
 		if (user.isEmpty()) {
 			var users = userService.findAll();
+			var pageUrl = new TableUrlPojo("/users/search","/users");
+			model.addObject("tableUrl", pageUrl);
 			model.addObject("users", users);
 			model.setViewName("users");
 
@@ -132,6 +137,8 @@ public class UserController {
 		var userOptional = userService.findById(userId);
 		if (userOptional.isEmpty()) {
 			var users = userService.findAll();
+			var pageUrl = new TableUrlPojo("/users/search","/users");
+			model.addObject("tableUrl", pageUrl);
 			model.addObject("users", users);
 			model.setViewName("users");
 
@@ -152,6 +159,8 @@ public class UserController {
 		var result = userService.delete(id);
 		model.addObject("deletedSuccessfully", result.type().equals(JpaResultType.SUCCESSFUL));
 		model.addObject("deletingUser", true);
+		var pageUrl = new TableUrlPojo("/users/search","/users");
+		model.addObject("tableUrl", pageUrl);
 		model.addObject("message", result.message());
 
 		var users = userService.findAll();

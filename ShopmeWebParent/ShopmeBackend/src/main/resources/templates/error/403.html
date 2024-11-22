@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head th:replace="~{fragment/head :: head}">
+</head>
+<body style="background: white;">
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 mx-auto mt-3 d-flex flex-column justify-content-center align-items-center">
+            <img th:src="@{'/image/access_denied.png'}" alt="4xx error" width="500" height="400"/>
+            <h1 class="text-danger">403</h1>
+            <h1 class="text-primary">You are not allowed to see this page.</h1>
+            <a class="btn btn-primary" th:href="@{'/'}">Home</a>
+        </div>
+    </div>
+</div>
+<footer th:replace="~{fragment/footer :: footer}"></footer>
+</body>
+</html>
