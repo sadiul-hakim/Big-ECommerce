@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="en">
+<head th:replace="~{fragment/head :: head}">
+</head>
+<body>
+<nav th:replace="~{fragment/navbar :: navbar}"></nav>
+<div class="container-fluid my-2">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <h2 class="my-3 text-primary">Manager categories</h2>
+
+            <div class="alert"
+                 th:classappend="${savedSuccessfully} ? 'alert-success' : 'alert-danger'"
+                 th:if="${savingCategory}">
+                <span th:text="${message}"></span>
+            </div>
+            <div class="alert"
+                 th:classappend="${deletedSuccessfully} ? 'alert-success' : 'alert-danger'"
+                 th:if="${deletingCategory}">
+                <span th:text="${message}"></span>
+            </div>
+            <div class="alert alert-danger" th:if="${updatingCategory}">
+                <span th:text="${message}"></span>
+            </div>
+
+            <!-- Table Start -->
+            <div th:replace="~{fragment/table :: table(${categoryResult},${tableUrl},~{::#table})}">
+                <table class="table" id="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Alias</th>
+                        <th scope="col">Children</th>
+                        <th scope="col">Enabled</th>
+                        <th scope="col"><a class="btn btn-light"
+                                           th:href="@{${tableUrl.getCsvUrl()}}"> <img alt="csv"
+                                                                                      th:src="@{'/image/csv.svg'}"
+                                                                                      class="icon"/>
+                        </a> <a th:href="@{${tableUrl.getCreatePageUrl()}}" class="btn btn-dark"> <img
+                                alt="plus" th:src="@{'/image/plus.svg'}" class="icon"/>
+                        </a></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="category,stat:${categoryResult.data}">
+                        <td th:text="${stat.index+1}"></td>
+                        <td th:text="${category.name}"></td>
+                        <td th:text="${category.alias}"></td>
+                        <td>
+                            <span th:each="c:${category.children}" th:text="${c.name+','}"></span>
+                        </td>
+                        <td><img class="icon"
+                                 th:src="@{${category.enabled} ? '/image/green.svg' : '/image/red.svg'}"
+                                 alt="status"/></td>
+                        <td>
+                            <!-- Edit Button --> <a
+                                th:href="@{/categories/update/{id}(id=${category.id})}"
+                                class="btn btn-warning"> <img class="icon" alt="edit"
+                                                              th:src="@{'/image/edit.svg'}"/> <!-- Change Password -->
+                        </a> <a th:href="@{/categories/changePassword/{id}(id=${category.id})}"
+                                class="btn btn-info"> <img class="icon" alt="password"
+                                                           th:src="@{'/image/password.svg'}"/> <!-- Delete -->
+                        </a> <a th:href="@{/categories/delete/{id}(id=${category.id})}"
+                                class="btn btn-danger"> <img class="icon" alt="delete"
+                                                             th:src="@{'/image/delete.svg'}"/>
+                        </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Table end  -->
+        </div>
+    </div>
+</div>
+<!-- <footer th:replace="~{fragment/footer :: footer}"></footer>  -->
+</body>
+</html>

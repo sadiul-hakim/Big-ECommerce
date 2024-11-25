@@ -35,9 +35,9 @@
 								<th scope="col">Roles</th>
 								<th scope="col">Enabled</th>
 								<th scope="col"><a class="btn btn-light"
-									th:href="@{'/users/export-csv'}"> <img alt="csv"
+									th:href="@{${tableUrl.getCsvUrl()}}"> <img alt="csv"
 										th:src="@{'/image/csv.svg'}" class="icon" />
-								</a> <a th:href="@{'/users/create'}" class="btn btn-dark"> <img
+								</a> <a th:href="@{${tableUrl.getCreatePageUrl()}}" class="btn btn-dark"> <img
 										alt="plus" th:src="@{'/image/plus.svg'}" class="icon" />
 								</a></th>
 							</tr>

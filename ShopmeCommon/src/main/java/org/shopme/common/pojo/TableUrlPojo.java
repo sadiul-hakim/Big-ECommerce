@@ -14,4 +14,6 @@ import lombok.ToString;
 public class TableUrlPojo {
 	private String searchUrl;
 	private String rootUrl;
+	private String csvUrl;
+	private String createPageUrl;
 }

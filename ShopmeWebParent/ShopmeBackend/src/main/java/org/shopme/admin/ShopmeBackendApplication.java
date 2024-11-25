@@ -1,33 +1,26 @@
 package org.shopme.admin;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.shopme.admin.role.RoleRepository;
-import org.shopme.admin.user.UserRepository;
-import org.shopme.common.entity.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import lombok.RequiredArgsConstructor;
 
 @SpringBootApplication
 @EntityScan({"org.shopme.common.entity"})
 @RequiredArgsConstructor
-public class ShopmeBackendApplication implements CommandLineRunner{
-//	private final RoleRepository roleRepository;
+public class ShopmeBackendApplication implements CommandLineRunner {
+    //	private final RoleRepository roleRepository;
 //	private final UserRepository userRepository;
 //  private final PasswordEncoder password;
+//    private final CategoryRepository categoryRepository;
 
-	public static void main(String[] args) {
-		SpringApplication.run(ShopmeBackendApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ShopmeBackendApplication.class, args);
+    }
 
-	@Override
-	public void run(String... args) throws Exception {
+    @Override
+    public void run(String... args) throws Exception {
 //		var admin = new Role(0,"ROLE_ADMIN","Manage everything");
 //		var sales = new Role(0,"ROLE_SALESPERSON","Manage Product price,customers,shipping,orders and sales report");
 //		var editor = new Role(0,"ROLE_EDITOR","Manage categories,brands,products,articles and menus");
@@ -37,7 +30,7 @@ public class ShopmeBackendApplication implements CommandLineRunner{
 //		roleRepository.save(editor);
 //		roleRepository.save(shipper);
 //		roleRepository.save(assistant);
-		
+
 //		var role = roleRepository.findById(1).orElse(null);
 //		
 //		User admin = new User(
@@ -45,6 +38,8 @@ public class ShopmeBackendApplication implements CommandLineRunner{
 //				);
 //		
 //		userRepository.save(admin);
-		
-	}
+
+//        categoryRepository.save(new Category(0, "Main", "main", null, new HashSet<>(), true));
+
+    }
 }
