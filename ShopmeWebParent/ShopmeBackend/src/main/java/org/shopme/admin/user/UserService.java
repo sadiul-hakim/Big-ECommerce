@@ -1,8 +1,8 @@
 package org.shopme.admin.user;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.shopme.admin.util.FileUtil;
@@ -25,8 +25,9 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-	private static final String USER_FILE_PATH = "/image/user/";
 	private static final int USER_LIST_LIMIT = 10;
+	private static final String FILE_PATH = "/image/user/";
+	private static final String DEFAULT_PHOTO_NAME = "default_user.svg";
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder encoder;
@@ -38,13 +39,13 @@ public class UserService {
 			user.setPassword(encoder.encode(user.getPassword()));
 			
 			// Handle photo upload
-			if (file == null || file.getOriginalFilename().isEmpty()) {
-				user.setPhoto("default_user.svg");
+			if (file == null || Objects.requireNonNull(file.getOriginalFilename()).isEmpty()) {
+				user.setPhoto(DEFAULT_PHOTO_NAME);
 			} else {
-				var filePath = FileUtil.uploadFile(file, USER_FILE_PATH);
+				var filePath = FileUtil.uploadFile(file, FILE_PATH);
 				if (!StringUtils.hasText(filePath)) {
 					log.warn("UserService.save :: Could not upload file!");
-					user.setPhoto("default_user.svg");
+					user.setPhoto(DEFAULT_PHOTO_NAME);
 				} else {
 					user.setPhoto(filePath);
 				}
@@ -74,11 +75,11 @@ public class UserService {
 
 		var existingUser = existingUserOptional.get();
 		if (file != null && StringUtils.hasText(file.getOriginalFilename())) {
-			var filePath = FileUtil.uploadFile(file, USER_FILE_PATH);
+			var filePath = FileUtil.uploadFile(file, FILE_PATH);
 			if (!StringUtils.hasText(filePath)) {
 				log.warn("UserService.update :: Could not upload file!");
 			} else {
-				FileUtil.deleteFile(USER_FILE_PATH, existingUser.getPhoto());
+				FileUtil.deleteFile(FILE_PATH, existingUser.getPhoto());
 				existingUser.setPhoto(filePath);
 			}
 		}

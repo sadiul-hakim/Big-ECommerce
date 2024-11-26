@@ -20,4 +20,6 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
     Page<Category> findAllByNameContainingOrAliasContaining(String name, String alias, Pageable page);
 
     List<Category> findAllByParent(int parent);
+
+    List<Category> findAllByIdIn(List<Integer> ids);
 }

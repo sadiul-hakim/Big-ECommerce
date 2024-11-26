@@ -22,20 +22,32 @@ public class CategoryController {
     private final TableUrlPojo pageUrl = new TableUrlPojo("/categories/search", "/categories",
             "/categories/export-csv", "/categories/create-page");
 
+    private static final String PAGINATION_RESULT = "categoryResult";
+    private static final String TABLE_URL = "tableUrl";
+    private static final String PAGE = "categories";
+    private static final String POJO_NAME = "category";
+    private static final String CREATE_PAGE = "create_category";
+    private static final String UPDATING_CONDITION = "updatingCategory";
+    private static final String SAVED_CONDITION = "savedSuccessfully";
+    private static final String SAVING_CONDITION = "savingCategory";
+    private static final String DELETED_CONDITION = "deletedSuccessfully";
+    private static final String DELETING_CONDITION = "deletingCategory";
+    private static final String MESSAGE = "message";
+
     @GetMapping
-    public ModelAndView usersPage(@RequestParam(defaultValue = "0") int page, ModelAndView model) {
+    public ModelAndView page(@RequestParam(defaultValue = "0") int page, ModelAndView model) {
         var categoryResult = service.findAllPaginated(page);
-        model.addObject("categoryResult", categoryResult);
+        model.addObject(PAGINATION_RESULT, categoryResult);
 
-        model.addObject("tableUrl", pageUrl);
-        model.addObject("savedSuccessfully", false);
-        model.addObject("savingCategory", false);
-        model.addObject("deletedSuccessfully", false);
-        model.addObject("deletingCategory", false);
-        model.addObject("updatingCategory", false);
-        model.addObject("message", "");
+        model.addObject(TABLE_URL, pageUrl);
+        model.addObject(SAVED_CONDITION, false);
+        model.addObject(SAVING_CONDITION, false);
+        model.addObject(DELETED_CONDITION, false);
+        model.addObject(DELETING_CONDITION, false);
+        model.addObject(UPDATING_CONDITION, false);
+        model.addObject(MESSAGE, "");
 
-        model.setViewName("categories");
+        model.setViewName(PAGE);
 
         return model;
     }
@@ -48,21 +60,21 @@ public class CategoryController {
     ) {
 
         var result = updating ? service.update(category) : service.save(category);
-        model.addObject("savedSuccessfully", result.type().equals(JpaResultType.SUCCESSFUL));
-        model.addObject("savingCategory", true);
-        model.addObject("message", result.message());
+        model.addObject(SAVED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
+        model.addObject(SAVING_CONDITION, true);
+        model.addObject(MESSAGE, result.message());
 
-        model.addObject("tableUrl", pageUrl);
+        model.addObject(TABLE_URL, pageUrl);
 
         if (result.type().equals(JpaResultType.NOT_UNIQUE)) {
             var categories = service.findAll();
-            model.addObject("category", category);
-            model.addObject("categories", categories);
-            model.setViewName("create_category");
+            model.addObject(POJO_NAME, category);
+            model.addObject(PAGE, categories);
+            model.setViewName(CREATE_PAGE);
         } else {
             var categoryResult = service.findAllPaginated(0);
-            model.addObject("categoryResult", categoryResult);
-            model.setViewName("categories");
+            model.addObject(PAGINATION_RESULT, categoryResult);
+            model.setViewName(PAGE);
         }
         return model;
     }
@@ -73,45 +85,45 @@ public class CategoryController {
         var category = service.findById(categoryId);
         if (category.isEmpty()) {
             var categories = service.findAllPaginated(0);
-            model.addObject("tableUrl", pageUrl);
-            model.addObject("categories", categories);
-            model.setViewName("categories");
+            model.addObject(TABLE_URL, pageUrl);
+            model.addObject(PAGE, categories);
+            model.setViewName(PAGE);
 
-            model.addObject("updatingCategory", true);
-            model.addObject("message", "Category does not exists!");
+            model.addObject(UPDATING_CONDITION, true);
+            model.addObject(MESSAGE, "Category does not exists!");
             return model;
         }
 
         var categories = service.findAll();
-        model.addObject("category", category.get());
-        model.addObject("categories", categories);
-        model.setViewName("create_category");
-        model.addObject("updatingCategory", true);
+        model.addObject(POJO_NAME, category.get());
+        model.addObject(PAGE, categories);
+        model.setViewName(CREATE_PAGE);
+        model.addObject(UPDATING_CONDITION, true);
 
         return model;
     }
 
     @GetMapping("/delete/{id}")
-    public ModelAndView deleteUser(@PathVariable int id, ModelAndView model) {
+    public ModelAndView deleteCategory(@PathVariable int id, ModelAndView model) {
         var result = service.delete(id);
-        model.addObject("deletedSuccessfully", result.type().equals(JpaResultType.SUCCESSFUL));
-        model.addObject("deletingCategory", true);
-        model.addObject("tableUrl", pageUrl);
-        model.addObject("message", result.message());
+        model.addObject(DELETED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
+        model.addObject(DELETING_CONDITION, true);
+        model.addObject(TABLE_URL, pageUrl);
+        model.addObject(MESSAGE, result.message());
 
         var categories = service.findAllPaginated(0);
-        model.addObject("categoryResult", categories);
-        model.setViewName("categories");
+        model.addObject(PAGINATION_RESULT, categories);
+        model.setViewName(PAGE);
         return model;
     }
 
     @GetMapping("/search")
-    public ModelAndView searchUsers(@RequestParam(defaultValue = "") String text, @RequestParam(defaultValue = "0") int page, ModelAndView model) {
+    public ModelAndView searchCategories(@RequestParam(defaultValue = "") String text, @RequestParam(defaultValue = "0") int page, ModelAndView model) {
         var categoryResult = service.searchCategory(text, page);
-        model.addObject("categoryResult", categoryResult);
+        model.addObject(PAGINATION_RESULT, categoryResult);
 
-        model.addObject("tableUrl", pageUrl);
-        model.setViewName("categories");
+        model.addObject(TABLE_URL, pageUrl);
+        model.setViewName(PAGE);
 
         return model;
     }
@@ -130,14 +142,14 @@ public class CategoryController {
     public ModelAndView createPage(ModelAndView modelAndView) {
         List<Category> categories = service.findAll();
 
-        modelAndView.addObject("category", new Category());
-        modelAndView.addObject("savedSuccessfully", false);
-        modelAndView.addObject("savingCategory", false);
-        modelAndView.addObject("updatingCategory", false);
-        modelAndView.addObject("message", "");
-        modelAndView.addObject("categories", categories);
+        modelAndView.addObject(POJO_NAME, new Category());
+        modelAndView.addObject(SAVED_CONDITION, false);
+        modelAndView.addObject(SAVING_CONDITION, false);
+        modelAndView.addObject(UPDATING_CONDITION, false);
+        modelAndView.addObject(MESSAGE, "");
+        modelAndView.addObject(PAGE, categories);
 
-        modelAndView.setViewName("create_category");
+        modelAndView.setViewName(CREATE_PAGE);
 
         return modelAndView;
     }

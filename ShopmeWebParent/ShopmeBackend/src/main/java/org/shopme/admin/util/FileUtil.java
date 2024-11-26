@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.util.ResourceUtils;
@@ -27,9 +28,9 @@ public class FileUtil {
 
 			// Create file path
 			File baseFolder = getFile(lastPart);
-			var nameArr = file.getOriginalFilename().split("\\.");
+			var nameArr = Objects.requireNonNull(file.getOriginalFilename()).split("\\.");
 			var extension = nameArr[nameArr.length - 1];
-			var fileName = UUID.randomUUID().toString() + "." + extension;
+			var fileName = UUID.randomUUID() + "." + extension;
 			var filePath = new File(baseFolder, fileName);
 
 			// Upload

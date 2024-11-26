@@ -86,9 +86,40 @@ public class CategoryService {
         }
     }
 
+    public List<Category> findAllIn(List<Integer> ids) {
+        List<Category> categories = repository.findAllByIdIn(ids);
+
+        for (Category category : categories) {
+            List<Category> children = repository.findAllByParent(category.getId());
+            category.setChildren(children);
+        }
+
+        return categories;
+    }
+
     public PaginationResult searchCategory(String text, int pageNum) {
-        var page = repository.findAllByNameContainingOrAliasContaining(text, text, PageRequest.of(pageNum, 10_000));
-        return PageUtil.prepareResult(page);
+
+        try {
+            var page = repository.findAllByNameContainingOrAliasContaining(text, text, PageRequest.of(pageNum, 10_000));
+            PaginationResult searchResult = PageUtil.prepareResult(page);
+
+            // Put the children
+            var records = page.getContent();
+            List<Object> data = new ArrayList<>();
+            records.forEach(d -> {
+
+                List<Category> allChildren = repository.findAllByParent(d.getId());
+                d.setChildren(allChildren);
+                data.add(d);
+            });
+
+            searchResult.setData(data);
+            return searchResult;
+
+        } catch (Exception ex) {
+            log.error("CategoryService.searchCategory :: {}", ex.getMessage());
+            return new PaginationResult();
+        }
     }
 
     public List<Category> findAll() {
@@ -103,14 +134,6 @@ public class CategoryService {
 
     public Optional<Category> findById(int id) {
         return repository.findById(id);
-    }
-
-    public List<Category> findAllEnabled() {
-        return repository.findAllByEnabled(true);
-    }
-
-    public List<Category> findAllDisabled() {
-        return repository.findAllByEnabled(false);
     }
 
     public JpaResult delete(int id) {
