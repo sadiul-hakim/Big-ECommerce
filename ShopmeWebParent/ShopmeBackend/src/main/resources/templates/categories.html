@@ -26,7 +26,7 @@
 
             <!-- Table Start -->
             <div th:replace="~{fragment/table :: table(${categoryResult},${tableUrl},~{::#table})}">
-                <table class="table" id="table">
+                <table class="table table-striped table-hover" id="table">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -34,11 +34,12 @@
                         <th scope="col">Alias</th>
                         <th scope="col">Children</th>
                         <th scope="col">Enabled</th>
-                        <th scope="col"><a class="btn btn-light"
-                                           th:href="@{${tableUrl.getCsvUrl()}}"> <img alt="csv"
-                                                                                      th:src="@{'/image/csv.svg'}"
-                                                                                      class="icon"/>
-                        </a> <a th:href="@{${tableUrl.getCreatePageUrl()}}" class="btn btn-dark"> <img
+                        <th scope="col">
+                            <a class="btn btn-light"
+                               th:href="@{${tableUrl.getCsvUrl()}}"> <img alt="csv"
+                                                                          th:src="@{'/image/csv.svg'}"
+                                                                          class="icon"/>
+                            </a> <a th:href="@{${tableUrl.getCreatePageUrl()}}" class="btn btn-dark"> <img
                                 alt="plus" th:src="@{'/image/plus.svg'}" class="icon"/>
                         </a></th>
                     </tr>
@@ -55,8 +56,13 @@
                                  th:src="@{${category.enabled} ? '/image/green.svg' : '/image/red.svg'}"
                                  alt="status"/></td>
                         <td>
+                            <a type="button" class="btn btn-primary" data-bs-toggle="modal"
+                               data-bs-target="#treeModal"
+                               th:data-url="@{/categories/tree-view/{categoryId}(categoryId=${category.id})}">
+                                <img class="icon" alt="tree" th:src="@{'/image/tree.png'}"/>
+                            </a>
                             <!-- Edit Button --> <a
-                                th:href="@{/categories/update/{id}(id=${category.id})}"
+                                th:href="@{/categories/update_page/{id}(id=${category.id})}"
                                 class="btn btn-warning"> <img class="icon" alt="edit"
                                                               th:src="@{'/image/edit.svg'}"/> <!-- Change Password -->
                         </a> <a th:href="@{/categories/changePassword/{id}(id=${category.id})}"
@@ -75,6 +81,63 @@
         </div>
     </div>
 </div>
-<!-- <footer th:replace="~{fragment/footer :: footer}"></footer>  -->
+
+<!--Modal-->
+<div class="modal fade" id="treeModal" tabindex="-1" aria-labelledby="treeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="treeModalLabel">Tree View</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group" id="modalContent">
+
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
+<!-- JavaScript -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const modalElement = document.getElementById("treeModal");
+        const modalContent = document.getElementById("modalContent");
+
+        modalElement.addEventListener("show.bs.modal", function (event) {
+            const triggerElement = event.relatedTarget; // The clicked <a> element
+            const url = triggerElement.getAttribute("data-url"); // Get the dynamic URL
+
+            // Fetch data from the server
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch data");
+                    }
+                    return response.json(); // Parse JSON data
+                })
+                .then(data => {
+                    // Clear the existing content
+                    modalContent.innerHTML = "";
+
+                    // Populate the modal with fetched data
+                    data.forEach(item => {
+                        const listItem = document.createElement("li");
+                        listItem.className = "list-group-item";
+                        listItem.textContent = item;
+                        modalContent.appendChild(listItem);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error loading modal content:", error);
+                    modalContent.innerHTML = `<li class="list-group-item text-danger">Failed to load data.</li>`;
+                });
+        });
+    });
+</script>
 </html>

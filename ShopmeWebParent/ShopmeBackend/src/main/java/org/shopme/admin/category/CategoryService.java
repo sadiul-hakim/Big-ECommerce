@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.StringJoiner;
 
 @Slf4j
 @Service
@@ -26,16 +27,23 @@ public class CategoryService {
     public JpaResult save(Category category) {
 
         try {
+
             // Check unique ness
-            Optional<Category> existingCategory = findByNameAndAlias(category.getName(), category.getAlias());
-            if (existingCategory.isPresent()) {
-                log.warn("Category with name {} and alias {} already exists.", category.getName(), category.getAlias());
+            Optional<Category> existingCategoryByName = repository.findByName(category.getName());
+            if (existingCategoryByName.isPresent()) {
+                log.warn("Category with name {} already exists.", category.getName());
                 return new JpaResult(JpaResultType.NOT_UNIQUE,
-                        "Category with name " + category.getName() + " and alias " + category.getAlias() + " already exists.");
+                        "Category with name " + category.getName() + " already exists.");
+            }
+
+            Optional<Category> existingCategoryByAlias = repository.findByAlias(category.getAlias());
+            if (existingCategoryByAlias.isPresent()) {
+                log.warn("Category with alias {} already exists.", category.getAlias());
+                return new JpaResult(JpaResultType.NOT_UNIQUE,
+                        "Category with alias " + category.getAlias() + " already exists.");
             }
 
             var savedCategory = repository.save(category);
-
             return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully saved Category : " + savedCategory.getName());
         } catch (Exception ex) {
             log.error("CategoryService.save :: {}", ex.getMessage());
@@ -44,23 +52,38 @@ public class CategoryService {
     }
 
     public JpaResult update(Category category) {
+
+        if (findById(category.getId()).isEmpty()) {
+            return new JpaResult(JpaResultType.NOT_FOUND, "Could not find category : " + category.getName());
+        }
+        repository.save(category);
         return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully saved Category : " + category.getName());
     }
 
     public PaginationResult findAllPaginated(int pageNumber) {
-        Page<Category> page = repository.findAll(PageRequest.of(pageNumber, PAGE_SIZE));
 
-        var records = page.getContent();
-        List<Object> data = new ArrayList<>();
-        records.forEach(d -> {
-            List<Category> allChildren = repository.findAllByParent(d.getId());
-            d.setChildren(allChildren);
-            data.add(d);
-        });
+        try {
 
-        PaginationResult result = PageUtil.prepareResult(page);
-        result.setData(data);
-        return result;
+            // Find the page
+            Page<Category> page = repository.findAll(PageRequest.of(pageNumber, PAGE_SIZE));
+            PaginationResult result = PageUtil.prepareResult(page);
+
+            // Put the children
+            var records = page.getContent();
+            List<Object> data = new ArrayList<>();
+            records.forEach(d -> {
+
+                List<Category> allChildren = repository.findAllByParent(d.getId());
+                d.setChildren(allChildren);
+                data.add(d);
+            });
+
+            result.setData(data);
+            return result;
+        } catch (Exception ex) {
+            log.error("CategoryService.findAllPaginated :: {}", ex.getMessage());
+            return new PaginationResult();
+        }
     }
 
     public PaginationResult searchCategory(String text, int pageNum) {
@@ -69,15 +92,17 @@ public class CategoryService {
     }
 
     public List<Category> findAll() {
-        return repository.findAll();
+        List<Category> categories = repository.findAll();
+        for (Category category : categories) {
+            List<Category> children = repository.findAllByParent(category.getId());
+            category.setChildren(children);
+        }
+
+        return categories;
     }
 
     public Optional<Category> findById(int id) {
         return repository.findById(id);
-    }
-
-    public Optional<Category> findByNameAndAlias(String name, String alias) {
-        return repository.findByNameAndAlias(name, alias);
     }
 
     public List<Category> findAllEnabled() {
@@ -91,7 +116,10 @@ public class CategoryService {
     public JpaResult delete(int id) {
 
         try {
-            // Todo: check for children
+            List<Category> children = repository.findAllByParent(id);
+            if (!children.isEmpty()) {
+                return new JpaResult(JpaResultType.NOT_ALLOWED, "The category has children categories!");
+            }
 
             repository.deleteById(id);
             return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully deleted category.");
@@ -110,22 +138,44 @@ public class CategoryService {
                     .append(category.getName())
                     .append(",")
                     .append(category.getAlias())
+                    .append(",")
+                    .append(category.getParent())
                     .append(",");
 
-            // TODO:
-
-//            if (category.getParent() != null && category.getParent().getId() != 0) {
-//                data.append(category.getParent().getName())
-//                        .append(",");
-//            } else {
-//                data.append("-")
-//                        .append(",");
-//            }
+            if (category.getChildren().isEmpty()) {
+                data.append("-")
+                        .append(",");
+            } else {
+                StringJoiner joiner = new StringJoiner(";", "[", "]");
+                for (Category child : category.getChildren()) {
+                    joiner.add(child.getName());
+                }
+                data.append(joiner)
+                        .append(",");
+            }
             data.append(category.isEnabled())
                     .append(",")
                     .append("\n");
         }
 
         return data.toString().getBytes(StandardCharsets.UTF_8);
+    }
+
+    public List<String> childrenText(int categoryId) {
+        Optional<Category> category = findById(categoryId);
+        if (category.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<Category> children = repository.findAllByParent(categoryId);
+
+        List<String> text = new ArrayList<>();
+        text.add(category.get().getName());
+
+        for (Category child : children) {
+            text.add("-> " + child.getName());
+        }
+
+        return text;
     }
 }

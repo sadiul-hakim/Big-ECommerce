@@ -24,10 +24,12 @@
 					th:href="@{${tableUrl.rootUrl}(page=${jpaResult.currentPage - 1})}">Previous</a>
 				</li>
 
-				<li class="page-item"
-					th:each="i:${#numbers.sequence(1,jpaResult.totalPages)}"><a
-					class="page-link" th:href="@{|${tableUrl.rootUrl}?page=${i-1}|}"
-					th:text="${i}"></a></li>
+				<li class="page-item" th:each="i:${#numbers.sequence(1,jpaResult.totalPages)}">
+					<a class="page-link" th:href="@{|${tableUrl.rootUrl}?page=${i-1}|}" th:text="${i}"
+					   th:classappend="${jpaResult.currentPage + 1 == i ? 'bg-dark text-light' : 'bg-list text-dark'}">
+
+					</a>
+				</li>
 
 				<li class="page-item"
 					th:classAppend="${jpaResult.isLast} ? 'disabled' : ''"><a

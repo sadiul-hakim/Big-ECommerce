@@ -19,13 +19,14 @@ import java.util.List;
 public class CategoryController {
     private final CategoryService service;
 
+    private final TableUrlPojo pageUrl = new TableUrlPojo("/categories/search", "/categories",
+            "/categories/export-csv", "/categories/create-page");
+
     @GetMapping
     public ModelAndView usersPage(@RequestParam(defaultValue = "0") int page, ModelAndView model) {
         var categoryResult = service.findAllPaginated(page);
         model.addObject("categoryResult", categoryResult);
 
-        var pageUrl = new TableUrlPojo("/categories/search", "/categories",
-                "/categories/export-csv", "/categories/create-page");
         model.addObject("tableUrl", pageUrl);
         model.addObject("savedSuccessfully", false);
         model.addObject("savingCategory", false);
@@ -51,8 +52,6 @@ public class CategoryController {
         model.addObject("savingCategory", true);
         model.addObject("message", result.message());
 
-        var pageUrl = new TableUrlPojo("/categories/search", "/categories",
-                "/categories/export-csv", "/categories/create-page");
         model.addObject("tableUrl", pageUrl);
 
         if (result.type().equals(JpaResultType.NOT_UNIQUE)) {
@@ -68,13 +67,35 @@ public class CategoryController {
         return model;
     }
 
+    @GetMapping("/update_page/{categoryId}")
+    public ModelAndView updatePage(@PathVariable int categoryId, ModelAndView model) {
+
+        var category = service.findById(categoryId);
+        if (category.isEmpty()) {
+            var categories = service.findAllPaginated(0);
+            model.addObject("tableUrl", pageUrl);
+            model.addObject("categories", categories);
+            model.setViewName("categories");
+
+            model.addObject("updatingCategory", true);
+            model.addObject("message", "Category does not exists!");
+            return model;
+        }
+
+        var categories = service.findAll();
+        model.addObject("category", category.get());
+        model.addObject("categories", categories);
+        model.setViewName("create_category");
+        model.addObject("updatingCategory", true);
+
+        return model;
+    }
+
     @GetMapping("/delete/{id}")
     public ModelAndView deleteUser(@PathVariable int id, ModelAndView model) {
         var result = service.delete(id);
         model.addObject("deletedSuccessfully", result.type().equals(JpaResultType.SUCCESSFUL));
         model.addObject("deletingCategory", true);
-        var pageUrl = new TableUrlPojo("/categories/search", "/categories",
-                "/categories/export-csv", "/categories/create-page");
         model.addObject("tableUrl", pageUrl);
         model.addObject("message", result.message());
 
@@ -89,8 +110,6 @@ public class CategoryController {
         var categoryResult = service.searchCategory(text, page);
         model.addObject("categoryResult", categoryResult);
 
-        var pageUrl = new TableUrlPojo("/categories/search", "/categories",
-                "/categories/export-csv", "/categories/create-page");
         model.addObject("tableUrl", pageUrl);
         model.setViewName("categories");
 
@@ -121,5 +140,11 @@ public class CategoryController {
         modelAndView.setViewName("create_category");
 
         return modelAndView;
+    }
+
+    @GetMapping("/tree-view/{categoryId}")
+    @ResponseBody
+    public List<String> treeView(@PathVariable int categoryId) {
+        return service.childrenText(categoryId);
     }
 }

@@ -97,12 +97,12 @@ public class UserController {
         return model;
     }
 
-    @GetMapping("/update/{userId}")
+    @GetMapping("/update_page/{userId}")
     public ModelAndView updatePage(@PathVariable int userId, ModelAndView model) {
 
         var user = userService.findById(userId);
         if (user.isEmpty()) {
-            var users = userService.findAll();
+            var users = userService.findAllPaginated(0);
             var pageUrl = new TableUrlPojo("/users/search", "/users",
                     "/users/export-csv", "/users/create");
             model.addObject("tableUrl", pageUrl);

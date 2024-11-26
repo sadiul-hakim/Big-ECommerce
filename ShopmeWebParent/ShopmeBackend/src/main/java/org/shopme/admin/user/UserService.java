@@ -68,7 +68,7 @@ public class UserService {
 	public JpaResult updateUser(User user, MultipartFile file) {
 
 		var existingUserOptional = findByEmail(user.getEmail());
-		if (!existingUserOptional.isPresent()) {
+		if (existingUserOptional.isEmpty()) {
 			return new JpaResult(JpaResultType.FAILED, "User " + user.getEmail() + " does not exist!");
 		}
 
