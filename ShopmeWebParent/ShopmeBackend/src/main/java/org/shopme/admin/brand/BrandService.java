@@ -25,7 +25,7 @@ import java.util.*;
 public class BrandService {
     private static final int PAGE_SIZE = 10;
     private static final String FILE_PATH = "/image/brand/";
-    private static final String DEFAULT_PHOTO_NAME = "brand_logo.svg";
+    private static final String DEFAULT_PHOTO_NAME = "brand_logo.png";
 
     private final BrandRepository repository;
     private final CategoryService categoryService;

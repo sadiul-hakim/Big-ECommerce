@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="en">
+<head th:replace="~{fragment/head :: head}">
+</head>
+<body>
+<nav th:replace="~{fragment/navbar :: navbar}"></nav>
+<div class="container-fluid my-2">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <h2 class="my-3 text-primary">Manager Brands</h2>
+
+            <div class="alert"
+                 th:classappend="${savedSuccessfully} ? 'alert-success' : 'alert-danger'"
+                 th:if="${savingBrand}">
+                <span th:text="${message}"></span>
+            </div>
+            <div class="alert"
+                 th:classappend="${deletedSuccessfully} ? 'alert-success' : 'alert-danger'"
+                 th:if="${deletingBrand}">
+                <span th:text="${message}"></span>
+            </div>
+            <div class="alert alert-danger" th:if="${updatingBrand}">
+                <span th:text="${message}"></span>
+            </div>
+
+            <!-- Table Start -->
+            <div th:replace="~{fragment/table :: table(${brandResult},${tableUrl},~{::#table})}">
+                <table class="table table-striped table-hover" id="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Logo</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Categories</th>
+                        <th scope="col"><a class="btn btn-light"
+                                           th:href="@{${tableUrl.getCsvUrl()}}"> <img alt="csv"
+                                                                                      th:src="@{'/image/csv.svg'}"
+                                                                                      class="icon"/>
+                        </a> <a th:href="@{${tableUrl.getCreatePageUrl()}}" class="btn btn-dark"> <img
+                                alt="plus" th:src="@{'/image/plus.svg'}" class="icon"/>
+                        </a></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="brand:${brandResult.data}">
+                        <td><img alt="Brand"
+                                 th:src="@{${brand.logo == null || brand.logo.equals('brand_logo.png') ? '/image/brand/brand_logo.png' : '/image/brand/'+brand.logo}}"
+                                 width="50" height="50"/></td>
+                        <td th:text="${brand.name}"></td>
+                        <td>
+                            <span th:each="c:${brand.categoryList}" th:text="${c.name}"
+                                  class="badge text-bg-secondary"></span>
+                        </td>
+                        <td>
+                            <a
+                                    th:href="@{/brands/update_page/{id}(id=${brand.id})}"
+                                    class="btn btn-warning"> <img class="icon" alt="edit"
+                                                                  th:src="@{'/image/edit.svg'}"/>
+                                <!-- Change Password -->
+                            </a>
+                            <a th:href="@{/brands/delete/{id}(id=${brand.id})}"
+                               class="btn btn-danger"> <img class="icon" alt="delete"
+                                                            th:src="@{'/image/delete.svg'}"/>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Table end  -->
+        </div>
+    </div>
+</div>
+<!-- <footer th:replace="~{fragment/footer :: footer}"></footer>  -->
+</body>
+</html>

@@ -50,7 +50,8 @@
                         <td th:text="${category.name}"></td>
                         <td th:text="${category.alias}"></td>
                         <td>
-                            <span th:each="c:${category.children}" th:text="${c.name+','}"></span>
+                            <span th:each="c:${category.children}" th:text="${c.name}"
+                                  class="badge text-bg-secondary"></span>
                         </td>
                         <td><img class="icon"
                                  th:src="@{${category.enabled} ? '/image/green.svg' : '/image/red.svg'}"
@@ -61,16 +62,14 @@
                                th:data-url="@{/categories/tree-view/{categoryId}(categoryId=${category.id})}">
                                 <img class="icon" alt="tree" th:src="@{'/image/tree.png'}"/>
                             </a>
-                            <!-- Edit Button --> <a
-                                th:href="@{/categories/update_page/{id}(id=${category.id})}"
-                                class="btn btn-warning"> <img class="icon" alt="edit"
-                                                              th:src="@{'/image/edit.svg'}"/> <!-- Change Password -->
-                        </a> <a th:href="@{/categories/changePassword/{id}(id=${category.id})}"
-                                class="btn btn-info"> <img class="icon" alt="password"
-                                                           th:src="@{'/image/password.svg'}"/> <!-- Delete -->
-                        </a> <a th:href="@{/categories/delete/{id}(id=${category.id})}"
-                                class="btn btn-danger"> <img class="icon" alt="delete"
-                                                             th:src="@{'/image/delete.svg'}"/>
+                            <a
+                                    th:href="@{/categories/update_page/{id}(id=${category.id})}"
+                                    class="btn btn-warning"> <img class="icon" alt="edit"
+                                                                  th:src="@{'/image/edit.svg'}"/>
+
+                            </a><a th:href="@{/categories/delete/{id}(id=${category.id})}"
+                                   class="btn btn-danger"> <img class="icon" alt="delete"
+                                                                th:src="@{'/image/delete.svg'}"/>
                         </a>
                         </td>
                     </tr>

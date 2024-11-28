@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="en">
+<head th:replace="~{fragment/head :: head}">
+</head>
+<body>
+<nav th:replace="~{fragment/navbar :: navbar}"></nav>
+
+<div class="container-fluid">
+    <div class="row my-2">
+        <div class="col-sm-12 col-md-8 mx-auto">
+            <form class="card p-2 mx-auto" th:action="@{'/brands/save'}"
+                  method="post" th:object="${brand}" enctype="multipart/form-data">
+                <h2
+                        class="my-3 text-primary d-flex justify-content-center align-items-center">Create New brand
+                </h2>
+                <div class="alert"
+                     th:classappend="${savedSuccessfully} ? 'alert-success' : 'alert-danger'"
+                     th:if="${savingBrand}">
+                    <span th:text="${message}"></span>
+                </div>
+                <input type="hidden" th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}"/> <input type="hidden" name="id"
+                                                          th:value="*{id}"/> <input type="hidden" name="updating"
+                                                                                    th:value="${updatingBrand}"/>
+                <div>
+                    <label for="firstname">First Name</label> <input type="text"
+                                                                     class="form-control" name="firstname"
+                                                                     id="firstname"
+                                                                     th:field="*{name}" min="2" max="25" required/>
+                </div>
+                <br/>
+                <div>
+                    <label for="categories">Categories</label><br/> <select name="roles"
+                                                                       id="categories" th:field="*{categories}" multiple
+                                                                       class="form-control" style="height: 250px;">
+                    <option th:each="category:${categories}" th:text="${category.name}"
+                            th:value="${category.id}"></option>
+                </select>
+                </div>
+                <br/>
+                <div class="d-flex">
+                    <img alt="brand"
+                         th:src="@{${brand.logo == null || brand.logo.equals('brand_logo.png') ? '/image/brand/brand_logo.png' : '/image/brand/'+brand.logo}}"
+                         width="60" height="60" class="mx-2"/> <input type="file"
+                                                                      class="form-control" name="file"
+                                                                      accept=".svg, .jpg, .jpeg, .png"/>
+                </div>
+                <br/>
+                <div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="reset" class="btn btn-danger">Clean</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- <footer th:replace="~{fragment/footer :: footer}"></footer> -->
+</body>
+</html>

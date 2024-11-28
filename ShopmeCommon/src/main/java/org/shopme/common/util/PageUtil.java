@@ -1,10 +1,9 @@
 package org.shopme.common.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.shopme.common.pojo.PaginationResult;
 import org.springframework.data.domain.Page;
+
+import java.util.ArrayList;
 
 public class PageUtil {
     private PageUtil() {
@@ -26,10 +25,7 @@ public class PageUtil {
 
         result.setStart(start);
         result.setEnd(end);
-
-        var records = page.getContent();
-        List<Object> data = new ArrayList<>(records);
-        result.setData(data);
+        result.setData(new ArrayList<>(page.getContent()));
         return result;
     }
 }
