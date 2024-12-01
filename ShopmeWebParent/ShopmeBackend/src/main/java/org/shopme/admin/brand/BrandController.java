@@ -90,8 +90,8 @@ public class BrandController {
             List<Category> categories = categoryService.findAll();
             model.addObject("categories", categories);
         } else {
-            var userResult = service.findAllPaginated(0);
-            model.addObject(PAGINATION_RESULT, userResult);
+            var brandResult = service.findAllPaginated(0);
+            model.addObject(PAGINATION_RESULT, brandResult);
             model.setViewName(PAGE);
         }
         return model;

@@ -1,6 +1,8 @@
 package org.shopme.admin.product;
 
 import org.shopme.common.entity.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -19,7 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     List<Product> findAllByCategoryAndBrand(String category, String brand);
 
-    List<Product> findAllByNameContainingOrAliasContainingOrShortDescriptionContainingOrFullDescriptionContaining(String name, String alias, String shortDesc, String fullDsc);
+    Page<Product> findAllByNameContainingOrAliasContainingOrShortDescriptionContainingOrFullDescriptionContaining(String name, String alias, String shortDesc, String fullDsc, Pageable page);
 
     List<Product> findAllByEnabled(boolean enabled);
 

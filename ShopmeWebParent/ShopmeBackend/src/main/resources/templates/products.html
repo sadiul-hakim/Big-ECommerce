@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="en">
 <head th:replace="~{fragment/head :: head}">
 </head>
 <body>
@@ -28,41 +29,54 @@
                 <table class="table table-striped table-hover" id="table">
                     <thead>
                     <tr>
-<!--                        <th scope="col">Photo</th>-->
+                        <th scope="col">Photo</th>
                         <th scope="col">Name</th>
                         <th scope="col">Brand</th>
                         <th scope="col">Category</th>
                         <th scope="col">Enabled</th>
                         <th scope="col"><a class="btn btn-light"
                                            th:href="@{${tableUrl.getCsvUrl()}}"> <img alt="csv"
-                                                                                      th:src="@{'/image/csv.svg'}" class="icon" />
+                                                                                      th:src="@{'/image/csv.svg'}"
+                                                                                      class="icon"/>
                         </a> <a th:href="@{${tableUrl.getCreatePageUrl()}}" class="btn btn-dark"> <img
-                                alt="plus" th:src="@{'/image/plus.svg'}" class="icon" />
+                                alt="plus" th:src="@{'/image/plus.svg'}" class="icon"/>
                         </a></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="product:${productResult.data}">
-<!--                        <td><img alt="Product"-->
-<!--                                 th:src="@{${product.photo == null || product.photo.equals('products.png') ? '/image/product/products.png' : '/image/Product/'+product.photo}}"-->
-<!--                                 width="50" height="50" /></td>-->
+                        <td>
+                            <img alt="Product"
+                                 th:src="@{${product.image == null ?
+                                                              '/image/product/products.png' :
+                                                               '/image/Product/'+product.image}}"
+                                 width="50" height="50"/>
+                        </td>
                         <td th:text="${product.name}"></td>
                         <td th:text="${product.brand}"></td>
                         <td th:text="${product.category}"></td>
                         <td><img class="icon"
                                  th:src="@{${product.enabled} ? '/image/green.svg' : '/image/red.svg'}"
-                                 alt="status" /></td>
+                                 alt="status"/></td>
                         <td>
-                            <!-- Edit Button --> <a
-                                th:href="@{/products/update_page/{id}(id=${product.id})}"
-                                class="btn btn-warning"> <img class="icon" alt="edit"
-                                                              th:src="@{'/image/edit.svg'}" /> <!-- Change Password -->
-                        </a> <a th:href="@{/products/changePassword/{id}(id=${product.id})}"
-                                class="btn btn-info"> <img class="icon" alt="password"
-                                                           th:src="@{'/image/password.svg'}" /> <!-- Delete -->
-                        </a> <a th:href="@{/products/delete/{id}(id=${product.id})}"
-                                class="btn btn-danger"> <img class="icon" alt="delete"
-                                                             th:src="@{'/image/delete.svg'}" />
+                            <a th:href="@{/products/view_page/{id}(id=${product.id})}"
+                               class="btn btn-info"> <img class="icon" alt="view"
+                                                          th:src="@{'/image/view.png'}"/>
+                            </a>
+
+                            <a th:href="@{/products/product-details-page/{id}(id=${product.id})}"
+                               class="btn btn-info"> <img class="icon" alt="view"
+                                                          th:src="@{'/image/list.png'}"/>
+                            </a>
+
+                            <a
+                                    th:href="@{/products/update_page/{id}(id=${product.id})}"
+                                    class="btn btn-warning"> <img class="icon" alt="edit"
+                                                                  th:src="@{'/image/edit.svg'}"/>
+
+                            </a> <a th:href="@{/products/delete/{id}(id=${product.id})}"
+                                    class="btn btn-danger"> <img class="icon" alt="delete"
+                                                                 th:src="@{'/image/delete.svg'}"/>
                         </a>
                         </td>
                     </tr>

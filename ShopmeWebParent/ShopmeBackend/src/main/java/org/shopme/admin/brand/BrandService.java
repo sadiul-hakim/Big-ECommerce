@@ -93,7 +93,7 @@ public class BrandService {
 
     public PaginationResult findAllPaginated(int pageNumber) {
         try {
-            Page<Brand> page = repository.findAll(PageRequest.of(pageNumber, PAGE_SIZE));
+            Page<Brand> page = repository.findAll(PageRequest.of(pageNumber, 100));
             PaginationResult result = PageUtil.prepareResult(page);
 
             var records = page.getContent();
@@ -164,7 +164,13 @@ public class BrandService {
 
     public JpaResult delete(int id) {
         try {
-            repository.deleteById(id);
+            Optional<Brand> brand = findById(id);
+            if (brand.isEmpty()) {
+                return new JpaResult(JpaResultType.NOT_FOUND, "Brand does not exist!");
+            }
+
+            FileUtil.deleteFile(FILE_PATH, brand.get().getLogo());
+            repository.delete(brand.get());
             return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully deleted brand.");
         } catch (Exception ex) {
             log.error("BrandService.delete :: {}", ex.getMessage());

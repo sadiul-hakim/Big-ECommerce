@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="en">
+<head th:replace="~{fragment/head :: head}">
+</head>
+<body>
+<nav th:replace="~{fragment/navbar :: navbar}"></nav>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <div class="bg-white my-2 p-3">
+                <h2 th:text="${product.name}"></h2>
+                <span th:text="${product.category}"></span> | <span th:text="${product.brand}"></span>
+            </div>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>
+                        Key
+                    </th>
+                    <th>Value</th>
+                    <th>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#detailModal">
+                            <img
+                                    alt="plus" th:src="@{'/image/plus.svg'}" class="icon"/>
+                        </button>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="entry : ${product.details}">
+                    <td th:text="${entry.key}"></td>
+                    <td th:text="${entry.value}"></td>
+                    <td>
+                        <a th:href="@{'/products/remove-details?key='+${entry.key}+'&productId='+${product.id}}"
+                           class="btn btn-danger"> <img class="icon" alt="delete"
+                                                        th:src="@{'/image/delete.svg'}"/>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Detail</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{'/products/add-details'}">
+                    <input type="hidden" th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}"/>
+                    <input type="hidden" name="productId"
+                           th:value="${product.id}"/>
+                    <div>
+                        <label for="key">Key</label>
+                        <input type="text" name="key" id="key" class="form-control"/>
+                    </div>
+                    <br/>
+                    <div>
+                        <label for="value">Value</label>
+                        <input type="text" name="value" id="value" class="form-control"/>
+                    </div>
+                    <br/>
+                    <button class="btn btn-primary" type="submit">Add</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

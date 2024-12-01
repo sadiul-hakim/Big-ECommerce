@@ -5,8 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.shopme.common.converter.StringArrayConverter;
+import org.shopme.common.converter.StringMapConverter;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Getter
@@ -53,9 +57,14 @@ public class Product {
     private String category;
     private String brand;
 
-    @Transient
-    private Category categoryObject;
+    @Convert(converter = StringArrayConverter.class)
+    @Column(columnDefinition = "JSON")
+    private String[] files = new String[4];
+
+    @Convert(converter = StringMapConverter.class)
+    @Column(columnDefinition = "JSON")
+    private Map<String, String> details = new HashMap<>();
 
     @Transient
-    private Brand brandObject;
+    private String image;
 }

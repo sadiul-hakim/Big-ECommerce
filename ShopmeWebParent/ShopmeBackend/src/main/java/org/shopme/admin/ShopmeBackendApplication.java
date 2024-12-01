@@ -14,6 +14,7 @@ public class ShopmeBackendApplication implements CommandLineRunner {
 //	private final UserRepository userRepository;
 //  private final PasswordEncoder password;
 //    private final CategoryRepository categoryRepository;
+//    private final ProductService productService;
 
     public static void main(String[] args) {
         SpringApplication.run(ShopmeBackendApplication.class, args);
@@ -41,5 +42,24 @@ public class ShopmeBackendApplication implements CommandLineRunner {
 
 //        categoryRepository.save(new Category(0, "Main", "main", null, new HashSet<>(), true));
 
+//        var product = new Product();
+//        product.setName("HP EliteBook 840 G3");
+//        product.setAlias("hp_laptop");
+//        product.setCategory("Laptops");
+//        product.setBrand("HP");
+//        product.setCost(64000);
+//        product.setPrice(75000);
+//        product.setDiscountPrice(72000);
+//        product.setEnabled(true);
+//        product.setCreatedTime(LocalDateTime.now());
+//        product.setUpdatedTime(LocalDateTime.now());
+//        product.setShortDescription("This is a laptop.");
+//        product.setFullDescription("This is my first laptop.");
+//        product.setInStock(true);
+//        product.setWeight(2);
+//        product.setWidth(14);
+//        product.setHeight(4);
+//
+//        productService.save(product);
     }
 }
