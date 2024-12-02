@@ -26,7 +26,7 @@
 
             <!-- Table Start -->
             <div th:replace="~{fragment/table :: table(${productResult},${tableUrl},~{::#table})}">
-                <table class="table table-striped table-hover" id="table">
+                <table class="table table-hover" id="table">
                     <thead>
                     <tr>
                         <th scope="col">Photo</th>
@@ -34,22 +34,25 @@
                         <th scope="col">Brand</th>
                         <th scope="col">Category</th>
                         <th scope="col">Enabled</th>
-                        <th scope="col"><a class="btn btn-light"
-                                           th:href="@{${tableUrl.getCsvUrl()}}"> <img alt="csv"
-                                                                                      th:src="@{'/image/csv.svg'}"
-                                                                                      class="icon"/>
-                        </a> <a th:href="@{${tableUrl.getCreatePageUrl()}}" class="btn btn-dark"> <img
-                                alt="plus" th:src="@{'/image/plus.svg'}" class="icon"/>
-                        </a></th>
+                        <th scope="col">
+                            <a class="btn btn-light"
+                               th:href="@{${tableUrl.getCsvUrl()}}"> <img alt="csv"
+                                                                          th:src="@{'/image/csv.svg'}"
+                                                                          class="icon"/>
+                            </a>
+                            <a th:href="@{${tableUrl.getCreatePageUrl()}}"
+                               sec:authorize="hasAnyAuthority('ROLE_EDITOR','ROLE_ADMIN')" class="btn btn-dark"> <img
+                                    alt="plus" th:src="@{'/image/plus.svg'}" class="icon"/>
+                            </a></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="product:${productResult.data}">
                         <td>
-                            <img alt="Product"
+                            <img alt="product"
                                  th:src="@{${product.image == null ?
                                                               '/image/product/products.png' :
-                                                               '/image/Product/'+product.image}}"
+                                                               '/image/product/'+product.image}}"
                                  width="50" height="50"/>
                         </td>
                         <td th:text="${product.name}"></td>
@@ -65,16 +68,19 @@
                             </a>
 
                             <a th:href="@{/products/product-details-page/{id}(id=${product.id})}"
+                               sec:authorize="hasAnyAuthority('ROLE_EDITOR','ROLE_ADMIN','ROLE_SALESPERSON')"
                                class="btn btn-info"> <img class="icon" alt="view"
                                                           th:src="@{'/image/list.png'}"/>
                             </a>
 
                             <a
                                     th:href="@{/products/update_page/{id}(id=${product.id})}"
+                                    sec:authorize="hasAnyAuthority('ROLE_EDITOR','ROLE_ADMIN')"
                                     class="btn btn-warning"> <img class="icon" alt="edit"
                                                                   th:src="@{'/image/edit.svg'}"/>
 
                             </a> <a th:href="@{/products/delete/{id}(id=${product.id})}"
+                                    sec:authorize="hasAnyAuthority('ROLE_EDITOR','ROLE_ADMIN')"
                                     class="btn btn-danger"> <img class="icon" alt="delete"
                                                                  th:src="@{'/image/delete.svg'}"/>
                         </a>

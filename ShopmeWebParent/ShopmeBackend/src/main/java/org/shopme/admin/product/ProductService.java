@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -80,6 +79,7 @@ public class ProductService {
         }
 
         product.setFiles(files);
+        product.setDetails(existingProduct.getDetails());
         Product save = repository.save(product);
         return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully saved Product : " + product.getName(), save.getId());
     }
@@ -142,7 +142,7 @@ public class ProductService {
 
     public PaginationResult search(String text, int pageNumber) {
         try {
-            Page<Product> page = repository.findAllByNameContainingOrAliasContainingOrShortDescriptionContainingOrFullDescriptionContaining(text, text, text, text, PageRequest.of(pageNumber, 100));
+            Page<Product> page = repository.findAllByNameContainingOrAliasContainingOrShortDescriptionContainingOrFullDescriptionContainingOrCategoryContainingOrBrandContaining(text, text, text, text,text,text, PageRequest.of(pageNumber, 100));
 
             List<Product> products = page.getContent();
             for (Product product : products) {
@@ -223,13 +223,6 @@ public class ProductService {
             if (product.isEmpty())
                 return;
 
-            String fullPath = FILE_PATH + productId;
-            File path = new File("classpath:static/" + fullPath);
-            if (!path.exists()) {
-                boolean dir = path.mkdirs();
-                log.info("{} is created", dir);
-            }
-
             Product p = product.get();
             String[] filesArr = new String[4];
             for (int i = 0; i < files.length; i++) {
@@ -244,7 +237,7 @@ public class ProductService {
                     log.warn("UserService.update :: Could not upload file!");
                 } else {
                     filesArr[i] = filePath;
-                    FileUtil.deleteFile(fullPath, p.getFiles()[i]);
+                    FileUtil.deleteFile(FILE_PATH, p.getFiles()[i]);
                 }
             }
 
@@ -277,8 +270,6 @@ public class ProductService {
                     .append(product.getFullDescription())
                     .append(",")
                     .append(product.isEnabled())
-                    .append(",")
-                    .append(product.isInStock())
                     .append(",")
                     .append(product.getCost())
                     .append(",")

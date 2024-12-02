@@ -44,7 +44,7 @@
                                     <input type="text"
                                            class="form-control" name="name"
                                            id="name"
-                                           th:field="*{name}" min="2" max="25" required/>
+                                           th:field="*{name}" min="2" max="200" required/>
                                 </div>
                                 <br/>
                                 <div>
@@ -52,17 +52,20 @@
                                     <input type="text"
                                            class="form-control" name="alias"
                                            id="alias"
-                                           th:field="*{alias}" min="2" max="25" required/>
+                                           th:field="*{alias}" min="2" max="200" required/>
+                                </div>
+                                <br/>
+                                <div>
+                                    <label for="quantity">Quantity*</label>
+                                    <input type="text"
+                                           class="form-control" name="quantity"
+                                           id="quantity"
+                                           th:field="*{quantity}" required/>
                                 </div>
                                 <br/>
                                 <div>
                                     <input type="checkbox" name="enabled" id="enabled"
                                            th:field="*{enabled}"/> <label for="enabled">Enabled</label>
-                                </div>
-                                <br/>
-                                <div>
-                                    <input type="checkbox" name="inStock" id="inStock"
-                                           th:field="*{inStock}"/> <label for="inStock">In Stock</label>
                                 </div>
                                 <br/>
                             </div>

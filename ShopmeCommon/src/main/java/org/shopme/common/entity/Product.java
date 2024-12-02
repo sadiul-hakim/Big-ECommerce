@@ -42,7 +42,8 @@ public class Product {
     private LocalDateTime updatedTime;
 
     private boolean enabled;
-    private boolean inStock;
+
+    private int quantity;
 
     private float cost;
 

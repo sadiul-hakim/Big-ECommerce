@@ -7,13 +7,76 @@
 <nav th:replace="~{fragment/navbar :: navbar}"></nav>
 <div class="container">
     <div class="row">
-        <div class="col-md-10 mx-auto">
-            <h1>Name : <span th:text="${product.name}"></span></h1>
-            <p>Role: <span th:text="${product.shortDescription}"></span></p>
-            <a th:href="@{'/products'}" class="btn btn-primary">Products Page</a>
+        <div class="col-md-11 mx-auto mt-4 card card-body">
+            <div class="row">
+                <div class="col-md-3 my-2">
+                    <img th:src="@{'/image/product/'+${product.image}}" alt="image image" class="img-fluid" width="220"
+                         height="200" id="main_image"/>
+                    <div class="d-flex justify-content-between">
+                        <img th:src="@{'/image/product/'+${product.files[1]}}" alt="" class="img-fluid extra_image" width="80"
+                             height="40"/>
+                        <img th:src="@{'/image/product/'+${product.files[2]}}" alt="" class="img-fluid extra_image" width="80"
+                             height="40">
+                        <img th:src="@{'/image/product/'+${product.files[3]}}" alt="" class="img-fluid extra_image" width="80"
+                             height="40"/>
+                    </div>
+                </div>
+                <div class="col-md-9 bg-light d-flex flex-column justify-content-center p-2">
+                    <h1 th:text="${product.name}"></h1>
+                    <p class="text-muted"><span th:text="${product.category}"></span> | <span
+                            th:text="${product.brand}"></span> | <span th:text="${product.updatedTime}"></span></p>
+                    <p th:text="${product.shortDescription}"></p>
+                    <hr>
+                    <div>
+                        <p class="m-0">TK. <span th:text="${product.price}"
+                                                 style="text-decoration:  line-through;"></span> <span
+                                th:text="${product.discountPrice}"></span></p>
+                        <p class="m-0">
+                            <span
+                                    th:text="${product.quantity > 0 ? 'Available' : 'Out of Stock'}"
+                                    th:classappend="${product.quantity > 0 ? 'text-success' : 'text-danger'}">
+
+                            </span>
+                            <span th:text="${'('+product.quantity+' items)'}"></span>
+                        </p>
+                    </div>
+                    <hr>
+                    <ul class="list-group list-group-flush">
+                        <li class="m-0 list-group-item list-group-item-light">Length : <span
+                                th:text="${product.length}"></span></li>
+                        <li class="m-0 list-group-item list-group-item-light">Width : <span
+                                th:text="${product.width}"></span></li>
+                        <li class="m-0 list-group-item list-group-item-light">Height : <span
+                                th:text="${product.height}"></span></li>
+                        <li class="m-0 list-group-item list-group-item-light">Weight : <span
+                                th:text="${product.weight}"></span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row my-2 bg-light">
+                <p th:text="${product.fullDescription}" class="lead"></p>
+            </div>
+            <div class="row">
+                <table class="table table-striped">
+                    <thead>
+
+                    <tr>
+                        <th>Name</th>
+                        <th>Value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="entry:${product.details}">
+                        <td th:text="${entry.key}"></td>
+                        <td th:text="${entry.value}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 <footer th:replace="~{fragment/footer :: footer}"></footer>
 </body>
+<script th:src="@{'/js/view_product.js'}"></script>
 </html>

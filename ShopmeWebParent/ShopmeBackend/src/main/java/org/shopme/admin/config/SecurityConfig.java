@@ -48,13 +48,28 @@ public class SecurityConfig {
                 "/reviews/**"
         };
 
+        String[] adminAndEditorAndSalesperson = {
+                "/products/product-details-page/**",
+                "/products/add-details",
+                "/products/remove-details"
+        };
+
+        String[] adminAndEditorAndShipperAndSalesperson = {
+                "/products",
+                "/products/search",
+                "/products/export-csv",
+                "/products/view_page/**"
+        };
+
         return http
                 .authorizeHttpRequests(auth -> auth.requestMatchers(publicUrl).permitAll())
                 .authorizeHttpRequests(auth -> auth.requestMatchers(adminAccess).hasRole("ADMIN"))
                 .authorizeHttpRequests(auth -> auth.requestMatchers(editorAccess).hasAnyRole("EDITOR", "ADMIN"))
                 .authorizeHttpRequests(auth -> auth.requestMatchers(salesPersonAccess).hasAnyRole("SALESPERSON", "ADMIN"))
                 .authorizeHttpRequests(auth -> auth.requestMatchers(assistantAccess).hasAnyRole("ASSISTANT", "ADMIN"))
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/products/**").hasAnyRole("ADMIN", "SALESPERSON", "EDITOR", "SHIPPER"))
+                .authorizeHttpRequests(auth -> auth.requestMatchers(adminAndEditorAndShipperAndSalesperson).hasAnyRole("ADMIN", "EDITOR", "SALESPERSON", "SHIPPER"))
+                .authorizeHttpRequests(auth -> auth.requestMatchers(adminAndEditorAndSalesperson).hasAnyRole("ADMIN", "EDITOR", "SALESPERSON"))
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/products/**").hasAnyRole("ADMIN", "EDITOR"))
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/orders/**").hasAnyRole("ADMIN", "SALESPERSON", "SHIPPER"))
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .userDetailsService(userDetailsService)

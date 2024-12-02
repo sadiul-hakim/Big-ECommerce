@@ -21,7 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     List<Product> findAllByCategoryAndBrand(String category, String brand);
 
-    Page<Product> findAllByNameContainingOrAliasContainingOrShortDescriptionContainingOrFullDescriptionContaining(String name, String alias, String shortDesc, String fullDsc, Pageable page);
+    Page<Product> findAllByNameContainingOrAliasContainingOrShortDescriptionContainingOrFullDescriptionContainingOrCategoryContainingOrBrandContaining(String name, String alias, String shortDesc, String fullDsc, String category, String brand, Pageable page);
 
     List<Product> findAllByEnabled(boolean enabled);
 

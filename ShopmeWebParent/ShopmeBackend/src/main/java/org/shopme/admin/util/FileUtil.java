@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.util.ResourceUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +46,10 @@ public class FileUtil {
 
     public static void deleteFile(String folderPath, String fileName) {
         try {
+            if (!StringUtils.hasText(folderPath) || !StringUtils.hasText(fileName)) {
+                return;
+            }
+
             var base = getFile(folderPath);
             var filePath = new File(base, fileName);
 
