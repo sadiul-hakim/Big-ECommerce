@@ -11,4 +11,10 @@ public class MainController {
 		model.setViewName("index");
 		return model;
 	}
+
+	@GetMapping("/loginPage")
+	public ModelAndView loginPage(ModelAndView model) {
+		model.setViewName("loginPage");
+		return model;
+	}
 }

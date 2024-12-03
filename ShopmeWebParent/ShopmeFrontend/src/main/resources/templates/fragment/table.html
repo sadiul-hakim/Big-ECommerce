@@ -1,0 +1,43 @@
+<!-- Table Start -->
+<th:block th:fragment="table(jpaResult,tableUrl,table)">
+	<div class="my-3 d-flex justify-content-end">
+		<form class="w-25 d-flex" th:action="@{${tableUrl.searchUrl}}">
+			<input type="text" class="form-control" placeholder="Search"
+				name="text" />
+			<button class="btn btn-primary ms-2">Search</button>
+		</form>
+		<a class="btn btn-danger ms-2" th:href="@{${tableUrl.rootUrl}}">Clear Search</a>
+	</div>
+	<table th:replace="${table}"></table>
+	<div class="d-flex justify-content-between my-3">
+		<p>
+			Showing <span th:text="${jpaResult.start}"></span> to <span
+				th:text="${jpaResult.end}"></span> of <span
+				th:text="${jpaResult.totalRecords}"></span>
+		</p>
+		<nav aria-label="Page navigation example">
+			<ul class="pagination">
+
+				<li class="page-item"
+					th:classAppend="${jpaResult.isFirst} ? 'disabled' : ''"><a
+					class="page-link"
+					th:href="@{${tableUrl.rootUrl}(page=${jpaResult.currentPage - 1})}">Previous</a>
+				</li>
+
+				<li class="page-item" th:each="i:${#numbers.sequence(1,jpaResult.totalPages)}">
+					<a class="page-link" th:href="@{|${tableUrl.rootUrl}?page=${i-1}|}" th:text="${i}"
+					   th:classappend="${jpaResult.currentPage + 1 == i ? 'bg-dark text-light' : 'bg-list text-dark'}">
+
+					</a>
+				</li>
+
+				<li class="page-item"
+					th:classAppend="${jpaResult.isLast} ? 'disabled' : ''"><a
+					class="page-link"
+					th:href="@{${tableUrl.rootUrl}(page=${jpaResult.currentPage + 1})}">Next</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+</th:block>
+<!-- Table end  -->

@@ -1,10 +1,17 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Admin Site</title>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
+<head th:replace="~{fragment/head :: head}">
 </head>
 <body>
-<h1>Hi This is Site</h1>
+<nav th:replace="~{fragment/navbar :: navbar}"></nav>
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <h1>Hi <span sec:authentication="principal.username"></span></h1>
+            <p>Role: <span sec:authentication="principal.authorities"></span></p>
+        </div>
+    </div>
+</div>
+<footer th:replace="~{fragment/footer :: footer}"></footer>
 </body>
 </html>

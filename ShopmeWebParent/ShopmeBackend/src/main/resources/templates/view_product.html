@@ -10,14 +10,14 @@
         <div class="col-md-11 mx-auto mt-4 card card-body">
             <div class="row">
                 <div class="col-md-3 my-2">
-                    <img th:src="@{'/image/product/'+${product.image}}" alt="image image" class="img-fluid" width="220"
-                         height="200" id="main_image"/>
+                    <img th:src="@{'/image/product/'+${product.image}}" alt="image image" class="img-fluid shadow-sm m-2" width="300"
+                         height="280" id="main_image"/>
                     <div class="d-flex justify-content-between">
-                        <img th:src="@{'/image/product/'+${product.files[1]}}" alt="" class="img-fluid extra_image" width="80"
+                        <img th:src="@{'/image/product/'+${product.files[1]}}" alt="" class="img-fluid shadow-sm extra_image" width="80"
                              height="40"/>
-                        <img th:src="@{'/image/product/'+${product.files[2]}}" alt="" class="img-fluid extra_image" width="80"
+                        <img th:src="@{'/image/product/'+${product.files[2]}}" alt="" class="img-fluid shadow-sm extra_image" width="80"
                              height="40">
-                        <img th:src="@{'/image/product/'+${product.files[3]}}" alt="" class="img-fluid extra_image" width="80"
+                        <img th:src="@{'/image/product/'+${product.files[3]}}" alt="" class="img-fluid shadow-sm extra_image" width="80"
                              height="40"/>
                     </div>
                 </div>

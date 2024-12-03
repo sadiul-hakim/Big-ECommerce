@@ -2,7 +2,24 @@
 
 @font-face {
     font-family: Overlock;
-    src: url('/font/Overlock-Regular.ttf') format("truetype");
+    src: url('../font/Overlock-Regular.ttf') format("truetype");
     font-weight: normal;
     font-style: normal;
+}
+
+body{
+	font-family: 'Overlock', Arial !important;
+	background:#eee;
+}
+
+.footer{
+	position: absolute;
+	bottom:0;
+	left:0;
+	right:0;
+}
+
+.icon{
+	width:25px;
+	height:25px;
 }
