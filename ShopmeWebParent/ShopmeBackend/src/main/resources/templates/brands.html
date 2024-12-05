@@ -44,7 +44,7 @@
                     <tbody>
                     <tr th:each="brand:${brandResult.data}">
                         <td><img alt="Brand"
-                                 th:src="@{${brand.logo == null || brand.logo.equals('brand_logo.png') ? '/image/brand/brand_logo.png' : '/image/brand/'+brand.logo}}"
+                                 th:src="@{${brand.logo == null || brand.logo.equals('brand_logo.png') ? '/images/brand/brand_logo.png' : '/images/brand/'+brand.logo}}"
                                  width="50" height="50"/></td>
                         <td th:text="${brand.name}"></td>
                         <td>

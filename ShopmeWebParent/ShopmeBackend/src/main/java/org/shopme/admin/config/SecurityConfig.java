@@ -22,7 +22,8 @@ public class SecurityConfig {
                 "/css/**",
                 "/js/**",
                 "/image/**",
-                "/font/**"
+                "/font/**",
+                "/images/**"
         };
 
         String[] adminAccess = {

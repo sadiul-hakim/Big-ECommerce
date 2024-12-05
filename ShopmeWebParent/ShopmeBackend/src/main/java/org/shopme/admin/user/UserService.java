@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class UserService {
     private static final int USER_LIST_LIMIT = 10;
-    private static final String FILE_PATH = "/image/user/";
+    private static final String FILE_PATH = "/user/";
     private static final String DEFAULT_PHOTO_NAME = "default_user.svg";
 
     private final UserRepository userRepository;

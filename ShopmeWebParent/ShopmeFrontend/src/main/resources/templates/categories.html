@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="en">
+<head th:replace="~{fragment/head :: head}">
+</head>
+<body>
+<nav th:replace="~{fragment/navbar :: navbar}"></nav>
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-md-10 mx-auto mt-4 bg-white p-2 d-flex justify-content-between">
+            <form th:action="@{/categories/search}" class="d-flex justify-content-between w-100">
+                <input type="search" name="text" placeholder="Search Category" class="form-control"/>
+                <button class="btn btn-primary ms-2" type="submit">
+                    <img th:src="@{'/image/search.png'}" class="icon" alt="search icon"/>
+                </button>
+            </form>
+            <a th:href="@{/categories}" class="btn btn-danger ms-1" th:if="${searchResult}">
+                <img th:src="@{'/image/cross.png'}" class="icon" alt="search icon"/>
+            </a>
+        </div>
+    </div>
+    <div class="row my-4">
+        <div class="d-flex justify-content-center align-items-center p-5 flex-wrap col-12 col-md-3 rounded-2 card"
+             th:each="category:${result.data}">
+            <a th:text="${category.name}" th:href="@{'/products/categories/'+${category.name}+'?pageEntity=categories'}" style="text-decoration: none;"></a>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between my-3">
+        <p>
+            Showing <span th:text="${result.start}"></span> to <span
+                th:text="${result.end}"></span> of <span
+                th:text="${result.totalRecords}"></span>
+        </p>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+
+                <li class="page-item"
+                    th:classAppend="${result.isFirst} ? 'disabled' : ''"><a
+                        class="page-link"
+                        th:href="@{'categories'(page=${result.currentPage - 1})}">Previous</a>
+                </li>
+
+                <li class="page-item" th:each="i:${#numbers.sequence(1,result.totalPages)}">
+                    <a class="page-link"
+                       th:href="@{/categories(page=${i - 1})}"
+                       th:text="${i}"
+                       th:classappend="${result.currentPage + 1 == i ? 'bg-dark text-light' : 'bg-list text-dark'}">
+                    </a>
+
+                </li>
+
+                <li class="page-item"
+                    th:classAppend="${result.isLast} ? 'disabled' : ''"><a
+                        class="page-link"
+                        th:href="@{'/categories'(page=${result.currentPage + 1})}">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+</body>
+</html>

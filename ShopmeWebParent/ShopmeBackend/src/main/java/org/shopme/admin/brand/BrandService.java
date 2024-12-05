@@ -24,7 +24,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class BrandService {
     private static final int PAGE_SIZE = 10;
-    private static final String FILE_PATH = "/image/brand/";
+    private static final String FILE_PATH = "/brand/";
     private static final String DEFAULT_PHOTO_NAME = "brand_logo.png";
 
     private final BrandRepository repository;
@@ -93,7 +93,7 @@ public class BrandService {
 
     public PaginationResult findAllPaginated(int pageNumber) {
         try {
-            Page<Brand> page = repository.findAll(PageRequest.of(pageNumber, 100));
+            Page<Brand> page = repository.findAll(PageRequest.of(pageNumber, PAGE_SIZE));
             PaginationResult result = PageUtil.prepareResult(page);
 
             var records = page.getContent();

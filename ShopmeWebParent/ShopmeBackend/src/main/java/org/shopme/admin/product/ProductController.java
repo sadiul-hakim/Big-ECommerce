@@ -216,6 +216,7 @@ public class ProductController {
     public ModelAndView viewPage(@PathVariable int id, ModelAndView model) {
         Optional<Product> product = service.findById(id);
         if (product.isEmpty()) {
+            throw new NotFoundException("Product is not found with id " + id);
         }
 
         model.addObject("product", product.get());

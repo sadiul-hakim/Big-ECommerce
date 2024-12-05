@@ -25,7 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductService {
     private static final int PAGE_SIZE = 10;
-    private static final String FILE_PATH = "/image/product/";
+    private static final String FILE_PATH = "/product/";
 
     private final ProductRepository repository;
 

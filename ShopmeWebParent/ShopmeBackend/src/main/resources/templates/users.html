@@ -45,7 +45,7 @@
 						<tbody>
 							<tr th:each="user:${userResult.data}">
 								<td><img alt="user"
-									th:src="@{${user.photo == null || user.photo.equals('default_user.svg') ? '/image/user/default.svg' : '/image/user/'+user.photo}}"
+									th:src="@{${user.photo == null || user.photo.equals('default_user.svg') ? '/images/user/default.svg' : '/images/user/'+user.photo}}"
 									width="50" height="50" /></td>
 								<td th:text="${user.firstname}"></td>
 								<td th:text="${user.lastname}"></td>
