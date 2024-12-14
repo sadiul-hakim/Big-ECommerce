@@ -28,13 +28,28 @@
                 <div class="col-md-9 bg-light d-flex flex-column justify-content-center p-2">
                     <h1 th:text="${product.name}"></h1>
                     <p class="text-muted"><span th:text="${product.category}"></span> | <span
-                            th:text="${product.brand}"></span> | <span th:text="${product.updatedTime}"></span></p>
+                            th:text="${product.brand}"></span> | <span
+                            th:text="${dateFormatter.format(product.updatedTime)}"></span></p>
                     <p th:text="${product.shortDescription}"></p>
                     <hr>
                     <div>
-                        <p class="m-0">TK. <span th:text="${product.price}"
-                                                 style="text-decoration:  line-through;"></span> <span
-                                th:text="${product.discountPrice}"></span></p>
+                        <p class="m-0" th:if="${CURRENCY_POSITION == 'before'}">
+                            <span th:text="${CURRENCY_SYMBOL}"></span>
+                            <span th:text="${numberFormater.format(product.price)}"
+                                  style="text-decoration:  line-through;"></span>
+                            <span th:text="${numberFormater.format(product.discountPrice)}"></span>
+                            <span class="text-success">
+                                ( <span
+                                    th:text="${#numbers.formatDecimal(percentage,1,2)}"></span>% off)
+                            </span>
+                        </p>
+
+                        <p class="m-0" th:if="${CURRENCY_POSITION == 'after'}">
+                            <span th:text="${numberFormater.format(product.price)}"
+                                  style="text-decoration:  line-through;"></span>
+                            <span th:text="${numberFormater.format(product.discountPrice)}"></span>
+                            <span th:text="${CURRENCY_SYMBOL}"></span>
+                        </p>
                         <p class="m-0">
                             <span
                                     th:text="${product.quantity > 0 ? 'Available' : 'Out of Stock'}"
@@ -56,8 +71,10 @@
                                 th:text="${product.weight}"></span></li>
                     </ul>
                     <div class="mt-2">
-                        <a class="btn btn-primary ms-2">Add To Cart</a>
-                        <a class="btn btn-info ms-2" th:href="@{/}">Keep Shopping</a>
+                        <a class="btn btn-primary ms-2" th:disabled="${product.quantity == 0}">
+                            [[${product.quantity == 0 ? 'Request To Restock' : 'Add To Cart'}]]
+                        </a>
+                        <button class="btn btn-info ms-2" onclick="history.back()">Keep Shopping</button>
                     </div>
                 </div>
             </div>

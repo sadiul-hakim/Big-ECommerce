@@ -15,6 +15,8 @@ public class ShopmeBackendApplication implements CommandLineRunner {
 //  private final PasswordEncoder password;
 //    private final CategoryRepository categoryRepository;
 //    private final ProductService productService;
+//    private final CurrencyRepository currencyRepository;
+//    private final SettingRepository settingRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(ShopmeBackendApplication.class, args);
@@ -61,5 +63,38 @@ public class ShopmeBackendApplication implements CommandLineRunner {
 //        product.setHeight(4);
 //
 //        productService.save(product);
+
+//        List<Currency> currencies = List.of(
+//                new Currency(0, "United State Dollar", "$", "USD"),
+//                new Currency(0, "British Pound", "£", "GPB"),
+//                new Currency(0, "Japanese Yen", "¥", "JPY"),
+//                new Currency(0, "Euro", "€", "EUR"),
+//                new Currency(0, "Russian Ruble", "₽", "RUB"),
+//                new Currency(0, "South Korean Won", "₩", "KRW"),
+//                new Currency(0, "Chinese Yuan", "¥", "CNY"),
+//                new Currency(0, "Chinese Yuan", "¥", "CNY"),
+//                new Currency(0, "Brazilian Real", "R$", "BRL"),
+//                new Currency(0, "Australian Dollar", "$", "AUD"),
+//                new Currency(0, "Canadian Dollar", "$", "CAD"),
+//                new Currency(0, "Vietnamese Dong", "₫", "VND"),
+//                new Currency(0, "Pakistani rupee", "₨", "PKR"),
+//                new Currency(0, "Bangladeshi Taka", "৳", "BDT")
+//        );
+
+//        currencyRepository.saveAll(currencies);
+
+//        List<Setting> settings = List.of(
+//                new Setting(SettingService.COPYRIGHT, "CopyRight (c) 2024 Shopme Inc.", SettingCategory.GENERAL),
+//                new Setting(SettingService.CURRENCY_ID, "1", SettingCategory.CURRENCY),
+//                new Setting(SettingService.CURRENCY_SYMBOL, "$", SettingCategory.CURRENCY),
+//                new Setting(SettingService.CURRENCY_SYMBOL_POSITION, "before", SettingCategory.CURRENCY),
+//                new Setting(SettingService.DECIMAL_DIGITS, "2", SettingCategory.CURRENCY),
+//                new Setting(SettingService.DECIMAL_POINT_TYPE, "POINT", SettingCategory.CURRENCY),
+//                new Setting(SettingService.SITE_LOGO, "logo.webp", SettingCategory.GENERAL),
+//                new Setting(SettingService.SITE_NAME, "ShopmeAdmin", SettingCategory.GENERAL),
+//                new Setting(SettingService.THOUSAND_POINT_TYPE, "COMMA", SettingCategory.CURRENCY)
+//        );
+//
+//        settingRepository.saveAll(settings);
     }
 }

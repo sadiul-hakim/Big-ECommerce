@@ -2,8 +2,8 @@
      th:fragment="navbar">
     <div class="container-fluid">
         <a class="navbar-brand" th:href="@{'/'}"> <img
-                th:src="@{/image/logo.webp}" alt="logo" width="50" height="50"/>
-            Dashboard
+                th:src="@{|/images/logo/${SITE_LOGO}|}" alt="logo" width="50" height="50"/>
+            <span th:text="${SITE_NAME}"></span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent"

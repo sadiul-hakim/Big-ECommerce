@@ -7,14 +7,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
 public class FileUtil {
+
     private FileUtil() {
     }
 
@@ -51,10 +50,7 @@ public class FileUtil {
             if (!StringUtils.hasText(lastPart) || !StringUtils.hasText(fileName)) {
                 return;
             }
-
-            Path basePath = Paths.get("F:\\ShopmeProject\\image");
-            File baseFolder = basePath.resolve(lastPart).normalize().toFile();
-            var filePath = new File(baseFolder, fileName);
+            var filePath = new File("F:\\ShopmeProject\\image", lastPart + File.separator + fileName);
 
             if (Files.exists(filePath.toPath())) {
                 Files.delete(filePath.toPath());

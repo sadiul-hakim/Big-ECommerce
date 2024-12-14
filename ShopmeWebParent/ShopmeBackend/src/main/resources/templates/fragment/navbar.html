@@ -38,7 +38,7 @@
                 <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN','ROLE_ASSISTANT')"><a class="nav-link" aria-current="page"
                                                                                                     href="#">Reviews</a></li>
                 <li class="nav-item" sec:authorize="hasAuthority('ROLE_ADMIN')"><a class="nav-link" aria-current="page"
-                                        href="#">Settings</a></li>
+                                        th:href="@{/settings}">Settings</a></li>
                 <li class="nav-item">
                     <form th:action="@{/logout}" method="post">
                         <input type="hidden" th:name="${_csrf.parameterName}"

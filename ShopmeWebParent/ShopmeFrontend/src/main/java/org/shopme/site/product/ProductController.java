@@ -6,6 +6,7 @@ import org.shopme.common.entity.Category;
 import org.shopme.common.entity.Product;
 import org.shopme.common.exception.NotFoundException;
 import org.shopme.common.pojo.PaginationResult;
+import org.shopme.common.util.CustomDateTimeFormatter;
 import org.shopme.site.brand.BrandService;
 import org.shopme.site.category.CategoryService;
 import org.springframework.stereotype.Controller;
@@ -102,8 +103,11 @@ public class ProductController {
             throw new NotFoundException("Product is not found with id " + id);
         }
 
-        model.addObject("product", product.get());
+        Product p = product.get();
+        model.addObject("product", p);
         model.setViewName("view_product");
+        model.addObject("dateFormatter", new CustomDateTimeFormatter());
+        model.addObject("percentage", ((p.getPrice() - p.getDiscountPrice()) / p.getPrice()) * 100);
 
         return model;
     }
