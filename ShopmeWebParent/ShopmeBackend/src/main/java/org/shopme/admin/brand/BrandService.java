@@ -3,7 +3,7 @@ package org.shopme.admin.brand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shopme.admin.category.CategoryService;
-import org.shopme.admin.util.FileUtil;
+import org.shopme.common.util.FileUtil;
 import org.shopme.common.entity.Brand;
 import org.shopme.common.entity.Category;
 import org.shopme.common.pojo.PaginationResult;

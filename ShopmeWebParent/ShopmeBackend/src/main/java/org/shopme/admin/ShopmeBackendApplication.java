@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 @EntityScan({"org.shopme.common.entity"})
 @RequiredArgsConstructor
 public class ShopmeBackendApplication implements CommandLineRunner {
-    //	private final RoleRepository roleRepository;
+//    private final RoleRepository roleRepository;
 //	private final UserRepository userRepository;
 //  private final PasswordEncoder password;
 //    private final CategoryRepository categoryRepository;
@@ -96,5 +96,7 @@ public class ShopmeBackendApplication implements CommandLineRunner {
 //        );
 //
 //        settingRepository.saveAll(settings);
+
+//        roleRepository.save(new Role(0, "ROLE_CUSTOMER", "Customer Role"));
     }
 }

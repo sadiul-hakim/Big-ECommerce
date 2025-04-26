@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.shopme.admin.util.FileUtil;
+import org.shopme.common.util.FileUtil;
 import org.shopme.common.entity.User;
 import org.shopme.common.pojo.ChangePasswordPojo;
 import org.shopme.common.pojo.PaginationResult;

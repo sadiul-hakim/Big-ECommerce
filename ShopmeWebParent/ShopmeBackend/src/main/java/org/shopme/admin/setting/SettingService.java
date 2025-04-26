@@ -2,7 +2,7 @@ package org.shopme.admin.setting;
 
 import lombok.RequiredArgsConstructor;
 import org.shopme.admin.currency.CurrencyRepository;
-import org.shopme.admin.util.FileUtil;
+import org.shopme.common.util.FileUtil;
 import org.shopme.common.entity.Setting;
 import org.shopme.common.enumeration.SettingCategory;
 import org.springframework.stereotype.Service;

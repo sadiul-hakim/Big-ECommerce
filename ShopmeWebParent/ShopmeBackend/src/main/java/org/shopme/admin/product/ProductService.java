@@ -2,7 +2,7 @@ package org.shopme.admin.product;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.shopme.admin.util.FileUtil;
+import org.shopme.common.util.FileUtil;
 import org.shopme.common.entity.Product;
 import org.shopme.common.pojo.PaginationResult;
 import org.shopme.common.util.JpaResult;

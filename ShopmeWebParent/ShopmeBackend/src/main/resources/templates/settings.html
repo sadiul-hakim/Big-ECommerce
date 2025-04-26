@@ -176,7 +176,7 @@
                         <form th:action="@{/settings/save_state}" class="row p-2" method="post">
                             <div class="col-12 d-flex">
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                <input type="text" name="name" placeholder="Country Name"
+                                <input type="text" name="name" placeholder="State Name"
                                        class="form-control" required/>
                                 <select class="form-control ms-1" name="country" required>
                                     <option th:each="c:${countries}" th:value="${c.name}" th:text="${c.name}">
