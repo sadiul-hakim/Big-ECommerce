@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+<html xmlns:th="http://www.thymeleaf.org"
       lang="en">
 <head th:replace="~{fragment/head :: head}">
 </head>
@@ -63,7 +63,7 @@
                     </button>
                 </li>
             </ul>
-            <div class="tab-content" id="myTabContent">
+            <div class="tab-content" id="settingTabContent">
                 <div th:replace="~{fragment/setting/generalSetting :: generalSetting(${currencies},${generalSetting})}">
 
                 </div>
@@ -76,9 +76,8 @@
                 <div th:replace="~{fragment/setting/mailServerSetting :: mailServerSetting(${mailServerSetting})}">
 
                 </div>
-                <div class="tab-pane fade p-3" id="mailTemplateTabContent" role="tabpanel"
-                     aria-labelledby="mailTemplateTab">
-                    Hallo
+                <div th:replace="~{fragment/setting/mailTemplateSetting :: mailTemplateSetting}">
+
                 </div>
                 <div class="tab-pane fade p-3" id="paymentTabContent" role="tabpanel" aria-labelledby="paymentTab">
                     Hallo
@@ -90,4 +89,41 @@
 </div>
 
 </body>
+<script th:src="@{/js/toastui-editor-all.min.js}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const editor = new toastui.Editor({
+            el: document.querySelector('#editor'),  // container
+            height: '400px',
+            initialEditType: 'markdown',   // or 'wysiwyg'
+            previewStyle: 'vertical'
+        });
+
+
+        const editor2 = new toastui.Editor({
+            el: document.querySelector('#editor2'),  // container
+            height: '400px',
+            initialEditType: 'markdown',   // or 'wysiwyg'
+            previewStyle: 'vertical'
+        });
+
+        // Refresh editor2 when its tab is shown
+        document.querySelector('button[data-bs-target="#orderConfirmationTabContent"]')
+            .addEventListener('shown.bs.tab', () => {
+                editor2.refresh();
+            });
+
+        // Example: get HTML or Markdown content on submit
+        document.querySelector("#customerVerificationForm").addEventListener("submit", function (e) {
+            // or editor.getHTML()
+            document.querySelector("#customerVerificationHiddenContent").value = editor.getMarkdown();
+        });
+
+        // Example: get HTML or Markdown content on submit
+        document.querySelector("#orderConfirmationForm").addEventListener("submit", function (e) {
+            // or editor.getHTML()
+            document.querySelector("#orderConfirmationHiddenContent").value = editor2.getMarkdown();
+        });
+    });
+</script>
 </html>
