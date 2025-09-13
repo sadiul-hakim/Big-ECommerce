@@ -10,9 +10,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -31,7 +33,6 @@ public class BrandController {
     private static final String PAGE = "brands";
     private static final String POJO_NAME = "brand";
     private static final String CREATE_PAGE = "create_brand";
-    private static final String UPDATING_CONDITION = "updatingBrand";
     private static final String SAVED_CONDITION = "savedSuccessfully";
     private static final String SAVING_CONDITION = "savingBrand";
     private static final String DELETED_CONDITION = "deletedSuccessfully";
@@ -39,13 +40,12 @@ public class BrandController {
     private static final String MESSAGE = "message";
 
     @GetMapping
-    public ModelAndView brandsPage(@RequestParam(defaultValue = "0") int page, ModelAndView model) {
+    public String brandsPage(@RequestParam(defaultValue = "0") int page, Model model) {
         var brandResult = service.findAllPaginated(page);
-        model.addObject(PAGINATION_RESULT, brandResult);
-        model.addObject(TABLE_URL, pageUrl);
-        model.setViewName(PAGE);
+        model.addAttribute(PAGINATION_RESULT, brandResult);
+        model.addAttribute(TABLE_URL, pageUrl);
 
-        return model;
+        return PAGE;
     }
 
     @GetMapping("/search")
@@ -65,36 +65,33 @@ public class BrandController {
         model.addObject(POJO_NAME, new Brand());
         model.addObject("categories", categories);
         model.setViewName(CREATE_PAGE);
-        model.addObject(UPDATING_CONDITION, false);
 
         return model;
     }
 
     @PostMapping("/save")
-    public ModelAndView save(
+    public String save(
             @ModelAttribute Brand brand,
-            @RequestParam boolean updating,
             @RequestParam MultipartFile file,
-            ModelAndView model
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
 
-        var result = updating ? service.updateBrand(brand, file) : service.save(brand, file);
-        model.addObject(SAVED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
-        model.addObject(SAVING_CONDITION, true);
-        model.addObject(MESSAGE, result.message());
-        model.addObject(TABLE_URL, pageUrl);
+        var result = brand.getId() != 0 ? service.updateBrand(brand, file) : service.save(brand, file);
+        redirectAttributes.addFlashAttribute(SAVED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
+        redirectAttributes.addFlashAttribute(SAVING_CONDITION, true);
+        redirectAttributes.addFlashAttribute(MESSAGE, result.message());
 
         if (result.type().equals(JpaResultType.NOT_UNIQUE)) {
-            model.addObject(POJO_NAME, brand);
-            model.setViewName(CREATE_PAGE);
+            model.addAttribute(SAVING_CONDITION, true);
+            model.addAttribute(MESSAGE, result.message());
+            model.addAttribute(POJO_NAME, brand);
             List<Category> categories = categoryService.findAll();
-            model.addObject("categories", categories);
+            model.addAttribute("categories", categories);
+            return CREATE_PAGE;
         } else {
-            var brandResult = service.findAllPaginated(0);
-            model.addObject(PAGINATION_RESULT, brandResult);
-            model.setViewName(PAGE);
+            return "redirect:/" + PAGE;
         }
-        return model;
     }
 
     @GetMapping("/update_page/{brandId}")
@@ -108,7 +105,6 @@ public class BrandController {
             model.addObject(PAGINATION_RESULT, brands);
             model.setViewName(PAGE);
 
-            model.addObject(UPDATING_CONDITION, true);
             model.addObject(MESSAGE, "Brand does not exists!");
             return model;
         }
@@ -116,23 +112,17 @@ public class BrandController {
         model.addObject("categories", categories);
         model.addObject(POJO_NAME, brand.get());
         model.setViewName(CREATE_PAGE);
-        model.addObject(UPDATING_CONDITION, true);
         return model;
     }
 
     @GetMapping("/delete/{id}")
-    public ModelAndView deleteBrand(@PathVariable int id, ModelAndView model) {
+    public String deleteBrand(@PathVariable int id, RedirectAttributes redirectAttributes) {
 
         var result = service.delete(id);
-        model.addObject(DELETED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
-        model.addObject(DELETING_CONDITION, true);
-        model.addObject(TABLE_URL, pageUrl);
-        model.addObject(MESSAGE, result.message());
-
-        var brands = service.findAllPaginated(0);
-        model.addObject(PAGINATION_RESULT, brands);
-        model.setViewName(PAGE);
-        return model;
+        redirectAttributes.addFlashAttribute(DELETED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
+        redirectAttributes.addFlashAttribute(DELETING_CONDITION, true);
+        redirectAttributes.addFlashAttribute(MESSAGE, result.message());
+        return "redirect:/" + PAGE;
     }
 
     @GetMapping("/export-csv")

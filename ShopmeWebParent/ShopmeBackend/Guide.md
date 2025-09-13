@@ -1,0 +1,1 @@
+1. Try to redirect in Post requests, do not return from that endpoint;

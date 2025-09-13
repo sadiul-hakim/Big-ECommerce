@@ -36,8 +36,14 @@
                 class="d-flex justify-content-center align-items-center p-2 flex-wrap col-12 col-md-3 rounded-2 card"
                 th:each="product:${result.data}"
         >
-            <img th:src="@{'/images/product/'+${product.image}}" alt="product" class="img-fluid" width="100"
-                 height="130"/>
+            <img th:if="${product.image != null}"
+                 th:src="@{'/images/product/' + ${product.image}}"
+                 alt="product" class="img-fluid" width="100" height="130"/>
+
+            <img th:if="${product.image == null}"
+                 th:src="@{/images/default.png}"
+                 alt="no image available" class="img-fluid" width="100" height="130"/>
+
             <h5 class="my-1" th:text="${product.name}"></h5>
 
             <p class="m-0" th:if="${CURRENCY_POSITION == 'before'}">

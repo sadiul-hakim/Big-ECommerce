@@ -9,27 +9,23 @@
     <div class="row">
         <div class="col-md-11 mx-auto mt-4 card card-body">
             <div class="row">
-                <div class="col-md-3 my-2">
-                    <img th:src="@{'/images/product/'+${product.image}}" alt="image image"
-                         class="img-fluid shadow-sm m-2" width="300"
-                         height="280" id="main_image"/>
+                <div class="col-md-4 my-2">
+                    <img th:src="${product.image != null} ? @{'/images/product/' + ${product.image}} : @{/images/products.png}"
+                         alt="main image"
+                         class="img-fluid shadow-sm m-2" width="370" height="320" id="main_image"/>
                     <div class="d-flex justify-content-between">
-                        <img th:src="@{'/images/product/'+${product.files[1]}}" alt=""
-                             class="img-fluid shadow-sm extra_image" width="80"
-                             height="40"/>
-                        <img th:src="@{'/images/product/'+${product.files[2]}}" alt=""
-                             class="img-fluid shadow-sm extra_image" width="80"
-                             height="40">
-                        <img th:src="@{'/images/product/'+${product.files[3]}}" alt=""
-                             class="img-fluid shadow-sm extra_image" width="80"
-                             height="40"/>
+                        <th:block th:each="file : ${product.files}">
+                            <img th:if="${file != null}"
+                                 th:src="@{'/images/product/' + ${file}}"
+                                 alt="extra image"
+                                 class="img-fluid shadow-sm extra_image" width="90" height="45"/>
+                        </th:block>
                     </div>
                 </div>
-                <div class="col-md-9 bg-light d-flex flex-column justify-content-center p-2">
+                <div class="col-md-8 bg-light d-flex flex-column justify-content-center p-2">
                     <h1 th:text="${product.name}"></h1>
                     <p class="text-muted"><span th:text="${product.category}"></span> | <span
-                            th:text="${product.brand}"></span> | <span
-                            th:text="${dateFormatter.format(product.updatedTime)}"></span></p>
+                            th:text="${product.brand}"></span></p>
                     <p th:text="${product.shortDescription}"></p>
                     <hr>
                     <div>

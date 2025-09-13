@@ -23,8 +23,9 @@
         <div class="d-flex justify-content-center align-items-center p-3 flex-wrap col-12 col-md-3 rounded-2 card"
              th:each="brand:${result.data}">
             <a th:href="@{'/products/brands/'+${brand.name}+'?pageEntity=brands'}"
-               style="text-decoration: none;">
+               style="text-decoration: none;" class="d-flex flex-column text-center">
                 <img th:src="@{'/images/brand/'+${brand.logo}}" width="120" height="90" alt="brand"/>
+                <span th:text="${brand.name}" class="mt-2"></span>
             </a>
         </div>
     </div>

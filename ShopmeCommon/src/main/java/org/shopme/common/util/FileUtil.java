@@ -1,4 +1,4 @@
-package org.shopme.admin.util;
+package org.shopme.common.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;

@@ -8,16 +8,19 @@
 }
 
 body{
-	font-family: 'Overlock', Arial !important;
+	font-family: 'Overlock', Arial, serif !important;
 	background:#eee;
 }
 
 .footer{
-	position: absolute;
-	bottom:0;
-	left:0;
-	right:0;
+	/*position: absolute;*/
+	/*bottom:0;*/
+	/*left:0;*/
+	/*right:0;*/
+
+	margin-top: 10px;
 }
+
 
 .icon{
 	width:25px;

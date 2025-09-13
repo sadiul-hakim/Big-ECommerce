@@ -64,7 +64,7 @@ public class BrandService {
     public JpaResult updateBrand(Brand brand, MultipartFile file) {
 
         try {
-            Optional<Brand> existingBrandOptional = findByName(brand.getName());
+            Optional<Brand> existingBrandOptional = findById(brand.getId());
             if (existingBrandOptional.isEmpty()) {
                 return new JpaResult(JpaResultType.FAILED, "Brand " + brand.getName() + " does not exist!");
             }

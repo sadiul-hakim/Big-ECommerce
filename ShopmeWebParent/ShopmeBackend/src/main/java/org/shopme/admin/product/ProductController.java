@@ -14,9 +14,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,29 +47,21 @@ public class ProductController {
     private final BrandService brandService;
 
     @GetMapping
-    public ModelAndView page(@RequestParam(defaultValue = "0") int page, ModelAndView model) {
+    public String page(@RequestParam(defaultValue = "0") int page, Model model) {
 
         var productResult = service.findAllPaginated(page);
-        model.addObject(PAGINATION_RESULT, productResult);
+        model.addAttribute(PAGINATION_RESULT, productResult);
+        model.addAttribute(TABLE_URL, pageUrl);
 
-        model.addObject(TABLE_URL, pageUrl);
-        model.addObject(SAVED_CONDITION, false);
-        model.addObject(SAVING_CONDITION, false);
-        model.addObject(DELETED_CONDITION, false);
-        model.addObject(DELETING_CONDITION, false);
-        model.addObject(UPDATING_CONDITION, false);
-        model.addObject(MESSAGE, "");
-
-        model.setViewName(PAGE);
-
-        return model;
+        return PAGE;
     }
 
     @PostMapping("/save")
-    public ModelAndView save(
+    public String save(
             @ModelAttribute Product product,
             @RequestParam boolean updating,
-            ModelAndView model,
+            Model model,
+            RedirectAttributes redirectAttributes,
             @RequestParam MultipartFile firstImage,
             @RequestParam MultipartFile secondImage,
             @RequestParam MultipartFile thirdImage,
@@ -77,26 +71,22 @@ public class ProductController {
         var result = updating ? service.update(product) : service.save(product);
         service.handleFiles(result.entityId(), firstImage, secondImage, thirdImage, fourthImage);
 
-        model.addObject(SAVED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
-        model.addObject(SAVING_CONDITION, true);
-        model.addObject(MESSAGE, result.message());
-        model.addObject(TABLE_URL, pageUrl);
+        redirectAttributes.addFlashAttribute(SAVED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
+        redirectAttributes.addFlashAttribute(SAVING_CONDITION, true);
+        redirectAttributes.addFlashAttribute(MESSAGE, result.message());
 
         if (result.type().equals(JpaResultType.NOT_UNIQUE)) {
-            model.addObject(POJO_NAME, product);
-            model.setViewName(CREATE_PAGE);
+            model.addAttribute(POJO_NAME, product);
 
             List<Category> categories = categoryService.findAll();
-            model.addObject("categories", categories);
+            model.addAttribute("categories", categories);
 
             List<Brand> brands = brandService.findAll();
-            model.addObject("brands", brands);
+            model.addAttribute("brands", brands);
+            return CREATE_PAGE;
         } else {
-            var productResult = service.findAllPaginated(0);
-            model.addObject(PAGINATION_RESULT, productResult);
-            model.setViewName(PAGE);
+            return "redirect:/" + PAGE;
         }
-        return model;
     }
 
     @GetMapping("/update_page/{productId}")
@@ -189,18 +179,13 @@ public class ProductController {
     }
 
     @GetMapping("/delete/{id}")
-    public ModelAndView delete(@PathVariable int id, ModelAndView model) {
+    public String delete(@PathVariable int id, RedirectAttributes model) {
 
         var result = service.delete(id);
-        model.addObject(DELETED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
-        model.addObject(DELETING_CONDITION, true);
-        model.addObject(TABLE_URL, pageUrl);
-        model.addObject(MESSAGE, result.message());
-
-        var products = service.findAllPaginated(0);
-        model.addObject(PAGINATION_RESULT, products);
-        model.setViewName(PAGE);
-        return model;
+        model.addFlashAttribute(DELETED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
+        model.addFlashAttribute(DELETING_CONDITION, true);
+        model.addFlashAttribute(MESSAGE, result.message());
+        return "redirect:/" + PAGE;
     }
 
     @GetMapping("/export-csv")

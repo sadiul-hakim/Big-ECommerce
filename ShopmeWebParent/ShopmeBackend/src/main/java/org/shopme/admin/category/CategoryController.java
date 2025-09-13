@@ -8,8 +8,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -27,7 +29,6 @@ public class CategoryController {
     private static final String PAGE = "categories";
     private static final String POJO_NAME = "category";
     private static final String CREATE_PAGE = "create_category";
-    private static final String UPDATING_CONDITION = "updatingCategory";
     private static final String SAVED_CONDITION = "savedSuccessfully";
     private static final String SAVING_CONDITION = "savingCategory";
     private static final String DELETED_CONDITION = "deletedSuccessfully";
@@ -35,48 +36,35 @@ public class CategoryController {
     private static final String MESSAGE = "message";
 
     @GetMapping
-    public ModelAndView page(@RequestParam(defaultValue = "0") int page, ModelAndView model) {
+    public String page(@RequestParam(defaultValue = "0") int page, Model model) {
         var categoryResult = service.findAllPaginated(page);
-        model.addObject(PAGINATION_RESULT, categoryResult);
-
-        model.addObject(TABLE_URL, pageUrl);
-        model.addObject(SAVED_CONDITION, false);
-        model.addObject(SAVING_CONDITION, false);
-        model.addObject(DELETED_CONDITION, false);
-        model.addObject(DELETING_CONDITION, false);
-        model.addObject(UPDATING_CONDITION, false);
-        model.addObject(MESSAGE, "");
-
-        model.setViewName(PAGE);
-
-        return model;
+        model.addAttribute(PAGINATION_RESULT, categoryResult);
+        model.addAttribute(TABLE_URL, pageUrl);
+        return PAGE;
     }
 
     @PostMapping("/save")
-    public ModelAndView save(
+    public String save(
             @ModelAttribute Category category,
-            @RequestParam boolean updating,
-            ModelAndView model
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
 
-        var result = updating ? service.update(category) : service.save(category);
-        model.addObject(SAVED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
-        model.addObject(SAVING_CONDITION, true);
-        model.addObject(MESSAGE, result.message());
-
-        model.addObject(TABLE_URL, pageUrl);
+        var result = category.getId() != 0 ? service.update(category) : service.save(category);
+        redirectAttributes.addFlashAttribute(SAVED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
+        redirectAttributes.addFlashAttribute(SAVING_CONDITION, true);
+        redirectAttributes.addFlashAttribute(MESSAGE, result.message());
 
         if (result.type().equals(JpaResultType.NOT_UNIQUE)) {
+            model.addAttribute(SAVING_CONDITION, true);
+            model.addAttribute(MESSAGE, result.message());
             var categories = service.findAll();
-            model.addObject(POJO_NAME, category);
-            model.addObject(PAGE, categories);
-            model.setViewName(CREATE_PAGE);
+            model.addAttribute(POJO_NAME, category);
+            model.addAttribute(PAGE, categories);
+            return CREATE_PAGE;
         } else {
-            var categoryResult = service.findAllPaginated(0);
-            model.addObject(PAGINATION_RESULT, categoryResult);
-            model.setViewName(PAGE);
+            return "redirect:/" + PAGE;
         }
-        return model;
     }
 
     @GetMapping("/update_page/{categoryId}")
@@ -89,7 +77,6 @@ public class CategoryController {
             model.addObject(PAGE, categories);
             model.setViewName(PAGE);
 
-            model.addObject(UPDATING_CONDITION, true);
             model.addObject(MESSAGE, "Category does not exists!");
             return model;
         }
@@ -98,23 +85,17 @@ public class CategoryController {
         model.addObject(POJO_NAME, category.get());
         model.addObject(PAGE, categories);
         model.setViewName(CREATE_PAGE);
-        model.addObject(UPDATING_CONDITION, true);
 
         return model;
     }
 
     @GetMapping("/delete/{id}")
-    public ModelAndView deleteCategory(@PathVariable int id, ModelAndView model) {
+    public String deleteCategory(@PathVariable int id, RedirectAttributes model) {
         var result = service.delete(id);
-        model.addObject(DELETED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
-        model.addObject(DELETING_CONDITION, true);
-        model.addObject(TABLE_URL, pageUrl);
-        model.addObject(MESSAGE, result.message());
-
-        var categories = service.findAllPaginated(0);
-        model.addObject(PAGINATION_RESULT, categories);
-        model.setViewName(PAGE);
-        return model;
+        model.addFlashAttribute(DELETED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
+        model.addFlashAttribute(DELETING_CONDITION, true);
+        model.addFlashAttribute(MESSAGE, result.message());
+        return "redirect:/" + PAGE;
     }
 
     @GetMapping("/search")
@@ -145,7 +126,6 @@ public class CategoryController {
         modelAndView.addObject(POJO_NAME, new Category());
         modelAndView.addObject(SAVED_CONDITION, false);
         modelAndView.addObject(SAVING_CONDITION, false);
-        modelAndView.addObject(UPDATING_CONDITION, false);
         modelAndView.addObject(MESSAGE, "");
         modelAndView.addObject(PAGE, categories);
 
