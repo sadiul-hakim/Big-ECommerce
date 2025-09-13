@@ -1,0 +1,99 @@
+<div id="generalTab" class="accordion-collapse collapse"
+     data-bs-parent="#formAccordion" th:fragment="generalSetting(currencies,generalSetting)">
+    <form class="row" th:action="@{'/settings/save_general'}"
+          method="post" enctype="multipart/form-data">
+        <!--        General Tab Left Starts           -->
+        <div class="col-md-6">
+            <div>
+                <label for="siteName">Site Name</label>
+                <input type="text" name="SITE_NAME" th:value="${generalSetting['SITE_NAME']}" id="siteName"
+                       class="form-control" required/>
+            </div>
+            <br/>
+            <div>
+                <label for="copyRight">Copyright</label>
+                <input type="text" name="COPYRIGHT" th:value="${generalSetting['COPYRIGHT']}" id="copyRight"
+                       class="form-control" required/>
+            </div>
+            <br/>
+            <div>
+                <label for="THOUSAND_POINT_TYPE">Thousands Point Type</label>
+                <select name="THOUSAND_POINT_TYPE" id="THOUSAND_POINT_TYPE"
+                        class="form-control">
+                    <option value="POINT" th:selected="${generalSetting['THOUSAND_POINT_TYPE'] == 'POINT'}">Point(.)
+                    </option>
+                    <option value="COMMA" th:selected="${generalSetting['THOUSAND_POINT_TYPE'] == 'COMMA'}">Comma(,)
+                    </option>
+                </select>
+            </div>
+            <br/>
+            <div>
+                <label for="siteLogo">Logo</label>
+                <div class="d-flex">
+                    <img th:src="@{|/images/logo/${generalSetting['SITE_LOGO']}|}" alt="logo" class="img-fluid me-2"
+                         width="90"
+                         height="70"/>
+                    <input type="file" name="SITE_LOGO" id="siteLogo"
+                           class="form-control"/>
+                </div>
+            </div>
+        </div>
+        <!--        General Tab Left Ends           -->
+        <!--        General Tab Right Starts           -->
+        <div class="col-md-6">
+            <div>
+                <label for="CURRENCY_ID">Currency</label>
+                <select name="CURRENCY_ID" id="CURRENCY_ID" class="form-control">
+                    <option
+                            th:each="c:${currencies}"
+                            th:value="${c.id}"
+                            th:text="${c.name}"
+                            th:selected="${generalSetting['CURRENCY_ID'] == c.id+''}"
+                    >
+                    </option>
+                </select>
+            </div>
+            <br/>
+            <div>
+                <label for="CURRENCY_SYMBOL_POSITION">Currency Symbol Position</label>
+                <select name="CURRENCY_SYMBOL_POSITION" id="CURRENCY_SYMBOL_POSITION"
+                        class="form-control">
+                    <option value="before" th:selected="${generalSetting['CURRENCY_POSITION'] == 'before'}">
+                        Before
+                    </option>
+                    <option value="after" th:selected="${generalSetting['CURRENCY_POSITION'] == 'after'}">
+                        After
+                    </option>
+                </select>
+            </div>
+            <br/>
+            <div>
+                <label for="DECIMAL_POINT_TYPE">Decimal Point Type</label>
+                <select name="DECIMAL_POINT_TYPE" id="DECIMAL_POINT_TYPE"
+                        class="form-control">
+                    <option value="POINT" th:selected="${generalSetting['DECIMAL_POINT_TYPE'] == 'POINT'}">Point(.)
+                    </option>
+                    <option value="COMMA" th:selected="${generalSetting['DECIMAL_POINT_TYPE'] == 'COMMA'}">Comma(,)
+                    </option>
+                </select>
+            </div>
+            <br/>
+            <div>
+                <label for="DECIMAL_DIGITS">Decimal Digits</label>
+                <select name="DECIMAL_DIGITS" id="DECIMAL_DIGITS"
+                        class="form-control">
+                    <option value="1" th:selected="${generalSetting['DECIMAL_DIGITS'] == '1'}">1</option>
+                    <option value="2" th:selected="${generalSetting['DECIMAL_DIGITS'] == '2'}">2</option>
+                    <option value="3" th:selected="${generalSetting['DECIMAL_DIGITS'] == '3'}">3</option>
+                    <option value="4" th:selected="${generalSetting['DECIMAL_DIGITS'] == '4'}">4</option>
+                </select>
+            </div>
+            <br/>
+        </div>
+        <!--        General Tab Right Ends           -->
+        <div class="mt-2">
+            <button class="btn btn-primary" type="submit">Save</button>
+            <button class="btn btn-danger" type="reset">Reset</button>
+        </div>
+    </form>
+</div>

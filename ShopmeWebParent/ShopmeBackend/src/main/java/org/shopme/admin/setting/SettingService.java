@@ -7,6 +7,7 @@ import org.shopme.common.util.FileUtil;
 import org.shopme.common.entity.Setting;
 import org.shopme.common.enumeration.SettingCategory;
 import org.shopme.common.util.GeneralSettingBag;
+import org.shopme.common.util.SettingBag;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,6 +40,59 @@ public class SettingService {
         repository.saveAll(settings);
     }
 
+    public void saveMailServerSettings(
+            String MAIL_HOST,
+            String MAIL_PORT,
+            String MAIL_USERNAME,
+            String MAIL_PASSWORD,
+            String MAIL_FROM,
+            String MAIL_SENDER_NAME,
+            boolean SMTP_AUTH,
+            boolean SMTP_SECURED
+    ) {
+
+        List<Setting> mailServerSetting = repository.findAllByCategory(SettingCategory.MAIL_SERVICE);
+        GeneralSettingBag bag = new GeneralSettingBag(mailServerSetting);
+        if (StringUtils.hasText(MAIL_HOST)) {
+            bag.update(SettingBag.MAIL_HOST, MAIL_HOST, SettingCategory.MAIL_SERVICE);
+        }
+
+        if (StringUtils.hasText(MAIL_PORT)) {
+            bag.update(SettingBag.MAIL_PORT, MAIL_PORT, SettingCategory.MAIL_SERVICE);
+        }
+
+        if (StringUtils.hasText(MAIL_USERNAME)) {
+            bag.update(SettingBag.MAIL_USERNAME, MAIL_USERNAME, SettingCategory.MAIL_SERVICE);
+        }
+
+        if (StringUtils.hasText(MAIL_PASSWORD)) {
+            bag.update(SettingBag.MAIL_PASSWORD, MAIL_PASSWORD, SettingCategory.MAIL_SERVICE);
+        }
+
+        if (StringUtils.hasText(MAIL_FROM)) {
+            bag.update(SettingBag.MAIL_FROM, MAIL_FROM, SettingCategory.MAIL_SERVICE);
+        }
+
+        if (StringUtils.hasText(MAIL_SENDER_NAME)) {
+            bag.update(SettingBag.MAIL_SENDER_NAME, MAIL_SENDER_NAME, SettingCategory.MAIL_SERVICE);
+        }
+
+        if (SMTP_AUTH) {
+            bag.update(SettingBag.SMTP_AUTH, "Yes", SettingCategory.MAIL_SERVICE);
+        } else {
+            bag.update(SettingBag.SMTP_AUTH, "No", SettingCategory.MAIL_SERVICE);
+        }
+
+        if (SMTP_SECURED) {
+            bag.update(SettingBag.SMTP_SECURED, "Yes", SettingCategory.MAIL_SERVICE);
+        } else {
+            bag.update(SettingBag.SMTP_SECURED, "No", SettingCategory.MAIL_SERVICE);
+        }
+
+        List<Setting> settings = bag.getSettings();
+        saveAll(settings);
+    }
+
     public void saveGeneralSettings(MultipartFile SITE_LOGO,
                                     String SITE_NAME,
                                     String COPYRIGHT,
@@ -63,33 +117,33 @@ public class SettingService {
         }
 
         if (StringUtils.hasText(SITE_NAME)) {
-            settingBag.update(GeneralSettingBag.SITE_NAME, SITE_NAME);
+            settingBag.update(GeneralSettingBag.SITE_NAME, SITE_NAME, SettingCategory.GENERAL);
         }
 
         if (StringUtils.hasText(COPYRIGHT)) {
-            settingBag.update(GeneralSettingBag.COPYRIGHT, COPYRIGHT);
+            settingBag.update(GeneralSettingBag.COPYRIGHT, COPYRIGHT, SettingCategory.GENERAL);
         }
 
         if (StringUtils.hasText(THOUSAND_POINT_TYPE)) {
-            settingBag.update(GeneralSettingBag.THOUSAND_POINT_TYPE, THOUSAND_POINT_TYPE);
+            settingBag.update(GeneralSettingBag.THOUSAND_POINT_TYPE, THOUSAND_POINT_TYPE, SettingCategory.CURRENCY);
         }
 
         if (StringUtils.hasText(CURRENCY_SYMBOL_POSITION)) {
-            settingBag.update(GeneralSettingBag.CURRENCY_SYMBOL_POSITION, CURRENCY_SYMBOL_POSITION);
+            settingBag.update(GeneralSettingBag.CURRENCY_SYMBOL_POSITION, CURRENCY_SYMBOL_POSITION, SettingCategory.CURRENCY);
         }
 
         if (StringUtils.hasText(DECIMAL_DIGITS)) {
-            settingBag.update(GeneralSettingBag.DECIMAL_DIGITS, DECIMAL_DIGITS);
+            settingBag.update(GeneralSettingBag.DECIMAL_DIGITS, DECIMAL_DIGITS, SettingCategory.CURRENCY);
         }
 
         if (StringUtils.hasText(DECIMAL_POINT_TYPE)) {
-            settingBag.update(GeneralSettingBag.DECIMAL_POINT_TYPE, DECIMAL_POINT_TYPE);
+            settingBag.update(GeneralSettingBag.DECIMAL_POINT_TYPE, DECIMAL_POINT_TYPE, SettingCategory.CURRENCY);
         }
 
         if (StringUtils.hasText(CURRENCY_ID) && Integer.parseInt(CURRENCY_ID) > 0) {
             Optional<Currency> currencyOptional = currencyRepository.findById(Integer.parseInt(CURRENCY_ID));
             currencyOptional.ifPresent(currency -> settingBag.updateCurrencySymbol(currency.getSymbol()));
-            settingBag.update(GeneralSettingBag.CURRENCY_ID, CURRENCY_ID);
+            settingBag.update(GeneralSettingBag.CURRENCY_ID, CURRENCY_ID, SettingCategory.CURRENCY);
         }
 
         List<Setting> settings = settingBag.getSettings();

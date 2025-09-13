@@ -6,6 +6,7 @@ import org.shopme.admin.currency.CurrencyRepository;
 import org.shopme.admin.state.StateService;
 import org.shopme.common.entity.Currency;
 import org.shopme.common.entity.Setting;
+import org.shopme.common.enumeration.SettingCategory;
 import org.shopme.common.util.JpaResult;
 import org.shopme.common.util.JpaResultType;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/settings")
@@ -34,16 +37,46 @@ public class SettingController {
     public ModelAndView page(ModelAndView model) {
         List<Setting> settings = service.findAll();
         List<Currency> currencies = currencyRepository.findAllByOrderByNameAsc();
+
+        Map<String, String> generalSetting = settings.stream().filter(setting -> setting.getCategory()
+                        .equals(SettingCategory.GENERAL) || setting.getCategory().equals(SettingCategory.CURRENCY))
+                .collect(Collectors.toMap(Setting::getKey, Setting::getValue));
+
+        Map<String, String> mailServerSetting = settings.stream().filter(setting -> setting.getCategory()
+                        .equals(SettingCategory.MAIL_SERVICE))
+                .collect(Collectors.toMap(Setting::getKey, Setting::getValue));
+
         model.addObject("currencies", currencies);
         model.addObject("countries", countryService.findAll());
         model.addObject("states", stateService.findAll());
+        model.addObject("generalSetting", generalSetting);
+        model.addObject("mailServerSetting", mailServerSetting);
 
-        for (Setting setting : settings) {
-            model.addObject(setting.getKey(), setting.getValue());
-        }
         model.setViewName(PAGE);
 
         return model;
+    }
+
+    @PostMapping("/save-mail-server")
+    public String saveMailServerSetting(
+            @RequestParam String MAIL_HOST,
+            @RequestParam String MAIL_PORT,
+            @RequestParam String MAIL_USERNAME,
+            @RequestParam String MAIL_PASSWORD,
+            @RequestParam String MAIL_FROM,
+            @RequestParam String MAIL_SENDER_NAME,
+            @RequestParam boolean SMTP_AUTH,
+            @RequestParam boolean SMTP_SECURED,
+            RedirectAttributes attributes
+    ) {
+        service.saveMailServerSettings(MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, MAIL_FROM, MAIL_SENDER_NAME,
+                SMTP_AUTH, SMTP_SECURED);
+
+        attributes.addFlashAttribute(MESSAGE, "Setting is saved successfully!");
+        attributes.addFlashAttribute(SAVING_CONDITION, true);
+        attributes.addFlashAttribute(SAVED_CONDITION, true);
+
+        return "redirect:/settings";
     }
 
     @PostMapping("/save_general")

@@ -1,0 +1,69 @@
+<div id="mailServerTab" class="accordion-collapse collapse"
+     data-bs-parent="#formAccordion" th:fragment="mailServerSetting(mailServerSetting)">
+
+    <form class="row p-1" th:action="@{'/settings/save-mail-server'}"
+          method="post">
+
+        <div class="col-md-6">
+            <div>
+                <label for="mailHost">SMTP Server Host Name </label>
+                <input type="text" name="MAIL_HOST" th:value="${mailServerSetting['MAIL_HOST']}" id="mailHost"
+                       class="form-control" required/>
+            </div>
+            <br/>
+            <div>
+                <label for="mailPort">SMTP Server Port </label>
+                <input type="number" name="MAIL_PORT" th:value="${mailServerSetting['MAIL_PORT']}" id="mailPort"
+                       class="form-control" required/>
+            </div>
+            <br/>
+            <div>
+                <label for="username">Username </label>
+                <input type="text" name="MAIL_USERNAME" th:value="${mailServerSetting['MAIL_USERNAME']}" id="username"
+                       class="form-control" required/>
+            </div>
+            <br/>
+            <div>
+                <label for="password">Password </label>
+                <input type="password" name="MAIL_PASSWORD" th:value="${mailServerSetting['MAIL_PASSWORD']}"
+                       id="password"
+                       class="form-control" required/>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div>
+                <label for="mailFrom">From E-Mail Address </label>
+                <input type="text" name="MAIL_FROM" th:value="${mailServerSetting['MAIL_FROM']}" id="mailFrom"
+                       class="form-control" required/>
+            </div>
+            <br/>
+            <div>
+                <label for="senderName">Sender Name </label>
+                <input type="text" name="MAIL_SENDER_NAME" th:value="${mailServerSetting['MAIL_SENDER_NAME']}"
+                       id="senderName"
+                       class="form-control" required/>
+            </div>
+            <br/>
+            <div>
+
+                <input type="checkbox" name="SMTP_AUTH"
+                       th:checked="${mailServerSetting['SMTP_AUTH'] == 'Yes'}"
+                       id="serverAuthRequired"
+                       required/>
+                <label for="serverAuthRequired">Server Authentication Required </label>
+            </div>
+            <br/>
+            <div>
+                <input type="checkbox" name="SMTP_SECURED"
+                       th:checked="${mailServerSetting['SMTP_SECURED'] == 'Yes'}"
+                       id="requiresSecureConnection"
+                       required/>
+                <label for="requiresSecureConnection">Server Requires Secure Connection </label>
+            </div>
+        </div>
+        <div class="mt-3">
+            <input type="submit" value="Save" class="btn btn-primary"/>
+            <input type="reset" value="Reset" class="btn btn-danger"/>
+        </div>
+    </form>
+</div>
