@@ -2,14 +2,17 @@ package org.shopme.admin.setting;
 
 import lombok.RequiredArgsConstructor;
 import org.shopme.admin.currency.CurrencyRepository;
+import org.shopme.common.entity.Currency;
 import org.shopme.common.util.FileUtil;
 import org.shopme.common.entity.Setting;
 import org.shopme.common.enumeration.SettingCategory;
+import org.shopme.common.util.GeneralSettingBag;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -84,6 +87,8 @@ public class SettingService {
         }
 
         if (StringUtils.hasText(CURRENCY_ID) && Integer.parseInt(CURRENCY_ID) > 0) {
+            Optional<Currency> currencyOptional = currencyRepository.findById(Integer.parseInt(CURRENCY_ID));
+            currencyOptional.ifPresent(currency -> settingBag.updateCurrencySymbol(currency.getSymbol()));
             settingBag.update(GeneralSettingBag.CURRENCY_ID, CURRENCY_ID);
         }
 

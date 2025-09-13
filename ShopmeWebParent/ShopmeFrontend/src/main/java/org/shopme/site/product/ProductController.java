@@ -4,11 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.shopme.common.entity.Brand;
 import org.shopme.common.entity.Category;
 import org.shopme.common.entity.Product;
+import org.shopme.common.entity.Setting;
 import org.shopme.common.exception.NotFoundException;
 import org.shopme.common.pojo.PaginationResult;
 import org.shopme.common.util.CustomDateTimeFormatter;
+import org.shopme.common.util.GeneralSettingBag;
+import org.shopme.common.util.SettingBag;
 import org.shopme.site.brand.BrandService;
 import org.shopme.site.category.CategoryService;
+import org.shopme.site.setting.SettingService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -26,6 +31,7 @@ public class ProductController {
     private final ProductService service;
     private final CategoryService categoryService;
     private final BrandService brandService;
+    private final SettingService settingService;
 
     @GetMapping("/categories/{categoryName}")
     public ModelAndView viewByCategory(@PathVariable String categoryName,
@@ -103,7 +109,11 @@ public class ProductController {
             throw new NotFoundException("Product is not found with id " + id);
         }
 
+        GeneralSettingBag settingBag = settingService.getGeneralSettingBag();
+
         Product p = product.get();
+        model.addObject("CURRENCY_SYMBOL", settingBag.getValue(SettingBag.CURRENCY_SYMBOL));
+        model.addObject("CURRENCY_POSITION", settingBag.getValue(SettingBag.CURRENCY_SYMBOL_POSITION));
         model.addObject("product", p);
         model.setViewName("view_product");
         model.addObject("dateFormatter", new CustomDateTimeFormatter());

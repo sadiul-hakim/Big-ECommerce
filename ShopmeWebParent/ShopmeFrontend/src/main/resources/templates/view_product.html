@@ -29,7 +29,7 @@
                     <p th:text="${product.shortDescription}"></p>
                     <hr>
                     <div>
-                        <p class="m-0" th:if="${CURRENCY_POSITION == 'before'}">
+                        <p class="m-0" th:if="${CURRENCY_POSITION.equals('before')}">
                             <span th:text="${CURRENCY_SYMBOL}"></span>
                             <span th:text="${numberFormater.format(product.price)}"
                                   style="text-decoration:  line-through;"></span>
@@ -40,7 +40,7 @@
                             </span>
                         </p>
 
-                        <p class="m-0" th:if="${CURRENCY_POSITION == 'after'}">
+                        <p class="m-0" th:if="${CURRENCY_POSITION.equals('after')}">
                             <span th:text="${numberFormater.format(product.price)}"
                                   style="text-decoration:  line-through;"></span>
                             <span th:text="${numberFormater.format(product.discountPrice)}"></span>

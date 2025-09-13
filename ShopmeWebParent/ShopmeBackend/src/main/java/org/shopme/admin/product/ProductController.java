@@ -3,13 +3,16 @@ package org.shopme.admin.product;
 import lombok.RequiredArgsConstructor;
 import org.shopme.admin.brand.BrandService;
 import org.shopme.admin.category.CategoryService;
+import org.shopme.admin.setting.SettingService;
 import org.shopme.common.entity.Brand;
 import org.shopme.common.entity.Category;
 import org.shopme.common.entity.Product;
 import org.shopme.common.exception.NotFoundException;
 import org.shopme.common.pojo.TableUrlPojo;
+import org.shopme.common.util.GeneralSettingBag;
 import org.shopme.common.util.JpaResult;
 import org.shopme.common.util.JpaResultType;
+import org.shopme.common.util.SettingBag;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +48,7 @@ public class ProductController {
     private final CategoryService categoryService;
     private final ProductService service;
     private final BrandService brandService;
+    private final SettingService settingService;
 
     @GetMapping
     public String page(@RequestParam(defaultValue = "0") int page, Model model) {
@@ -204,6 +208,9 @@ public class ProductController {
             throw new NotFoundException("Product is not found with id " + id);
         }
 
+        GeneralSettingBag generalSetting = settingService.getGeneralSetting();
+        model.addObject("currency",generalSetting.getValue(SettingBag.CURRENCY_SYMBOL));
+        model.addObject("currencyPosition",generalSetting.getValue(SettingBag.CURRENCY_SYMBOL_POSITION));
         model.addObject("product", product.get());
         model.setViewName("view_product");
 

@@ -1,7 +1,6 @@
-package org.shopme.admin.setting;
+package org.shopme.common.util;
 
 import org.shopme.common.entity.Setting;
-import org.shopme.common.util.SettingBag;
 
 import java.util.List;
 
