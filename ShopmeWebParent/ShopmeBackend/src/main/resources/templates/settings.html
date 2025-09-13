@@ -19,84 +19,72 @@
             </div>
             <input type="hidden" th:name="${_csrf.parameterName}"
                    th:value="${_csrf.token}"/>
-            <div class="accordion" id="formAccordion">
-                <!--        General Tab Starts           -->
-                <div class="accordion-item p-2">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#generalTab" aria-expanded="true" aria-controls="generalTab">
-                            General
-                        </button>
-                    </h2>
-                    <div th:replace="~{fragment/setting/generalSetting :: generalSetting(${currencies},${generalSetting})}">
-                    </div>
+
+            <!--    Tabs Stars        -->
+            <ul class="nav nav-tabs" id="settingTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="generalTab" data-bs-toggle="tab"
+                            data-bs-target="#generalTabContent"
+                            type="button" role="tab" aria-controls="generalTab" aria-selected="true">
+                        General
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="countriesTab" data-bs-toggle="tab"
+                            data-bs-target="#countriesTabContent"
+                            type="button" role="tab" aria-controls="countriesTab" aria-selected="false">
+                        Countries
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="statesTab" data-bs-toggle="tab" data-bs-target="#statesTabContent"
+                            type="button" role="tab" aria-controls="statesTab" aria-selected="false">
+                        States
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="mailServerTab" data-bs-toggle="tab"
+                            data-bs-target="#mailServerTabContent"
+                            type="button" role="tab" aria-controls="mailServerTab" aria-selected="false">
+                        Mail Server
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="mailTemplateTab" data-bs-toggle="tab"
+                            data-bs-target="#mailTemplateTabContent"
+                            type="button" role="tab" aria-controls="mailTemplateTab" aria-selected="false">
+                        Mail Templates
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="paymentTab" data-bs-toggle="tab" data-bs-target="#paymentTabContent"
+                            type="button" role="tab" aria-controls="paymentTab" aria-selected="false">
+                        Payment
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div th:replace="~{fragment/setting/generalSetting :: generalSetting(${currencies},${generalSetting})}">
+
                 </div>
-                <!--        General Tab Ends           -->
-                <!--        Countries Tab Starts           -->
-                <div class="accordion-item p-2">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#countriesTab" aria-expanded="true" aria-controls="countriesTab">
-                            Countries
-                        </button>
-                    </h2>
-                    <div th:replace="~{fragment/setting/countrySetting :: countrySetting(${countries})}">
-                    </div>
+                <div th:replace="~{fragment/setting/countrySetting :: countrySetting(${countries})}">
+
                 </div>
-                <!--        Countries Tab Ends           -->
-                <!--        States Tab Starts           -->
-                <div class="accordion-item p-2">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#statesTab" aria-expanded="true" aria-controls="statesTab">
-                            States
-                        </button>
-                    </h2>
-                    <div th:replace="~{fragment/setting/stateSetting :: stateSetting(${countries},${states})}">
-                    </div>
+                <div th:replace="~{fragment/setting/stateSetting :: stateSetting(${countries},${states})}">
+
                 </div>
-                <!--        States Tab Ends           -->
-                <!--        Mail Server Tab Starts           -->
-                <div class="accordion-item p-2">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#mailServerTab" aria-expanded="true" aria-controls="mailServerTab">
-                            Mail Server
-                        </button>
-                    </h2>
-                    <div  th:replace="~{fragment/setting/mailServerSetting :: mailServerSetting(${mailServerSetting})}">
-                    </div>
+                <div th:replace="~{fragment/setting/mailServerSetting :: mailServerSetting(${mailServerSetting})}">
+
                 </div>
-                <!--        Mail Server Tab Ends           -->
-                <!--        Mail Templates Tab Starts           -->
-                <div class="accordion-item p-2">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#mailTemplatesTab" aria-expanded="true"
-                                aria-controls="mailTemplatesTab">
-                            Mail Templates
-                        </button>
-                    </h2>
-                    <div id="mailTemplatesTab" class="accordion-collapse collapse show"
-                         data-bs-parent="#formAccordion">
-                    </div>
+                <div class="tab-pane fade p-3" id="mailTemplateTabContent" role="tabpanel"
+                     aria-labelledby="mailTemplateTab">
+                    Hallo
                 </div>
-                <!--        Mail Templates Tab Ends           -->
-                <!--        Payment Tab Starts           -->
-                <div class="accordion-item p-2">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#paymentTab" aria-expanded="true"
-                                aria-controls="paymentTab">
-                            Payment
-                        </button>
-                    </h2>
-                    <div id="paymentTab" class="accordion-collapse collapse show"
-                         data-bs-parent="#formAccordion">
-                    </div>
+                <div class="tab-pane fade p-3" id="paymentTabContent" role="tabpanel" aria-labelledby="paymentTab">
+                    Hallo
                 </div>
-                <!--        Payment Tab Ends           -->
             </div>
+            <!--    Tabs Ends        -->
         </div>
     </div>
 </div>

@@ -1,5 +1,5 @@
-<div id="generalTab" class="accordion-collapse collapse"
-     data-bs-parent="#formAccordion" th:fragment="generalSetting(currencies,generalSetting)">
+<div class="tab-pane fade show active p-3" id="generalTabContent" role="tabpanel" aria-labelledby="generalTab"
+     th:fragment="generalSetting(currencies,generalSetting)">
     <form class="row" th:action="@{'/settings/save_general'}"
           method="post" enctype="multipart/form-data">
         <!--        General Tab Left Starts           -->

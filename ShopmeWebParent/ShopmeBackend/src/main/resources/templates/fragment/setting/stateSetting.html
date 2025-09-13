@@ -1,5 +1,5 @@
-<div id="statesTab" class="accordion-collapse collapse"
-     data-bs-parent="#formAccordion" th:fragment="stateSetting(countries,states)">
+<div class="tab-pane fade p-3" id="statesTabContent" role="tabpanel" aria-labelledby="statesTab"
+     th:fragment="stateSetting(countries,states)">
     <form th:action="@{/settings/save_state}" class="row p-2" method="post">
         <div class="col-12 d-flex">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">

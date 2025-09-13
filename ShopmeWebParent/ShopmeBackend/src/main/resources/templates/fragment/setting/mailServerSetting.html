@@ -1,5 +1,5 @@
-<div id="mailServerTab" class="accordion-collapse collapse"
-     data-bs-parent="#formAccordion" th:fragment="mailServerSetting(mailServerSetting)">
+<div class="tab-pane fade p-3" id="mailServerTabContent" role="tabpanel"
+     aria-labelledby="mailServerTab" th:fragment="mailServerSetting(mailServerSetting)">
 
     <form class="row p-1" th:action="@{'/settings/save-mail-server'}"
           method="post">

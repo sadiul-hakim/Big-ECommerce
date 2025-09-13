@@ -1,5 +1,4 @@
-<div id="countriesTab" class="accordion-collapse collapse"
-     data-bs-parent="#formAccordion" th:fragment="countrySetting(countries)">
+<div class="tab-pane fade p-3" id="countriesTabContent" role="tabpanel" aria-labelledby="countriesTab" th:fragment="countrySetting(countries)">
     <form th:action="@{/settings/save_country}" class="row p-2" method="post">
         <div class="col-12 d-flex">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
