@@ -47,17 +47,15 @@
             <div>
 
                 <input type="checkbox" name="SMTP_AUTH"
-                       th:checked="${mailServerSetting['SMTP_AUTH'] == 'Yes'}"
-                       id="serverAuthRequired"
-                       required/>
+                       th:checked="${mailServerSetting['SMTP_AUTH'] == 'true'}"
+                       id="serverAuthRequired"/>
                 <label for="serverAuthRequired">Server Authentication Required </label>
             </div>
             <br/>
             <div>
                 <input type="checkbox" name="SMTP_SECURED"
-                       th:checked="${mailServerSetting['SMTP_SECURED'] == 'Yes'}"
-                       id="requiresSecureConnection"
-                       required/>
+                       th:checked="${mailServerSetting['SMTP_SECURED'] == 'true'}"
+                       id="requiresSecureConnection"/>
                 <label for="requiresSecureConnection">Server Requires Secure Connection </label>
             </div>
         </div>

@@ -7,6 +7,7 @@ import org.shopme.common.util.FileUtil;
 import org.shopme.common.entity.Setting;
 import org.shopme.common.enumeration.SettingCategory;
 import org.shopme.common.util.GeneralSettingBag;
+import org.shopme.common.util.MailServerSettingBag;
 import org.shopme.common.util.SettingBag;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -28,12 +29,14 @@ public class SettingService {
         return repository.findAll();
     }
 
-    public GeneralSettingBag getGeneralSetting() {
-        List<Setting> generalSettings = repository.findAllByCategory(SettingCategory.GENERAL);
-        List<Setting> currencySettings = repository.findAllByCategory(SettingCategory.CURRENCY);
-        generalSettings.addAll(currencySettings);
+    public GeneralSettingBag getGeneralSettingBag() {
+        List<Setting> settings = repository.findAllByCategoryIn(List.of(SettingCategory.GENERAL, SettingCategory.CURRENCY));
+        return new GeneralSettingBag(settings);
+    }
 
-        return new GeneralSettingBag(generalSettings);
+    public MailServerSettingBag getMailServerSettingBag() {
+        List<Setting> settings = repository.findAllByCategoryIn(List.of(SettingCategory.MAIL_SERVICE, SettingCategory.MAIL_TEMPLATES));
+        return new MailServerSettingBag(settings);
     }
 
     public void saveAll(Iterable<Setting> settings) {
@@ -48,7 +51,7 @@ public class SettingService {
 
     ) {
         List<Setting> mailServerSetting = repository.findAllByCategory(SettingCategory.MAIL_TEMPLATES);
-        GeneralSettingBag bag = new GeneralSettingBag(mailServerSetting);
+        SettingBag bag = new SettingBag(mailServerSetting);
 
         if (StringUtils.hasText(CUSTOMER_VERIFIED_SUBJECT)) {
             bag.update(SettingBag.CUSTOMER_VERIFIED_SUBJECT, CUSTOMER_VERIFIED_SUBJECT, SettingCategory.MAIL_TEMPLATES);
@@ -82,7 +85,7 @@ public class SettingService {
     ) {
 
         List<Setting> mailServerSetting = repository.findAllByCategory(SettingCategory.MAIL_SERVICE);
-        GeneralSettingBag bag = new GeneralSettingBag(mailServerSetting);
+        SettingBag bag = new SettingBag(mailServerSetting);
         if (StringUtils.hasText(MAIL_HOST)) {
             bag.update(SettingBag.MAIL_HOST, MAIL_HOST, SettingCategory.MAIL_SERVICE);
         }
@@ -108,15 +111,15 @@ public class SettingService {
         }
 
         if (SMTP_AUTH) {
-            bag.update(SettingBag.SMTP_AUTH, "Yes", SettingCategory.MAIL_SERVICE);
+            bag.update(SettingBag.SMTP_AUTH, "true", SettingCategory.MAIL_SERVICE);
         } else {
-            bag.update(SettingBag.SMTP_AUTH, "No", SettingCategory.MAIL_SERVICE);
+            bag.update(SettingBag.SMTP_AUTH, "false", SettingCategory.MAIL_SERVICE);
         }
 
         if (SMTP_SECURED) {
-            bag.update(SettingBag.SMTP_SECURED, "Yes", SettingCategory.MAIL_SERVICE);
+            bag.update(SettingBag.SMTP_SECURED, "true", SettingCategory.MAIL_SERVICE);
         } else {
-            bag.update(SettingBag.SMTP_SECURED, "No", SettingCategory.MAIL_SERVICE);
+            bag.update(SettingBag.SMTP_SECURED, "false", SettingCategory.MAIL_SERVICE);
         }
 
         List<Setting> settings = bag.getSettings();
@@ -132,7 +135,7 @@ public class SettingService {
                                     String CURRENCY_ID,
                                     String DECIMAL_DIGITS) {
 
-        GeneralSettingBag settingBag = getGeneralSetting();
+        GeneralSettingBag settingBag = getGeneralSettingBag();
 
         // Handle site logo
         if (SITE_LOGO != null && StringUtils.hasText(SITE_LOGO.getOriginalFilename())) {

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.shopme.common.entity.Setting;
 import org.shopme.common.enumeration.SettingCategory;
 import org.shopme.common.util.GeneralSettingBag;
+import org.shopme.common.util.MailServerSettingBag;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,12 +14,13 @@ import java.util.List;
 public class SettingService {
     private final SettingRepository repository;
 
-    public List<Setting> getGeneralSetting() {
-
-        return repository.findAllByCategoryIn(List.of(SettingCategory.GENERAL, SettingCategory.CURRENCY));
+    public GeneralSettingBag getGeneralSettingBag() {
+        List<Setting> settings = repository.findAllByCategoryIn(List.of(SettingCategory.GENERAL, SettingCategory.CURRENCY));
+        return new GeneralSettingBag(settings);
     }
 
-    public GeneralSettingBag getGeneralSettingBag() {
-        return new GeneralSettingBag(getGeneralSetting());
+    public MailServerSettingBag getMailServerSettingBag() {
+        List<Setting> settings = repository.findAllByCategoryIn(List.of(SettingCategory.MAIL_SERVICE, SettingCategory.MAIL_TEMPLATES));
+        return new MailServerSettingBag(settings);
     }
 }

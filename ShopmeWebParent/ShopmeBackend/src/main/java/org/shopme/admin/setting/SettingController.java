@@ -88,8 +88,8 @@ public class SettingController {
             @RequestParam String MAIL_PASSWORD,
             @RequestParam String MAIL_FROM,
             @RequestParam String MAIL_SENDER_NAME,
-            @RequestParam boolean SMTP_AUTH,
-            @RequestParam boolean SMTP_SECURED,
+            @RequestParam(defaultValue = "false") boolean SMTP_AUTH,
+            @RequestParam(defaultValue = "false") boolean SMTP_SECURED,
             RedirectAttributes attributes
     ) {
         service.saveMailServerSettings(MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, MAIL_FROM, MAIL_SENDER_NAME,

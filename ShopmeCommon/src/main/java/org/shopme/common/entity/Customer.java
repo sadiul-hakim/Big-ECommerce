@@ -106,4 +106,9 @@ public class Customer {
 		this.state = state;
 		this.postalCode = postalCode;
 	}
+
+
+	public String getFullName(){
+		return getFirstname() + " " + getLastname();
+	}
 }

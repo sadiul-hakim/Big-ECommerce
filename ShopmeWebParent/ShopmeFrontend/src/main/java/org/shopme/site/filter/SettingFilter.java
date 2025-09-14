@@ -4,6 +4,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.shopme.common.entity.Setting;
+import org.shopme.common.util.GeneralSettingBag;
 import org.shopme.common.util.NumberFormatter;
 import org.shopme.common.util.SettingBag;
 import org.shopme.site.setting.SettingService;
@@ -26,13 +27,13 @@ public class SettingFilter implements Filter {
         if (url.contains("/css") || url.contains("/js") || url.contains("/images") || url.contains("/font") || url.contains("/image"))
             chain.doFilter(request, response);
 
-        List<Setting> generalSetting = service.getGeneralSetting();
+        GeneralSettingBag generalSetting = service.getGeneralSettingBag();
 
         String DECIMAL_POINT_TYPE = "";
         String THOUSAND_POINT_TYPE = "";
         int DECIMAL_DIGITS = 1;
 
-        for (Setting setting : generalSetting) {
+        for (Setting setting : generalSetting.getSettings()) {
             req.setAttribute(setting.getKey(), setting.getValue());
 
             switch (setting.getKey()) {

@@ -208,7 +208,7 @@ public class ProductController {
             throw new NotFoundException("Product is not found with id " + id);
         }
 
-        GeneralSettingBag generalSetting = settingService.getGeneralSetting();
+        GeneralSettingBag generalSetting = settingService.getGeneralSettingBag();
         model.addObject("currency",generalSetting.getValue(SettingBag.CURRENCY_SYMBOL));
         model.addObject("currencyPosition",generalSetting.getValue(SettingBag.CURRENCY_SYMBOL_POSITION));
         model.addObject("product", product.get());
