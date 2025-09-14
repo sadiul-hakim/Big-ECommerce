@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -77,30 +79,27 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public ModelAndView save(
+    public String save(
             @ModelAttribute User user,
             @RequestParam boolean updating,
             @RequestParam MultipartFile file,
-            ModelAndView model
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
 
         var result = updating ? service.updateUser(user, file) : service.save(user, file);
-        model.addObject(SAVED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
-        model.addObject(SAVING_CONDITION, true);
-        model.addObject(MESSAGE, result.message());
-        model.addObject(TABLE_URL, pageUrl);
+        redirectAttributes.addFlashAttribute(SAVED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
+        redirectAttributes.addFlashAttribute(SAVING_CONDITION, true);
+        redirectAttributes.addFlashAttribute(MESSAGE, result.message());
 
         if (result.type().equals(JpaResultType.NOT_UNIQUE)) {
             var roles = roleService.findAll();
-            model.addObject(POJO_NAME, user);
-            model.addObject("roles", roles);
-            model.setViewName(CREATE_PAGE);
+            model.addAttribute(POJO_NAME, user);
+            model.addAttribute("roles", roles);
+            return CREATE_PAGE;
         } else {
-            var userResult = service.findAllPaginated(0);
-            model.addObject(PAGINATION_RESULT, userResult);
-            model.setViewName(PAGE);
+            return "redirect:/" + PAGE;
         }
-        return model;
     }
 
     @GetMapping("/update_page/{userId}")
@@ -162,17 +161,13 @@ public class UserController {
     }
 
     @GetMapping("/delete/{id}")
-    public ModelAndView deleteUser(@PathVariable int id, ModelAndView model) {
+    public String deleteUser(@PathVariable int id, RedirectAttributes model) {
         var result = service.delete(id);
-        model.addObject(DELETED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
-        model.addObject(DELETING_CONDITION, true);
-        model.addObject(TABLE_URL, pageUrl);
-        model.addObject(MESSAGE, result.message());
+        model.addFlashAttribute(DELETED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
+        model.addFlashAttribute(DELETING_CONDITION, true);
+        model.addFlashAttribute(MESSAGE, result.message());
 
-        var users = service.findAllPaginated(0);
-        model.addObject(PAGINATION_RESULT, users);
-        model.setViewName(PAGE);
-        return model;
+        return "redirect:/" + PAGE;
     }
 
     @GetMapping("/export-csv")
