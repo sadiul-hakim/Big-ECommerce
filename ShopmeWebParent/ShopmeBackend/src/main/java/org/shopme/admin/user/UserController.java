@@ -1,5 +1,6 @@
 package org.shopme.admin.user;
 
+import lombok.RequiredArgsConstructor;
 import org.shopme.admin.role.RoleService;
 import org.shopme.common.entity.User;
 import org.shopme.common.pojo.ChangePasswordPojo;
@@ -8,19 +9,11 @@ import org.shopme.common.util.JpaResultType;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -38,7 +31,6 @@ public class UserController {
     private static final String PAGE = "users";
     private static final String POJO_NAME = "user";
     private static final String CREATE_PAGE = "create_user";
-    private static final String UPDATING_CONDITION = "updatingUser";
     private static final String SAVED_CONDITION = "savedSuccessfully";
     private static final String SAVING_CONDITION = "savingUser";
     private static final String DELETED_CONDITION = "deletedSuccessfully";
@@ -73,7 +65,6 @@ public class UserController {
         model.addObject(POJO_NAME, new User());
         model.addObject("roles", roles);
         model.setViewName(CREATE_PAGE);
-        model.addObject(UPDATING_CONDITION, false);
 
         return model;
     }
@@ -81,18 +72,19 @@ public class UserController {
     @PostMapping("/save")
     public String save(
             @ModelAttribute User user,
-            @RequestParam boolean updating,
             @RequestParam MultipartFile file,
             Model model,
             RedirectAttributes redirectAttributes
     ) {
 
-        var result = updating ? service.updateUser(user, file) : service.save(user, file);
+        var result = user.getId() > 0 ? service.updateUser(user, file) : service.save(user, file);
         redirectAttributes.addFlashAttribute(SAVED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
         redirectAttributes.addFlashAttribute(SAVING_CONDITION, true);
         redirectAttributes.addFlashAttribute(MESSAGE, result.message());
 
         if (result.type().equals(JpaResultType.NOT_UNIQUE)) {
+            model.addAttribute(SAVING_CONDITION, true);
+            model.addAttribute(MESSAGE, result.message());
             var roles = roleService.findAll();
             model.addAttribute(POJO_NAME, user);
             model.addAttribute("roles", roles);
@@ -112,7 +104,6 @@ public class UserController {
             model.addObject(PAGINATION_RESULT, users);
             model.setViewName(PAGE);
 
-            model.addObject(UPDATING_CONDITION, true);
             model.addObject(MESSAGE, "User does not exists!");
             return model;
         }
@@ -121,7 +112,6 @@ public class UserController {
         model.addObject(POJO_NAME, user.get());
         model.addObject("roles", roles);
         model.setViewName(CREATE_PAGE);
-        model.addObject(UPDATING_CONDITION, true);
 
         return model;
     }
@@ -148,7 +138,6 @@ public class UserController {
             model.addObject(PAGINATION_RESULT, users);
             model.setViewName(PAGE);
 
-            model.addObject(UPDATING_CONDITION, true);
             model.addObject(MESSAGE, "User does not exists!");
             return model;
         }

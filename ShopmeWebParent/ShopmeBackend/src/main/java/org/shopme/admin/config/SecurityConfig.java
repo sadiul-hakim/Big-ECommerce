@@ -28,7 +28,7 @@ public class SecurityConfig {
 
         String[] adminAccess = {
                 "/users/**",
-                "/settings/**"
+                "/settings/**",
         };
 
         String[] editorAccess = {
@@ -64,7 +64,6 @@ public class SecurityConfig {
 
         return http
                 .authorizeHttpRequests(auth -> auth.requestMatchers(publicUrl).permitAll())
-                .authorizeHttpRequests(auth -> auth.requestMatchers(adminAccess).hasRole("ADMIN"))
                 .authorizeHttpRequests(auth -> auth.requestMatchers(editorAccess).hasAnyRole("EDITOR", "ADMIN"))
                 .authorizeHttpRequests(auth -> auth.requestMatchers(salesPersonAccess).hasAnyRole("SALESPERSON", "ADMIN"))
                 .authorizeHttpRequests(auth -> auth.requestMatchers(assistantAccess).hasAnyRole("ASSISTANT", "ADMIN"))
@@ -72,6 +71,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth.requestMatchers(adminAndEditorAndSalesperson).hasAnyRole("ADMIN", "EDITOR", "SALESPERSON"))
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/products/**").hasAnyRole("ADMIN", "EDITOR"))
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/orders/**").hasAnyRole("ADMIN", "SALESPERSON", "SHIPPER"))
+                .authorizeHttpRequests(auth -> auth.requestMatchers(adminAccess).hasRole("ADMIN"))
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .userDetailsService(userDetailsService)
                 .formLogin(form -> form

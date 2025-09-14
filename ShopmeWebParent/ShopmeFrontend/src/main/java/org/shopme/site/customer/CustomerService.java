@@ -1,28 +1,26 @@
 package org.shopme.site.customer;
 
-import java.util.Optional;
-import java.util.UUID;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.shopme.common.entity.Customer;
 import org.shopme.common.pojo.ChangePasswordPojo;
-import org.shopme.common.pojo.PaginationResult;
-import org.shopme.common.util.*;
-import org.springframework.data.domain.PageRequest;
+import org.shopme.common.util.FileUtil;
+import org.shopme.common.util.JpaResult;
+import org.shopme.common.util.JpaResultType;
+import org.shopme.common.util.VerificationCodeGenerator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CustomerService {
 
-    private static final int USER_LIST_LIMIT = 35;
     private static final String FILE_PATH = "/customer/";
     private static final String DEFAULT_PHOTO_NAME = "default.svg";
 
@@ -48,35 +46,6 @@ public class CustomerService {
             return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully saved customer " + savedUser.getEmail(), savedUser.getId(), savedUser);
         } catch (Exception ex) {
             log.error("CustomerService.save :: Error Occurred {}", ex.getMessage());
-            return new JpaResult(JpaResultType.FAILED,
-                    "Failed to save/update customer: " + customer.getEmail() + ". Please try again!");
-        }
-    }
-
-    public JpaResult updateCustomer(Customer customer, MultipartFile file) {
-
-        try {
-            var existingUserOptional = findByEmail(customer.getEmail());
-            if (existingUserOptional.isEmpty()) {
-                return new JpaResult(JpaResultType.FAILED, "Customer " + customer.getEmail() + " does not exist!");
-            }
-
-            var existingCustomer = existingUserOptional.get();
-            handleFile(file, customer);
-            existingCustomer.setFirstname(customer.getFirstname());
-            existingCustomer.setLastname(customer.getLastname());
-            existingCustomer.setEnabled(customer.isEnabled());
-            existingCustomer.setAddress(customer.getAddress());
-            existingCustomer.setCountry(customer.getCountry());
-            existingCustomer.setState(customer.getState());
-            existingCustomer.setPhoneNumber(customer.getPhoneNumber());
-            existingCustomer.setPostalCode(customer.getPostalCode());
-            existingCustomer.setVerificationCode(customer.getVerificationCode());
-
-            var savedUser = repository.save(existingCustomer);
-            return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully updated user " + savedUser.getEmail());
-        } catch (Exception ex) {
-            log.error("CustomerService.update :: Error Occurred {}", ex.getMessage());
             return new JpaResult(JpaResultType.FAILED,
                     "Failed to save/update customer: " + customer.getEmail() + ". Please try again!");
         }
@@ -133,27 +102,6 @@ public class CustomerService {
 
     public Optional<Customer> findByEmail(String email) {
         return repository.findByEmail(email);
-    }
-
-    public PaginationResult findAllPaginated(int pageNumber) {
-        var page = repository.findAll(PageRequest.of(pageNumber, USER_LIST_LIMIT));
-        return PageUtil.prepareResult(page);
-    }
-
-    public PaginationResult searchUser(String text, int pageNum) {
-        var page = repository.findAllByFirstnameContainingOrLastnameContainingOrEmailContaining(text, text, text,
-                PageRequest.of(pageNum, USER_LIST_LIMIT));
-        return PageUtil.prepareResult(page);
-    }
-
-    public JpaResult delete(int id) {
-        Optional<Customer> user = findById(id);
-        if (user.isEmpty()) {
-            return new JpaResult(JpaResultType.NOT_FOUND, "Customer does not exists!");
-        }
-        FileUtil.deleteFile(FILE_PATH, user.get().getPhoto());
-        repository.delete(user.get());
-        return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully deleted customer.");
     }
 
     @Transactional

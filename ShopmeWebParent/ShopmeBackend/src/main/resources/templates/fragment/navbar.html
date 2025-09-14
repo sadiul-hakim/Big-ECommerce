@@ -22,7 +22,7 @@
                 <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_EDITOR','ROLE_ADMIN','ROLE_SALESPERSON','ROLE_SHIPPER')"><a class="nav-link" aria-current="page"
                                         th:href="@{'/products'}">Products</a></li>
                 <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN','ROLE_SALESPERSON')"><a class="nav-link" aria-current="page"
-                                        href="#">Customers</a></li>
+                                        th:href="@{/customers}">Customers</a></li>
                 <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN','ROLE_SALESPERSON')"><a class="nav-link" aria-current="page"
                                         href="#">Shipping</a></li>
                 <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN','ROLE_SALESPERSON','ROLE_SHIPPER')"><a class="nav-link" aria-current="page"
