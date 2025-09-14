@@ -23,12 +23,16 @@ public class SecurityConfig {
                 "/js/**",
                 "/image/**",
                 "/font/**",
-                "/images/**"
+                "/images/**",
+                "/customer/register",
+                "/verify",
+                "/loginPage",
+                "/registerPage"
         };
 
         return http
                 .authorizeHttpRequests(auth -> auth.requestMatchers(publicUrl).permitAll())
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .userDetailsService(userDetailsService)
                 .formLogin(form -> form
                         .loginPage("/loginPage")

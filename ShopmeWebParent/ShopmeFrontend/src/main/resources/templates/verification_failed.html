@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="en">
+<head th:replace="~{fragment/head :: head}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<nav th:replace="~{fragment/unauthorizedNavbar :: unauthorizedNavbar}"></nav>
+
+<div class="container flex-grow-1">
+    <div class="row">
+        <div class="col-md-5 card mx-auto mt-4 p-3 text-center">
+            <h1>Customer Verification</h1>
+            <p>Your account was already verified or the verification code is invalid!</p>
+            <a th:href="@{/loginPage}" class="mt-2">Login Here</a>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragment/footer :: footer}"></footer>
+</body>
+</html>

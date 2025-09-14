@@ -10,6 +10,7 @@ import org.shopme.common.util.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -153,5 +154,30 @@ public class CustomerService {
         FileUtil.deleteFile(FILE_PATH, user.get().getPhoto());
         repository.delete(user.get());
         return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully deleted customer.");
+    }
+
+    @Transactional
+    public boolean verify(String code) {
+
+        try {
+
+            Optional<Customer> customerOpt = repository.findByVerificationCode(code);
+            if (customerOpt.isEmpty()) {
+
+                log.warn("No Customer found with code {}", code);
+                return false;
+            }
+
+            Customer customer = customerOpt.get();
+            if(customer.isEnabled()){
+                return false;
+            }
+
+            repository.enable(customer.getId());
+            return true;
+        } catch (Exception ex) {
+            log.error("Failed to verify customer with code {}, error {}", code, ex.getMessage());
+            return false;
+        }
     }
 }
