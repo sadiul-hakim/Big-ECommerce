@@ -76,7 +76,7 @@
                 <div th:replace="~{fragment/setting/mailServerSetting :: mailServerSetting(${mailServerSetting})}">
 
                 </div>
-                <div th:replace="~{fragment/setting/mailTemplateSetting :: mailTemplateSetting}">
+                <div th:replace="~{fragment/setting/mailTemplateSetting :: mailTemplateSetting(${mailTemplateSetting})}">
 
                 </div>
                 <div class="tab-pane fade p-3" id="paymentTabContent" role="tabpanel" aria-labelledby="paymentTab">
@@ -92,10 +92,12 @@
 <script th:src="@{/js/toastui-editor-all.min.js}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        const savedHtml = document.querySelector("#customerVerificationHiddenContent").value || "";
+
         const editor = new toastui.Editor({
             el: document.querySelector('#editor'),  // container
             height: '400px',
-            initialEditType: 'markdown',   // or 'wysiwyg'
+            initialEditType: 'wysiwyg',   // or 'wysiwyg'
             previewStyle: 'vertical'
         });
 
@@ -103,9 +105,14 @@
         const editor2 = new toastui.Editor({
             el: document.querySelector('#editor2'),  // container
             height: '400px',
-            initialEditType: 'markdown',   // or 'wysiwyg'
+            initialEditType: 'wysiwyg',   // or 'wysiwyg'
             previewStyle: 'vertical'
         });
+
+        // put saved content into editor
+        if (savedHtml) {
+            editor.setHTML(savedHtml);   // <<--- fill editor with saved HTML
+        }
 
         // Refresh editor2 when its tab is shown
         document.querySelector('button[data-bs-target="#orderConfirmationTabContent"]')
@@ -116,13 +123,13 @@
         // Example: get HTML or Markdown content on submit
         document.querySelector("#customerVerificationForm").addEventListener("submit", function (e) {
             // or editor.getHTML()
-            document.querySelector("#customerVerificationHiddenContent").value = editor.getMarkdown();
+            document.querySelector("#customerVerificationHiddenContent").value = editor.getHTML();
         });
 
         // Example: get HTML or Markdown content on submit
         document.querySelector("#orderConfirmationForm").addEventListener("submit", function (e) {
             // or editor.getHTML()
-            document.querySelector("#orderConfirmationHiddenContent").value = editor2.getMarkdown();
+            document.querySelector("#orderConfirmationHiddenContent").value = editor2.getHTML();
         });
     });
 </script>

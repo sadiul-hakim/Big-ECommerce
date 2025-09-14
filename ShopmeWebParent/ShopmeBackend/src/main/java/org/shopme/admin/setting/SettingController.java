@@ -46,15 +46,38 @@ public class SettingController {
                         .equals(SettingCategory.MAIL_SERVICE))
                 .collect(Collectors.toMap(Setting::getKey, Setting::getValue));
 
+        Map<String, String> mailTemplateSetting = settings.stream().filter(setting -> setting.getCategory()
+                        .equals(SettingCategory.MAIL_TEMPLATES))
+                .collect(Collectors.toMap(Setting::getKey, Setting::getValue));
+
         model.addObject("currencies", currencies);
         model.addObject("countries", countryService.findAll());
         model.addObject("states", stateService.findAll());
         model.addObject("generalSetting", generalSetting);
         model.addObject("mailServerSetting", mailServerSetting);
+        model.addObject("mailTemplateSetting", mailTemplateSetting);
 
         model.setViewName(PAGE);
 
         return model;
+    }
+
+    @PostMapping("/save-mail-template")
+    public String saveCustomerVerificationMailTemplate(
+            @RequestParam(defaultValue = "") String CUSTOMER_VERIFIED_SUBJECT,
+            @RequestParam(defaultValue = "") String CUSTOMER_VERIFIED_CONTENT,
+            @RequestParam(defaultValue = "") String ORDER_CONFIRMATION_SUBJECT,
+            @RequestParam(defaultValue = "") String ORDER_CONFIRMATION_CONTENT,
+            RedirectAttributes attributes
+    ) {
+        service.saveTemplate(CUSTOMER_VERIFIED_SUBJECT, CUSTOMER_VERIFIED_CONTENT, ORDER_CONFIRMATION_SUBJECT,
+                ORDER_CONFIRMATION_CONTENT);
+
+        attributes.addFlashAttribute(MESSAGE, "Setting is saved successfully!");
+        attributes.addFlashAttribute(SAVING_CONDITION, true);
+        attributes.addFlashAttribute(SAVED_CONDITION, true);
+
+        return "redirect:/settings";
     }
 
     @PostMapping("/save-mail-server")

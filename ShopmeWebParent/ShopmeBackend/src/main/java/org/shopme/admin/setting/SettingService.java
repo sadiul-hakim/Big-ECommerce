@@ -40,6 +40,36 @@ public class SettingService {
         repository.saveAll(settings);
     }
 
+    public void saveTemplate(
+            String CUSTOMER_VERIFIED_SUBJECT,
+            String CUSTOMER_VERIFIED_CONTENT,
+            String ORDER_CONFIRMATION_SUBJECT,
+            String ORDER_CONFIRMATION_CONTENT
+
+    ) {
+        List<Setting> mailServerSetting = repository.findAllByCategory(SettingCategory.MAIL_TEMPLATES);
+        GeneralSettingBag bag = new GeneralSettingBag(mailServerSetting);
+
+        if (StringUtils.hasText(CUSTOMER_VERIFIED_SUBJECT)) {
+            bag.update(SettingBag.CUSTOMER_VERIFIED_SUBJECT, CUSTOMER_VERIFIED_SUBJECT, SettingCategory.MAIL_TEMPLATES);
+        }
+
+        if (StringUtils.hasText(CUSTOMER_VERIFIED_CONTENT)) {
+            bag.update(SettingBag.CUSTOMER_VERIFIED_CONTENT, CUSTOMER_VERIFIED_CONTENT, SettingCategory.MAIL_TEMPLATES);
+        }
+
+        if (StringUtils.hasText(ORDER_CONFIRMATION_SUBJECT)) {
+            bag.update(SettingBag.ORDER_CONFIRMATION_SUBJECT, ORDER_CONFIRMATION_SUBJECT, SettingCategory.MAIL_TEMPLATES);
+        }
+
+        if (StringUtils.hasText(ORDER_CONFIRMATION_CONTENT)) {
+            bag.update(SettingBag.ORDER_CONFIRMATION_CONTENT, ORDER_CONFIRMATION_CONTENT, SettingCategory.MAIL_TEMPLATES);
+        }
+
+        List<Setting> settings = bag.getSettings();
+        saveAll(settings);
+    }
+
     public void saveMailServerSettings(
             String MAIL_HOST,
             String MAIL_PORT,
