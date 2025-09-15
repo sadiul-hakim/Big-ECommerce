@@ -16,6 +16,9 @@
             <div th:if="${param.error}"
                  class="alert alert-danger my-2 text-center">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]
             </div>
+            <div th:if="${param.loginError}"
+                 class="alert alert-danger my-2 text-center" th:text="${param.message}">
+            </div>
             <div th:if="${param.logout}"
                  class="alert alert-success my-2 text-center">You have been
                 logged out.
@@ -40,12 +43,14 @@
                     <label for="remember-me">Remember me</label>
                 </div>
                 <br/>
-                <div>
-                    <button class="btn btn-primary" type="submit">Login</button>
-                    <button class="btn btn-primary" type="reset">Clean</button>
-                </div>
+                <input class="form-control btn btn-primary" type="submit" value="Login"/>
+                <br/>
+                <a class="btn btn-outline-warning d-flex align-items-center justify-content-center ms-2"
+                   th:href="@{/oauth2/authorization/google}">
+                    <img th:src="@{/image/google.png}" alt="google" class="icon"/> <span class="ms-1">Continue with Google</span>
+                </a>
             </form>
-            <p>Do not have an account? <a th:href="@{/customer/registerPage}">Register Here</a>. Or
+            <p class="mt-2">Do not have an account? <a th:href="@{/customer/registerPage}">Register Here</a>. Or
                 <a href="#">Forgot Password</a>
             </p>
         </div>
