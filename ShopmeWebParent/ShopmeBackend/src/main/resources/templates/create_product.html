@@ -3,10 +3,10 @@
       lang="en">
 <head th:replace="~{fragment/head :: head}">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 <nav th:replace="~{fragment/navbar :: navbar}"></nav>
 
-<div class="container-fluid">
+<div class="container-fluid flex-grow-1">
     <div class="row my-2">
         <div class="col-sm-12 col-md-8 mx-auto">
             <form class="card p-2 mx-auto" th:action="@{'/products/save'}"
@@ -284,6 +284,6 @@
     </div>
 </div>
 
-<!-- <footer th:replace="~{fragment/footer :: footer}"></footer> -->
+ <footer th:replace="~{fragment/footer :: footer}"></footer>
 </body>
 </html>

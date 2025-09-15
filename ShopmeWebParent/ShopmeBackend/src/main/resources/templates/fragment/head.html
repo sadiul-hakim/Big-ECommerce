@@ -1,11 +1,24 @@
 <head th:fragment="head">
-<meta charset="UTF-8">
-<meta http-equiv="Content-Type" content="width=device-width,initial-scale=1.0,minimum-scale=1.0"/>
-<link rel="icon" type="image/x-icon" th:href="@{/image/logo.webp}">
-<title>Shopme Admin</title>
-<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
-<link rel="stylesheet" th:href="@{/css/toastui-editor.min.css}"/>
-<link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="width=device-width,initial-scale=1.0,minimum-scale=1.0"/>
+    <link rel="icon" type="image/x-icon" th:href="@{/image/logo.webp}">
+    <title>Shopme Admin</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/toastui-editor.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
 
-<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script>
+        // Select all nav links
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', function () {
+                // Remove 'active' from all
+                navLinks.forEach(l => l.classList.remove('active'));
+                // Add 'active' to the clicked one
+                this.classList.add('active');
+            });
+        });
+    </script>
 </head>

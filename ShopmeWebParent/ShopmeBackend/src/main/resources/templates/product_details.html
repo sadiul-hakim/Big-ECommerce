@@ -3,9 +3,9 @@
       lang="en">
 <head th:replace="~{fragment/head :: head}">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 <nav th:replace="~{fragment/navbar :: navbar}"></nav>
-<div class="container mt-4">
+<div class="container mt-4 flex-grow-1">
     <div class="row">
         <div class="col-md-10 mx-auto">
             <div class="bg-white my-2 p-3">
@@ -43,6 +43,8 @@
         </div>
     </div>
 </div>
+
+<footer th:replace="~{fragment/footer :: footer}"></footer>
 
 <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
     <div class="modal-dialog">

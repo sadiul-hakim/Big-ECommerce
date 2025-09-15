@@ -3,9 +3,9 @@
       lang="en">
 <head th:replace="~{fragment/head :: head}">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 <nav th:replace="~{fragment/navbar :: navbar}"></nav>
-<div class="container">
+<div class="container flex-grow-1">
     <div class="row">
         <div class="col-md-11 mx-auto mt-4 card card-body">
             <div class="row">
@@ -33,7 +33,8 @@
                     <hr>
                     <div>
                         <p class="m-0">
-                            <span th:text="${currency}" th:if="${currencyPosition.equals('before')}" class="me-1"></span>
+                            <span th:text="${currency}" th:if="${currencyPosition.equals('before')}"
+                                  class="me-1"></span>
                             <span th:text="${product.price}" style="text-decoration:  line-through;"></span>
                             <span th:text="${product.discountPrice}"></span>
                             <span th:text="${currency}" th:if="${currencyPosition.equals('after')}" class="ms-1"></span>

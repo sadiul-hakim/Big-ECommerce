@@ -3,12 +3,12 @@
       lang="en">
 <head th:replace="~{fragment/head :: head}">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 <nav th:replace="~{fragment/navbar :: navbar}"></nav>
-<div class="container-fluid my-2">
+<div class="container-fluid my-2 flex-grow-1">
     <div class="row">
         <div class="col-md-10 mx-auto">
-            <h2 class="my-3 text-primary">Manager Products</h2>
+            <h2 class="my-3 text-primary">Manage Products</h2>
 
             <div class="alert"
                  th:classappend="${savedSuccessfully} ? 'alert-success' : 'alert-danger'"
@@ -93,6 +93,6 @@
         </div>
     </div>
 </div>
-<!-- <footer th:replace="~{fragment/footer :: footer}"></footer>  -->
+ <footer th:replace="~{fragment/footer :: footer}"></footer>
 </body>
 </html>

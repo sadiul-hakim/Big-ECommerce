@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head th:replace="~{fragment/head :: head}">
 </head>
-<body style="background: white;">
-<div class="container">
+<body style="background: white;" class="d-flex flex-column min-vh-100">
+<div class="container flex-grow-1">
     <div class="row">
         <div class="col-md-10 mx-auto mt-3 d-flex flex-column justify-content-center align-items-center">
             <img th:src="@{'/image/error.png'}" alt="4xx error" width="600" height="400"/>
