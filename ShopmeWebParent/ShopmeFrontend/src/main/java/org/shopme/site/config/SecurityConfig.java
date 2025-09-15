@@ -27,7 +27,8 @@ public class SecurityConfig {
                 "/customer/register",
                 "/verify",
                 "/loginPage",
-                "/registerPage"
+                "/registerPage",
+                "/webjars/**"
         };
 
         return http
