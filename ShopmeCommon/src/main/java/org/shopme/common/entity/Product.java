@@ -29,10 +29,11 @@ public class Product {
     @Column(length = 200, unique = true, nullable = false)
     private String alias;
 
-    @Column(length = 500)
+    @Column(length = 1500)
     private String shortDescription;
 
-    @Column(length = 2500)
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String fullDescription;
 
     @Temporal(TemporalType.TIMESTAMP)

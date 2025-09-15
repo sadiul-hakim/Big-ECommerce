@@ -10,7 +10,7 @@
     <div class="row my-2">
         <div class="col-sm-12 col-md-8 mx-auto">
             <form class="card p-2 mx-auto" th:action="@{'/products/save'}"
-                  method="post" th:object="${product}" enctype="multipart/form-data">
+                  method="post" th:object="${product}" enctype="multipart/form-data" id="productForm">
                 <h2
                         class="my-3 text-primary d-flex justify-content-center align-items-center">Create New Product
                 </h2>
@@ -35,7 +35,7 @@
                             </button>
                         </h2>
 
-                        <div id="basicTab" class="accordion-collapse collapse show row" data-bs-parent="#formAccordion">
+                        <div id="basicTab" class="accordion-collapse collapse row" data-bs-parent="#formAccordion">
 
                             <!--           Basic Accordion Left Starts                 -->
                             <div class="col-md-6 p-2">
@@ -111,7 +111,7 @@
                             </button>
                         </h2>
 
-                        <div id="shapeTab" class="accordion-collapse collapse show row" data-bs-parent="#formAccordion">
+                        <div id="shapeTab" class="accordion-collapse collapse row" data-bs-parent="#formAccordion">
 
                             <!--           Shape Accordion Left Starts                 -->
                             <div class="col-md-6 p-2">
@@ -164,7 +164,7 @@
                             </button>
                         </h2>
 
-                        <div id="sectionTab" class="accordion-collapse collapse show row"
+                        <div id="sectionTab" class="accordion-collapse collapse row"
                              data-bs-parent="#formAccordion">
 
                             <!--           Section Accordion Left Starts                 -->
@@ -204,22 +204,24 @@
                             </button>
                         </h2>
 
-                        <div id="descriptionTab" class="accordion-collapse collapse show row"
+                        <div id="descriptionTab" class="accordion-collapse collapse"
                              data-bs-parent="#formAccordion">
 
                             <!--           Description Accordion Left Starts                 -->
-                            <div class="col-md-6 p-2">
-                                <label for="shortDescription">Short Description*</label><br/>
-                                <textarea name="shortDescription" id="shortDescription" class="form-control"
-                                          th:field="*{shortDescription}" rows="10" required></textarea>
-                            </div>
+
+                            <label for="shortDescriptionHiddenContent">Short Description*</label><br/>
+                            <div id="editor"></div>
+                            <input type="hidden" name="shortDescription" id="shortDescriptionHiddenContent"
+                                   th:field="*{shortDescription}"/>
+                            <br/>
                             <!--           Description Accordion Left Ends                 -->
                             <!--           Description Accordion Right Starts                 -->
-                            <div class="col-md-6 p-2">
-                                <label for="fullDescription">Full Description</label><br/>
-                                <textarea name="fullDescription" id="fullDescription" class="form-control"
-                                          th:field="*{fullDescription}" rows="10"></textarea>
-                            </div>
+
+                            <label for="longDescriptionHiddenContent">Full Description</label><br/>
+                            <div id="editor2"></div>
+                            <input type="hidden" name="fullDescription" id="longDescriptionHiddenContent"
+                                   th:field="*{fullDescription}"/>
+
                             <!--           Description Accordion Right Ends                 -->
                         </div>
 
@@ -235,7 +237,7 @@
                             </button>
                         </h2>
 
-                        <div id="imagesTab" class="accordion-collapse collapse show row"
+                        <div id="imagesTab" class="accordion-collapse collapse  row"
                              data-bs-parent="#formAccordion">
 
                             <!--           Images Accordion Left Starts                 -->
@@ -284,6 +286,47 @@
     </div>
 </div>
 
- <footer th:replace="~{fragment/footer :: footer}"></footer>
+<footer th:replace="~{fragment/footer :: footer}"></footer>
 </body>
+<script th:src="@{/js/toastui-editor-all.min.js}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const savedHtml = document.querySelector("#shortDescriptionHiddenContent").value || "";
+        const savedHtml2 = document.querySelector("#longDescriptionHiddenContent").value || "";
+
+        const editor = new toastui.Editor({
+            el: document.querySelector('#editor'),  // container
+            height: '400px',
+            initialEditType: 'wysiwyg',   // or 'wysiwyg'
+            previewStyle: 'vertical'
+        });
+
+        const editor2 = new toastui.Editor({
+            el: document.querySelector('#editor2'),  // container
+            height: '400px',
+            initialEditType: 'wysiwyg',   // or 'wysiwyg'
+            previewStyle: 'vertical'
+        });
+
+        // put saved content into editor
+        if (savedHtml) {
+            editor.setHTML(savedHtml);   // <<--- fill editor with saved HTML
+        }
+
+        // put saved content into editor
+        if (savedHtml2) {
+            editor2.setHTML(savedHtml2);   // <<--- fill editor with saved HTML
+        }
+
+        // Example: get HTML or Markdown content on submit
+        document.querySelector("#productForm").addEventListener("submit", function (e) {
+
+            // or editor.getHTML()
+            document.querySelector("#shortDescriptionHiddenContent").value = editor.getHTML();
+
+            // or editor.getHTML()
+            document.querySelector("#longDescriptionHiddenContent").value = editor2.getHTML();
+        });
+    });
+</script>
 </html>

@@ -26,7 +26,7 @@
                     <h1 th:text="${product.name}"></h1>
                     <p class="text-muted"><span th:text="${product.category}"></span> | <span
                             th:text="${product.brand}"></span></p>
-                    <p th:text="${product.shortDescription}"></p>
+                    <p th:utext="${product.shortDescription}"></p>
                     <hr>
                     <div>
                         <p class="m-0" th:if="${CURRENCY_POSITION.equals('before')}">
@@ -75,7 +75,7 @@
                 </div>
             </div>
             <div class="row my-2 bg-light">
-                <p th:text="${product.fullDescription}" class="lead"></p>
+                <p th:utext="${product.fullDescription}" class="lead"></p>
             </div>
             <div class="row">
                 <table class="table table-striped">
