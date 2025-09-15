@@ -45,9 +45,11 @@
                     </thead>
                     <tbody>
                     <tr th:each="customer:${customerResult.data}">
-                        <td><img alt="user"
+                        <td>
+                            <img alt="user"
                                  th:src="@{${customer.photo == null || customer.photo.equals('default_user.svg') ? '/images/user/default.svg' : '/images/user/'+customer.photo}}"
-                                 width="50" height="50"/></td>
+                                 width="50" height="50"/>
+                        </td>
                         <td th:text="${customer.firstname}"></td>
                         <td th:text="${customer.lastname}"></td>
                         <td th:text="${customer.email}"></td>
@@ -77,6 +79,6 @@
         </div>
     </div>
 </div>
- <footer th:replace="~{fragment/footer :: footer}"></footer>
+<footer th:replace="~{fragment/footer :: footer}"></footer>
 </body>
 </html>

@@ -6,7 +6,7 @@
 <nav th:replace="~{fragment/navbar :: navbar}"></nav>
 <div class="container flex-grow-1">
     <div class="row">
-        <div class="col-md-10 mx-auto">
+        <div class="col-md-10 mt-5 mx-auto d-flex flex-column justify-content-center align-items-center">
             <h1>Hi <span sec:authentication="principal.username"></span></h1>
             <p>Role: <span sec:authentication="principal.authorities"></span></p>
         </div>

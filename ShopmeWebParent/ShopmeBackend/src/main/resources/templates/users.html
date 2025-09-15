@@ -20,9 +20,6 @@
                  th:if="${deletingUser}">
                 <span th:text="${message}"></span>
             </div>
-            <div class="alert alert-danger" th:if="${updatingUser}">
-                <span th:text="${message}"></span>
-            </div>
 
             <!-- Table Start -->
             <div th:replace="~{fragment/table :: table(${userResult},${tableUrl},~{::#table})}">
