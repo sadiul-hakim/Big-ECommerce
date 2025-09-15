@@ -12,21 +12,40 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{'/categories'}">Categories</a>
+                    <a class="nav-link" aria-current="page" th:href="@{'/categories'}">Categories</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{'/brands'}">Brands</a>
+                    <a class="nav-link" aria-current="page" th:href="@{'/brands'}">Brands</a>
                 </li>
-                <li class="nav-item">
-                    <form th:action="@{/logout}" method="post">
-                        <input type="hidden" th:name="${_csrf.parameterName}"
-                               th:value="${_csrf.token}"/>
-                        <button type="submit" class="nav-link"
-                                aria-current="page">Logout
-                        </button>
-                    </form>
+                <li class="nav-item dropdown">
+                    <a
+                            class="nav-link dropdown-toggle d-flex align-items-center"
+                            href="#" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false"
+                    >
+                        <img th:src="@{'/images/customer/' + ${#authentication.principal.customer.photo}}"
+                             alt="customer"
+                             class="rounded icon"/>
+                        <span th:text="${#authentication.principal.customer.getFullName()}" class="ms-1"></span>
+
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li class="nav-item">
+                            <form th:action="@{/logout}" method="post">
+                                <input type="hidden" th:name="${_csrf.parameterName}"
+                                       th:value="${_csrf.token}"/>
+                                <button type="submit" class="nav-link text-dark"
+                                        aria-current="page">Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>
