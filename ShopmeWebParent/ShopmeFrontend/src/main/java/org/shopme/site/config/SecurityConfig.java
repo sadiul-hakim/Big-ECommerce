@@ -20,6 +20,7 @@ public class SecurityConfig {
     SecurityFilterChain config(HttpSecurity http) throws Exception {
 
         String[] publicUrl = {
+                "/",
                 "/css/**",
                 "/js/**",
                 "/image/**",

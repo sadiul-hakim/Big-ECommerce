@@ -3,7 +3,8 @@
 <head th:replace="~{fragment/head :: head}">
 </head>
 <body class="d-flex flex-column min-vh-100">
-<nav th:replace="~{fragment/navbar :: navbar}"></nav>
+<nav th:replace="~{fragment/navbar :: navbar}" sec:authorize="${isAuthenticated()}"></nav>
+<nav th:replace="~{fragment/unauthorizedNavbar :: unauthorizedNavbar}" sec:authorize="${!isAuthenticated()}"></nav>
 <div class="container flex-grow-1">
     <div class="row">
         <div class="col-md-10 mx-auto">
