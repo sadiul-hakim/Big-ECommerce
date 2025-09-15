@@ -3,9 +3,9 @@
       lang="en">
 <head th:replace="~{fragment/head :: head}">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 <nav th:replace="~{fragment/navbar :: navbar}"></nav>
-<div class="container">
+<div class="container flex-grow-1">
     <div class="row">
         <div class="col-12 col-md-10 mx-auto mt-4 bg-white p-2 d-flex justify-content-between">
             <form th:action="@{/categories/search}" class="d-flex justify-content-between w-100">
@@ -22,7 +22,8 @@
     <div class="row my-4">
         <div class="d-flex justify-content-center align-items-center p-5 flex-wrap col-12 col-md-3 rounded-2 card"
              th:each="category:${result.data}">
-            <a th:text="${category.name}" th:href="@{'/products/categories/'+${category.name}+'?pageEntity=categories'}" style="text-decoration: none;"></a>
+            <a th:text="${category.name}" th:href="@{'/products/categories/'+${category.name}+'?pageEntity=categories'}"
+               style="text-decoration: none;"></a>
         </div>
     </div>
 
@@ -59,5 +60,6 @@
         </nav>
     </div>
 </div>
+<footer th:replace="~{fragment/footer :: footer}"></footer>
 </body>
 </html>

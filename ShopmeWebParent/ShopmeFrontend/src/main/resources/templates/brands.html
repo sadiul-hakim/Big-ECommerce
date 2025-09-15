@@ -3,9 +3,9 @@
       lang="en">
 <head th:replace="~{fragment/head :: head}">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 <nav th:replace="~{fragment/navbar :: navbar}"></nav>
-<div class="container">
+<div class="container flex-grow-1">
     <div class="row">
         <div class="col-12 col-md-10 mx-auto mt-4 bg-white p-2 d-flex justify-content-between">
             <form th:action="@{/brands/search}" class="d-flex justify-content-between w-100">
@@ -62,5 +62,6 @@
         </nav>
     </div>
 </div>
+<footer th:replace="~{fragment/footer :: footer}"></footer>
 </body>
 </html>

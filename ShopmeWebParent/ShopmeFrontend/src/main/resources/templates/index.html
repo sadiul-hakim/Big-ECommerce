@@ -2,9 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
 <head th:replace="~{fragment/head :: head}">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 <nav th:replace="~{fragment/navbar :: navbar}"></nav>
-<div class="container">
+<div class="container flex-grow-1">
     <div class="row">
         <div class="col-md-10 mx-auto">
             <!-- <h1>Hi <span sec:authentication="principal.username"></span></h1>

@@ -3,9 +3,9 @@
       lang="en">
 <head th:replace="~{fragment/head :: head}">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
 <nav th:replace="~{fragment/navbar :: navbar}"></nav>
-<div class="container mt-4">
+<div class="container mt-4 flex-grow-1">
     <div class="row">
         <div class="col-12 col-md-11 mx-auto bg-white p-3">
             <h4><span th:text="${entity.name}"></span></h4>
@@ -108,5 +108,6 @@
         </div>
     </div>
 </div>
+<footer th:replace="~{fragment/footer :: footer}"></footer>
 </body>
 </html>
