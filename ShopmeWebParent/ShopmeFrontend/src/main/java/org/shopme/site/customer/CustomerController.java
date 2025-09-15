@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shopme.common.entity.Customer;
+import org.shopme.common.pojo.ChangePasswordPojo;
 import org.shopme.common.util.JpaResult;
 import org.shopme.common.util.JpaResultType;
 import org.shopme.common.util.MailServerSettingBag;
@@ -39,14 +40,49 @@ public class CustomerController {
     private final SettingService settingService;
 
     private static final String SAVED_CONDITION = "savedSuccessfully";
+    private static final String UPDATING_PASSWORD = "updatingPassword";
+    private static final String UPDATED_PASSWORD = "updatedPassword";
     private static final String SAVING_CONDITION = "savingCustomer";
     private static final String MESSAGE = "message";
     private static final String POJO_NAME = "customer";
 
-    @GetMapping("/profile")
-    public String profile(@RequestParam int id, Model model) {
-        Optional<Customer> customerOpt = customerService.findById(id);
+    // Either specify a name of pojo in @ModelAttribute or use default naming convention
+    @PostMapping("/change_password")
+    public String changePassword(@RequestParam int customerId, @ModelAttribute @Valid ChangePasswordPojo changePasswordPojo,
+                                 BindingResult result, RedirectAttributes redirectAttributes, Model model) {
 
+        if (result.hasErrors()) {
+            model.addAttribute("customerId", customerId);
+            return "change_password";
+        }
+
+        Optional<Customer> customerOpt = customerService.findById(customerId);
+        if (customerOpt.isEmpty()) {
+            return "redirect:/";
+        }
+
+        Customer customer = customerOpt.get();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() != null
+                && authentication.getPrincipal() instanceof CustomUserDetails(Customer c)) {
+
+            if (customer.getId() != c.getId()) {
+                return "redirect:/";
+            }
+        }
+
+        JpaResult jpaResult = customerService.updatePassword(changePasswordPojo, customer);
+
+        redirectAttributes.addFlashAttribute(UPDATING_PASSWORD, true);
+        redirectAttributes.addFlashAttribute(UPDATED_PASSWORD, jpaResult.type().equals(JpaResultType.SUCCESSFUL));
+        redirectAttributes.addFlashAttribute(MESSAGE, jpaResult.message());
+        return "redirect:/customer/change_password_page?id=" + customerId;
+    }
+
+    @GetMapping("/change_password_page")
+    public String changePasswordPage(@RequestParam int id, Model model) {
+        Optional<Customer> customerOpt = customerService.findById(id);
         if (customerOpt.isEmpty()) {
             return "redirect:/";
         }
@@ -55,14 +91,38 @@ public class CustomerController {
         if (authentication != null && authentication.getPrincipal() != null
                 && authentication.getPrincipal() instanceof CustomUserDetails(Customer customer)) {
 
-            if(customerOpt.get().getId() != customer.getId()){
+            if (customerOpt.get().getId() != customer.getId()) {
+                return "redirect:/";
+            }
+        }
+
+        model.addAttribute("changePasswordPojo", new ChangePasswordPojo());
+        model.addAttribute("customerId", id);
+
+        return "change_password";
+    }
+
+    @GetMapping("/profile")
+    public String profile(@RequestParam int id, Model model) {
+
+        Optional<Customer> customerOpt = customerService.findById(id);
+        if (customerOpt.isEmpty()) {
+            return "redirect:/";
+        }
+
+        Customer customer = customerOpt.get();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() != null
+                && authentication.getPrincipal() instanceof CustomUserDetails(Customer c)) {
+
+            if (customer.getId() != c.getId()) {
                 return "redirect:/";
             }
         }
 
         model.addAttribute("countries", countryRepository.findAll());
         model.addAttribute("states", stateRepository.findAll());
-        model.addAttribute(POJO_NAME, customerOpt.get());
+        model.addAttribute(POJO_NAME, customer);
         model.addAttribute(SAVING_CONDITION, false);
         model.addAttribute(SAVED_CONDITION, false);
         model.addAttribute(MESSAGE, "");
@@ -133,4 +193,5 @@ public class CustomerController {
             log.error("Failed to send verification email to {} , error {}", entity.getEmail(), e.getMessage());
         }
     }
+
 }

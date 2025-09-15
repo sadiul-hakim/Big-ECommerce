@@ -38,6 +38,12 @@
                         <li>
                             <hr class="dropdown-divider">
                         </li>
+                        <li><a class="dropdown-item"
+                               th:href="@{'/customer/change_password_page?id='+${#authentication.principal.customer.id}}">Change Password</a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
                         <li class="nav-item">
                             <form th:action="@{/logout}" method="post">
                                 <input type="hidden" th:name="${_csrf.parameterName}"

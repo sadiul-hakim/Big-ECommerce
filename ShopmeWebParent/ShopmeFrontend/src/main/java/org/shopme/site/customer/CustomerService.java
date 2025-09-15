@@ -51,6 +51,22 @@ public class CustomerService {
         }
     }
 
+    public JpaResult updatePassword(ChangePasswordPojo pojo, Customer customer) {
+
+        if (!pojo.getNewPassword().equals(pojo.getConfirmPassword())) {
+            return new JpaResult(JpaResultType.FAILED, "Confirm password does not match!");
+        }
+
+        var matches = encoder.matches(pojo.getCurrentPassword(), customer.getPassword());
+        if (!matches) {
+            return new JpaResult(JpaResultType.FAILED, "Invalid Password!");
+        }
+
+        customer.setPassword(encoder.encode(pojo.getNewPassword()));
+        var savedCustomer = repository.save(customer);
+        return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully updated customer " + savedCustomer.getEmail());
+    }
+
     public JpaResult updateCustomer(Customer customer, MultipartFile file) {
 
         try {
