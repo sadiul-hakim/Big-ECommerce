@@ -24,4 +24,9 @@ public record CustomUserDetails(
 	public String getUsername() {
 		return customer.getEmail();
 	}
+
+	@Override
+	public boolean isEnabled() {
+		return customer.isEnabled();
+	}
 }

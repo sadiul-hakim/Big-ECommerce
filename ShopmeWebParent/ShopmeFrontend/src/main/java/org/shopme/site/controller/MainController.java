@@ -5,6 +5,9 @@ import org.shopme.common.entity.Customer;
 import org.shopme.site.country.CountryService;
 import org.shopme.site.customer.CustomerService;
 import org.shopme.site.state.StateService;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,15 +22,19 @@ public class MainController {
     private final CustomerService customerService;
 
     @GetMapping("/")
-    public ModelAndView viewHomePage(ModelAndView model) {
-        model.setViewName("index");
-        return model;
+    public String viewHomePage() {
+
+        return "index";
     }
 
     @GetMapping("/loginPage")
-    public ModelAndView loginPage(ModelAndView model) {
-        model.setViewName("loginPage");
-        return model;
+    public String loginPage() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
+            return "loginPage";
+        }
+        return "redirect:/";
     }
 
     @GetMapping("/registerPage")
@@ -41,7 +48,7 @@ public class MainController {
     }
 
     @GetMapping("/verify")
-    public String verify(@RequestParam String code){
+    public String verify(@RequestParam String code) {
         boolean verified = customerService.verify(code);
         return verified ? "verified_successfully" : "verification_failed";
     }

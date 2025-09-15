@@ -51,6 +51,49 @@ public class CustomerService {
         }
     }
 
+    public JpaResult updateCustomer(Customer customer, MultipartFile file) {
+
+        try {
+            var existingUserOptional = findByEmail(customer.getEmail());
+            if (existingUserOptional.isEmpty()) {
+                return new JpaResult(JpaResultType.FAILED, "Customer " + customer.getEmail() + " does not exist!");
+            }
+
+            var existingCustomer = existingUserOptional.get();
+            handleFile(file, existingCustomer);
+
+            // Only update non-empty fields
+            if (StringUtils.hasText(customer.getFirstname())) {
+                existingCustomer.setFirstname(customer.getFirstname());
+            }
+            if (StringUtils.hasText(customer.getLastname())) {
+                existingCustomer.setLastname(customer.getLastname());
+            }
+            if (StringUtils.hasText(customer.getAddress())) {
+                existingCustomer.setAddress(customer.getAddress());
+            }
+            if (customer.getCountry() != null) {
+                existingCustomer.setCountry(customer.getCountry());
+            }
+            if (customer.getState() != null) {
+                existingCustomer.setState(customer.getState());
+            }
+            if (StringUtils.hasText(customer.getPhoneNumber())) {
+                existingCustomer.setPhoneNumber(customer.getPhoneNumber());
+            }
+            if (StringUtils.hasText(customer.getPostalCode())) {
+                existingCustomer.setPostalCode(customer.getPostalCode());
+            }
+
+            var savedUser = repository.save(existingCustomer);
+            return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully updated customer " + savedUser.getEmail());
+        } catch (Exception ex) {
+            log.error("CustomerService.update :: Error Occurred {}", ex.getMessage());
+            return new JpaResult(JpaResultType.FAILED,
+                    "Failed to save/update customer: " + customer.getEmail() + ". Please try again!");
+        }
+    }
+
     private void handleFile(MultipartFile file, Customer customer) {
         if (file == null || !StringUtils.hasText(file.getOriginalFilename())) {
 
@@ -117,7 +160,7 @@ public class CustomerService {
             }
 
             Customer customer = customerOpt.get();
-            if(customer.isEnabled()){
+            if (customer.isEnabled()) {
                 return false;
             }
 
