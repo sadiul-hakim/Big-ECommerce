@@ -96,6 +96,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         const savedHtml = document.querySelector("#customerVerificationHiddenContent").value || "";
         const savedHtml2 = document.querySelector("#forgotPasswordHiddenContent").value || "";
+        const savedHtml3 = document.querySelector("#orderConfirmationHiddenContent").value || "";
 
         const editor = new toastui.Editor({
             el: document.querySelector('#editor'),  // container
@@ -126,6 +127,10 @@
 
         if (savedHtml2) {
             editor2.setHTML(savedHtml2);   // <<--- fill editor with saved HTML
+        }
+
+        if (savedHtml3) {
+            editor3.setHTML(savedHtml3);   // <<--- fill editor with saved HTML
         }
 
         // Refresh editor2 when its tab is shown

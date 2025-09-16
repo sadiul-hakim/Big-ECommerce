@@ -35,8 +35,8 @@ public class SettingBag {
     public static final String CUSTOMER_VERIFIED_CONTENT = "CUSTOMER_VERIFIED_CONTENT";
     public static final String FORGOT_PASSWORD_SUBJECT = "FORGOT_PASSWORD_SUBJECT";
     public static final String FORGOT_PASSWORD_CONTENT = "FORGOT_PASSWORD_CONTENT";
-    public static final String ORDER_CONFIRMATION_SUBJECT = "CUSTOMER_VERIFIED_SUBJECT";
-    public static final String ORDER_CONFIRMATION_CONTENT = "CUSTOMER_VERIFIED_CONTENT";
+    public static final String ORDER_CONFIRMATION_SUBJECT = "ORDER_CONFIRMATION_SUBJECT";
+    public static final String ORDER_CONFIRMATION_CONTENT = "ORDER_CONFIRMATION_CONTENT";
 
     private final List<Setting> settings;
 

@@ -75,8 +75,26 @@
         </div>
         <div class="tab-pane fade p-3" id="orderConfirmationTabContent" role="tabpanel"
              aria-labelledby="orderConfirmationTab">
-            <h4>Content of Second Tab</h4>
-            <div id="editor3"></div>
+            <form th:action="@{/settings/save-mail-template}" id="orderConfirmationForm" method="post">
+                <div>
+                    <label for="emailSubject3">E-Mail Subject</label>
+                    <input type="text" name="ORDER_CONFIRMATION_SUBJECT" id="emailSubject3" class="form-control"
+                           th:value="${mailTemplateSetting['ORDER_CONFIRMATION_SUBJECT']}"
+                    />
+                </div>
+                <br/>
+
+                <input type="hidden" name="ORDER_CONFIRMATION_CONTENT" id="orderConfirmationHiddenContent"
+                       class="form-control"
+                       th:value="${mailTemplateSetting['ORDER_CONFIRMATION_CONTENT']}"
+                />
+                <div id="editor3"></div>
+                <br/>
+                <div>
+                    <input type="submit" value="Save" class="btn btn-primary"/>
+                    <input type="reset" value="Reset" class="btn btn-danger"/>
+                </div>
+            </form>
         </div>
     </div>
 

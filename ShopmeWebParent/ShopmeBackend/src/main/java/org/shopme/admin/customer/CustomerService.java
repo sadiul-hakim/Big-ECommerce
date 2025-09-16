@@ -71,9 +71,6 @@ public class CustomerService {
             if (StringUtils.hasText(customer.getPostalCode())) {
                 existingCustomer.setPostalCode(customer.getPostalCode());
             }
-            if (StringUtils.hasText(customer.getVerificationCode())) {
-                existingCustomer.setVerificationCode(customer.getVerificationCode());
-            }
 
             // For primitives/booleans, check separately
             existingCustomer.setEnabled(customer.isEnabled());
