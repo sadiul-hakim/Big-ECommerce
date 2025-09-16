@@ -1,13 +1,19 @@
 package org.shopme.site.customer;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shopme.common.entity.Customer;
+import org.shopme.common.entity.MailToken;
+import org.shopme.common.enumeration.MailTokenType;
 import org.shopme.common.pojo.ChangePasswordPojo;
 import org.shopme.common.util.FileUtil;
 import org.shopme.common.util.JpaResult;
 import org.shopme.common.util.JpaResultType;
 import org.shopme.common.util.VerificationCodeGenerator;
+import org.shopme.site.mailToken.MailTokenService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,13 +32,11 @@ public class CustomerService {
 
     private final CustomerRepository repository;
     private final PasswordEncoder encoder;
+    private final MailTokenService mailTokenService;
+    private final PasswordEncoder passwordEncoder;
 
     public JpaResult save(Customer customer, MultipartFile file) {
         try {
-
-            // Encode the password
-            customer.setPassword(encoder.encode(customer.getPassword()));
-            customer.setVerificationCode(VerificationCodeGenerator.generateCode(64));
 
             // Check if customer exists
             var existingUser = findByEmail(customer.getEmail());
@@ -40,10 +44,16 @@ public class CustomerService {
                 return new JpaResult(JpaResultType.NOT_UNIQUE, "Customer " + customer.getEmail() + " already exists!");
             }
 
+            // Encode the password
+            customer.setPassword(encoder.encode(customer.getPassword()));
+
             handleFile(file, customer);
 
             var savedUser = repository.save(customer);
-            return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully saved customer " + savedUser.getEmail(), savedUser.getId(), savedUser);
+            String token = VerificationCodeGenerator.generateCode(64);
+            mailTokenService.save(savedUser.getId(), token, MailTokenType.EMAIL_VERIFICATION, 1440);
+            return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully saved customer " + savedUser.getEmail(),
+                    savedUser.getId(), savedUser);
         } catch (Exception ex) {
             log.error("CustomerService.save :: Error Occurred {}", ex.getMessage());
             return new JpaResult(JpaResultType.FAILED,
@@ -133,28 +143,6 @@ public class CustomerService {
         customer.setPhoto(filePath);
     }
 
-    public JpaResult updatePassword(ChangePasswordPojo pojo, int userId) {
-
-        if (!pojo.getNewPassword().equals(pojo.getConfirmPassword())) {
-            return new JpaResult(JpaResultType.FAILED, "Confirm password does not match!");
-        }
-
-        var existingCustomerOptional = findById(userId);
-        if (existingCustomerOptional.isEmpty()) {
-            return new JpaResult(JpaResultType.FAILED, "Customer does not exist!");
-        }
-
-        var matches = encoder.matches(pojo.getCurrentPassword(), existingCustomerOptional.get().getPassword());
-        if (!matches) {
-            return new JpaResult(JpaResultType.FAILED, "Invalid Password!");
-        }
-
-        var user = existingCustomerOptional.get();
-        user.setPassword(encoder.encode(pojo.getNewPassword()));
-        var savedUser = repository.save(user);
-        return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully updated customer " + savedUser.getEmail());
-    }
-
     public Optional<Customer> findById(int id) {
         return repository.findById(id);
     }
@@ -164,27 +152,54 @@ public class CustomerService {
     }
 
     @Transactional
-    public boolean verify(String code) {
-
-        try {
-
-            Optional<Customer> customerOpt = repository.findByVerificationCode(code);
-            if (customerOpt.isEmpty()) {
-
-                log.warn("No Customer found with code {}", code);
-                return false;
-            }
-
-            Customer customer = customerOpt.get();
-            if (customer.isEnabled()) {
-                return false;
-            }
-
-            repository.enable(customer.getId());
-            return true;
-        } catch (Exception ex) {
-            log.error("Failed to verify customer with code {}, error {}", code, ex.getMessage());
+    public boolean verify(String token) {
+        JpaResult result = mailTokenService.verify(token, true);
+        if (!result.type().equals(JpaResultType.SUCCESSFUL)) {
             return false;
         }
+
+        MailToken mailToken = mailTokenService.findByToken(token);
+        Optional<Customer> customerOptional = findById(mailToken.getCustomerId());
+        if (customerOptional.isEmpty()) {
+            return false;
+        }
+
+        Customer customer = customerOptional.get();
+        customer.setEnabled(true);
+
+        return true;
+    }
+
+    @Transactional
+    public JpaResult newPassword(String token, int customerId, ChangePasswordPojo pojo) {
+
+        Optional<Customer> customerOptional = findById(customerId);
+        if (customerOptional.isEmpty()) {
+            return new JpaResult(JpaResultType.FAILED, "Customer does not exists!");
+        }
+
+        Customer customer = customerOptional.get();
+        MailToken mailToken = mailTokenService.findByToken(token);
+        if (mailToken == null) {
+            return new JpaResult(JpaResultType.FAILED, "You are not allowed to reset password!");
+        }
+
+        Optional<Customer> tokenCustomer = findById(mailToken.getCustomerId());
+        if (tokenCustomer.isEmpty()) {
+            return new JpaResult(JpaResultType.FAILED, "You are not allowed to reset password!");
+        }
+
+        Customer cs = tokenCustomer.get();
+        if (!cs.getEmail().equals(customer.getEmail())) {
+            return new JpaResult(JpaResultType.FAILED, "You are not allowed to reset password!");
+        }
+
+        if (!pojo.getNewPassword().equals(pojo.getConfirmPassword())) {
+            return new JpaResult(JpaResultType.FAILED, "Confirm password does not match!");
+        }
+
+        mailToken.setUsed(true);
+        customer.setPassword(passwordEncoder.encode(pojo.getNewPassword()));
+        return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully reset your password!");
     }
 }

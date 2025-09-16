@@ -28,6 +28,8 @@ public class SecurityConfig {
                 "/images/**",
                 "/customer/register",
                 "/customer/validate_email_send_token",
+                "/customer/new_password",
+                "/verify_forgot_password_token",
                 "/verify",
                 "/loginPage",
                 "/registerPage",

@@ -1,5 +1,6 @@
 package org.shopme.site.mailToken;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shopme.common.entity.MailToken;
@@ -19,20 +20,37 @@ public class MailTokenService {
     private final MailTokenRepo repository;
 
     @Transactional
-    public void save(long customerId, String token, MailTokenType type, int expireInMins) {
+    public void save(int customerId, String token, MailTokenType type, int expireInMins) {
 
-        MailToken oldToken = findByCustomerIdAndType(customerId, type);
-        if (oldToken == null) {
-            MailToken tokenM = new MailToken(0, customerId, token, type, LocalDateTime.now().plusMinutes(expireInMins));
-            repository.save(tokenM);
-        } else {
+        try {
+            MailToken oldToken = findByCustomerIdAndType(customerId, type);
+
+            // Existing token → update it with new values
             oldToken.setToken(token);
             oldToken.setExpiryTime(LocalDateTime.now().plusMinutes(expireInMins));
+            oldToken.setUsed(false); // reset usage since this is a fresh token
+        } catch (EntityNotFoundException ex) {
+
+            // No existing token → create a new one
+            MailToken tokenM = new MailToken(
+                    0,
+                    customerId,
+                    token,
+                    type,
+                    LocalDateTime.now().plusMinutes(expireInMins),
+                    false // not used
+            );
+            repository.save(tokenM);
         }
     }
 
     public MailToken findByCustomerIdAndType(long customerId, MailTokenType type) {
         return repository.findByCustomerIdAndType(customerId, type)
+                .orElseThrow(() -> new EntityNotFoundException("Token not found of customer " + customerId));
+    }
+
+    public MailToken findByToken(String token) {
+        return repository.findByToken(token)
                 .orElse(null);
     }
 
@@ -41,6 +59,11 @@ public class MailTokenService {
         MailToken tokenM = findByCustomerIdAndType(customerId, type);
         if (tokenM == null) {
             return new JpaResult(JpaResultType.FAILED, "Invalid Token");
+        }
+
+        // check already used
+        if (tokenM.isUsed()) {
+            return new JpaResult(JpaResultType.FAILED, "Token already used!");
         }
 
         // check token match
@@ -53,9 +76,34 @@ public class MailTokenService {
             return new JpaResult(JpaResultType.FAILED, "Token expired!");
         }
 
-        // One-time use: remove or invalidate
-        tokenM.setToken(null);
+        tokenM.setUsed(true);
 
         return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully verified the Token");
+    }
+
+    @Transactional
+    public JpaResult verify(String token, boolean clearToken) {
+
+        MailToken tokenM = findByToken(token);
+        if (tokenM == null) {
+            return new JpaResult(JpaResultType.FAILED, "Invalid Token");
+        }
+
+        // check already used
+        if (tokenM.isUsed()) {
+            return new JpaResult(JpaResultType.FAILED, "Token already used!");
+        }
+
+        // check expiry
+        if (tokenM.getExpiryTime().isBefore(LocalDateTime.now())) {
+            return new JpaResult(JpaResultType.FAILED, "Token expired!");
+        }
+
+        // One-time use
+        if (clearToken) {
+            tokenM.setUsed(true);
+        }
+
+        return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully verified the Token", tokenM);
     }
 }

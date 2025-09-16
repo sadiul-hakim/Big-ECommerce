@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shopme.common.entity.Customer;
+import org.shopme.common.entity.MailToken;
 import org.shopme.common.enumeration.MailTokenType;
 import org.shopme.common.pojo.ChangePasswordPojo;
 import org.shopme.common.util.JpaResult;
@@ -49,6 +50,28 @@ public class CustomerController {
     private static final String SAVING_CONDITION = "savingCustomer";
     private static final String MESSAGE = "message";
     private static final String POJO_NAME = "customer";
+
+    @PostMapping("/new_password")
+    public String newPassword(@RequestParam String token, @RequestParam int customerId, @ModelAttribute @Valid ChangePasswordPojo changePasswordPojo,
+                              BindingResult result, RedirectAttributes redirectAttributes, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("customerId", customerId);
+            return "forgot_password/new_password_page";
+        }
+
+        JpaResult jpaResult = customerService.newPassword(token, customerId, changePasswordPojo);
+        if (jpaResult.type().equals(JpaResultType.FAILED)) {
+
+            redirectAttributes.addFlashAttribute("error", true);
+            redirectAttributes.addFlashAttribute(MESSAGE, jpaResult.message());
+            return "redirect:/forgot_password/new_password_page";
+        }
+
+        redirectAttributes.addFlashAttribute("success", true);
+        redirectAttributes.addFlashAttribute(MESSAGE, jpaResult.message());
+
+        return "redirect:/loginPage";
+    }
 
     // Either specify a name of pojo in @ModelAttribute or use default naming convention
     @PostMapping("/change_password")
@@ -166,8 +189,15 @@ public class CustomerController {
 
         JpaResult savedResult = customerService.save(customer, picture);
         Customer entity = (Customer) savedResult.entity();
-        String verifyUrl = AppUtility.getSiteUrl(request) + "/verify?code=" + entity.getVerificationCode();
-        sendVerificationMail(entity, verifyUrl, MailTokenType.EMAIL_VERIFICATION);
+
+        try {
+
+            MailToken token = mailTokenService.findByCustomerIdAndType(entity.getId(), MailTokenType.EMAIL_VERIFICATION);
+            String verifyUrl = AppUtility.getSiteUrl(request) + "/verify?code=" + token.getToken();
+            sendVerificationMail(entity, verifyUrl, MailTokenType.EMAIL_VERIFICATION);
+        } catch (Exception ex) {
+            log.error("Failed to send Send mail, error {}", ex.getMessage());
+        }
 
         return "registrationSuccess";
     }

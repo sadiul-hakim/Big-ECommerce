@@ -7,6 +7,10 @@ public record JpaResult(
         Object entity
 ) {
 
+    public JpaResult(JpaResultType type, String message, Object entity) {
+        this(type, message, 0, entity);
+    }
+
     public JpaResult(JpaResultType type, String message) {
         this(type, message, 0, null);
     }

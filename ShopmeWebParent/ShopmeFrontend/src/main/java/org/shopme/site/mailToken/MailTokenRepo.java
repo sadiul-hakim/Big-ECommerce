@@ -11,5 +11,7 @@ public interface MailTokenRepo extends JpaRepository<MailToken, Long> {
 
     Optional<MailToken> findByCustomerIdAndType(long customerId, MailTokenType type);
 
+    Optional<MailToken> findByToken(String token);
+
     List<MailToken> findAllByCustomerId(long customerId);
 }

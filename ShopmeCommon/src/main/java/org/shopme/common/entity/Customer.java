@@ -89,9 +89,6 @@ public class Customer {
 	@Column(length = 10, nullable = false)
 	private String postalCode;
 
-	@Column(length = 64)
-	private String verificationCode;
-
 	public Customer(String email, String password, String firstname, String lastname, String photo, boolean enabled,
 					String phoneNumber, String address, Country country, State state, String postalCode) {
 		this.email = email;

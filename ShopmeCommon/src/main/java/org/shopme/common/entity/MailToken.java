@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"customerId", "type"})
+        @UniqueConstraint(columnNames = {"customerId", "type"}),
+        @UniqueConstraint(columnNames = {"token"})
 })
 public class MailToken {
 
@@ -24,12 +25,16 @@ public class MailToken {
     private long id;
 
     @Column(nullable = false)
-    private long customerId;
+    private int customerId;
 
     private String token;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private MailTokenType type;
 
     private LocalDateTime expiryTime;
+
+    @Column(nullable = false)
+    private boolean used = false;
 }
