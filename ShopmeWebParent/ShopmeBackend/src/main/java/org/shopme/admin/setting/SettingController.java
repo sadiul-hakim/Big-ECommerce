@@ -68,10 +68,12 @@ public class SettingController {
             @RequestParam(defaultValue = "") String CUSTOMER_VERIFIED_CONTENT,
             @RequestParam(defaultValue = "") String ORDER_CONFIRMATION_SUBJECT,
             @RequestParam(defaultValue = "") String ORDER_CONFIRMATION_CONTENT,
+            @RequestParam(defaultValue = "") String FORGOT_PASSWORD_SUBJECT,
+            @RequestParam(defaultValue = "") String FORGOT_PASSWORD_CONTENT,
             RedirectAttributes attributes
     ) {
         service.saveTemplate(CUSTOMER_VERIFIED_SUBJECT, CUSTOMER_VERIFIED_CONTENT, ORDER_CONFIRMATION_SUBJECT,
-                ORDER_CONFIRMATION_CONTENT);
+                ORDER_CONFIRMATION_CONTENT, FORGOT_PASSWORD_SUBJECT, FORGOT_PASSWORD_CONTENT);
 
         attributes.addFlashAttribute(MESSAGE, "Setting is saved successfully!");
         attributes.addFlashAttribute(SAVING_CONDITION, true);

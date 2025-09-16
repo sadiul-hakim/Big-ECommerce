@@ -52,4 +52,9 @@ public class MainController {
         boolean verified = customerService.verify(code);
         return verified ? "verified_successfully" : "verification_failed";
     }
+
+    @GetMapping("/forgot_password")
+    public String forgotPasswordEmailPage() {
+        return "forgot_password/forgot_password_email_page";
+    }
 }

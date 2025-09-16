@@ -95,6 +95,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const savedHtml = document.querySelector("#customerVerificationHiddenContent").value || "";
+        const savedHtml2 = document.querySelector("#forgotPasswordHiddenContent").value || "";
 
         const editor = new toastui.Editor({
             el: document.querySelector('#editor'),  // container
@@ -111,10 +112,27 @@
             previewStyle: 'vertical'
         });
 
+        const editor3 = new toastui.Editor({
+            el: document.querySelector('#editor3'),  // container
+            height: '400px',
+            initialEditType: 'wysiwyg',   // or 'wysiwyg'
+            previewStyle: 'vertical'
+        });
+
         // put saved content into editor
         if (savedHtml) {
             editor.setHTML(savedHtml);   // <<--- fill editor with saved HTML
         }
+
+        if (savedHtml2) {
+            editor2.setHTML(savedHtml2);   // <<--- fill editor with saved HTML
+        }
+
+        // Refresh editor2 when its tab is shown
+        document.querySelector('button[data-bs-target="#forgotPasswordTabTabContent"]')
+            .addEventListener('shown.bs.tab', () => {
+                editor2.refresh();
+            });
 
         // Refresh editor2 when its tab is shown
         document.querySelector('button[data-bs-target="#orderConfirmationTabContent"]')
@@ -129,9 +147,15 @@
         });
 
         // Example: get HTML or Markdown content on submit
+        document.querySelector("#forgotPasswordForm").addEventListener("submit", function (e) {
+            // or editor.getHTML()
+            document.querySelector("#forgotPasswordHiddenContent").value = editor2.getHTML();
+        });
+
+        // Example: get HTML or Markdown content on submit
         document.querySelector("#orderConfirmationForm").addEventListener("submit", function (e) {
             // or editor.getHTML()
-            document.querySelector("#orderConfirmationHiddenContent").value = editor2.getHTML();
+            document.querySelector("#orderConfirmationHiddenContent").value = editor3.getHTML();
         });
     });
 </script>

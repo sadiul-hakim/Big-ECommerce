@@ -27,10 +27,12 @@ public class SecurityConfig {
                 "/font/**",
                 "/images/**",
                 "/customer/register",
+                "/customer/validate_email_send_token",
                 "/verify",
                 "/loginPage",
                 "/registerPage",
-                "/webjars/**"
+                "/webjars/**",
+                "/forgot_password"
         };
 
         return http

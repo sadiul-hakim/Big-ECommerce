@@ -10,6 +10,13 @@
             </button>
         </li>
         <li class="nav-item" role="presentation">
+            <button class="nav-link" id="forgotPasswordTab" data-bs-toggle="tab"
+                    data-bs-target="#forgotPasswordTabTabContent"
+                    type="button" role="tab" aria-controls="forgotPasswordTabTab" aria-selected="false">
+                Forgot Password
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
             <button class="nav-link" id="orderConfirmationTab" data-bs-toggle="tab"
                     data-bs-target="#orderConfirmationTabContent"
                     type="button" role="tab" aria-controls="orderConfirmationTab" aria-selected="false">
@@ -43,10 +50,33 @@
                 </div>
             </form>
         </div>
+        <div class="tab-pane fade p-3" id="forgotPasswordTabTabContent" role="tabpanel"
+             aria-labelledby="forgotPasswordTab">
+            <form th:action="@{/settings/save-mail-template}" id="forgotPasswordForm" method="post">
+                <div>
+                    <label for="emailSubject2">E-Mail Subject</label>
+                    <input type="text" name="FORGOT_PASSWORD_SUBJECT" id="emailSubject2" class="form-control"
+                           th:value="${mailTemplateSetting['FORGOT_PASSWORD_SUBJECT']}"
+                    />
+                </div>
+                <br/>
+
+                <input type="hidden" name="FORGOT_PASSWORD_CONTENT" id="forgotPasswordHiddenContent"
+                       class="form-control"
+                       th:value="${mailTemplateSetting['FORGOT_PASSWORD_CONTENT']}"
+                />
+                <div id="editor2"></div>
+                <br/>
+                <div>
+                    <input type="submit" value="Save" class="btn btn-primary"/>
+                    <input type="reset" value="Reset" class="btn btn-danger"/>
+                </div>
+            </form>
+        </div>
         <div class="tab-pane fade p-3" id="orderConfirmationTabContent" role="tabpanel"
              aria-labelledby="orderConfirmationTab">
             <h4>Content of Second Tab</h4>
-            <div id="editor2"></div>
+            <div id="editor3"></div>
         </div>
     </div>
 

@@ -6,11 +6,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shopme.common.entity.Customer;
+import org.shopme.common.enumeration.MailTokenType;
 import org.shopme.common.pojo.ChangePasswordPojo;
 import org.shopme.common.util.JpaResult;
 import org.shopme.common.util.JpaResultType;
 import org.shopme.common.util.MailServerSettingBag;
+import org.shopme.common.util.VerificationCodeGenerator;
 import org.shopme.site.country.CountryRepository;
+import org.shopme.site.mailToken.MailTokenService;
 import org.shopme.site.security.CustomUserDetails;
 import org.shopme.site.setting.SettingService;
 import org.shopme.site.state.StateRepository;
@@ -38,6 +41,7 @@ public class CustomerController {
     private final StateRepository stateRepository;
     private final CountryRepository countryRepository;
     private final SettingService settingService;
+    private final MailTokenService mailTokenService;
 
     private static final String SAVED_CONDITION = "savedSuccessfully";
     private static final String UPDATING_PASSWORD = "updatingPassword";
@@ -161,18 +165,54 @@ public class CustomerController {
         }
 
         JpaResult savedResult = customerService.save(customer, picture);
-        sendVerificationMail(request, (Customer) savedResult.entity());
+        Customer entity = (Customer) savedResult.entity();
+        String verifyUrl = AppUtility.getSiteUrl(request) + "/verify?code=" + entity.getVerificationCode();
+        sendVerificationMail(entity, verifyUrl, MailTokenType.EMAIL_VERIFICATION);
 
         return "registrationSuccess";
     }
 
-    private void sendVerificationMail(HttpServletRequest request, Customer entity) {
+    @GetMapping("/validate_email_send_token")
+    public String validateEmailSendToken(@RequestParam String email, RedirectAttributes attributes, HttpServletRequest request) {
+
+        Optional<Customer> customerOptional = customerService.findByEmail(email);
+        if (customerOptional.isEmpty()) {
+            attributes.addFlashAttribute("error", true);
+            attributes.addFlashAttribute(MESSAGE, "Could not find any registered account with this email!");
+            return "redirect:/forgot_password";
+        }
+
+        String token = VerificationCodeGenerator.generateCode(64);
+        Customer entity = customerOptional.get();
+        mailTokenService.save(entity.getId(), token, MailTokenType.FORGOT_PASSWORD, 15);
+        String verifyUrl = AppUtility.getSiteUrl(request) + "/verify_forgot_password_token?code=" + token;
+        sendVerificationMail(entity, verifyUrl, MailTokenType.FORGOT_PASSWORD);
+        attributes.addFlashAttribute("ok", true);
+        attributes.addFlashAttribute(MESSAGE, "Successfully send a Reset Password link to this email.");
+
+        return "redirect:/forgot_password";
+    }
+
+    private void sendVerificationMail(Customer entity, String verifyUrl, MailTokenType type) {
         MailServerSettingBag mailServerSettingBag = settingService.getMailServerSettingBag();
         JavaMailSenderImpl javaMailSender = AppUtility.prepareMailSender(mailServerSettingBag);
 
         String toAddress = entity.getEmail();
-        String subject = mailServerSettingBag.getCustomerVerifiedSubject();
-        String content = mailServerSettingBag.getCustomerVerifiedContent();
+        String subject;
+        String content;
+
+        if (type.equals(MailTokenType.EMAIL_VERIFICATION)) {
+            subject = mailServerSettingBag.getCustomerVerifiedSubject();
+            content = mailServerSettingBag.getCustomerVerifiedContent();
+        } else if (type.equals(MailTokenType.FORGOT_PASSWORD)) {
+            subject = mailServerSettingBag.getForgotPasswordSubject();
+            content = mailServerSettingBag.getForgotPasswordContent();
+        } else if (type.equals(MailTokenType.ORDER_CONFIRMATION)) {
+            subject = mailServerSettingBag.getOrderConfirmationSubject();
+            content = mailServerSettingBag.getOrderConfirmationContent();
+        } else {
+            return;
+        }
 
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
@@ -182,7 +222,6 @@ public class CustomerController {
             helper.setSubject(subject);
 
             content = content.replace("[[name]]", entity.getFullName());
-            String verifyUrl = AppUtility.getSiteUrl(request) + "/verify?code=" + entity.getVerificationCode();
             content = content.replace("[[url]]", verifyUrl);
 
             helper.setText(content, true);
@@ -193,5 +232,4 @@ public class CustomerController {
             log.error("Failed to send verification email to {} , error {}", entity.getEmail(), e.getMessage());
         }
     }
-
 }

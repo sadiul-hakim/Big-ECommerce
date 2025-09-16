@@ -47,27 +47,20 @@ public class SettingService {
             String CUSTOMER_VERIFIED_SUBJECT,
             String CUSTOMER_VERIFIED_CONTENT,
             String ORDER_CONFIRMATION_SUBJECT,
-            String ORDER_CONFIRMATION_CONTENT
+            String ORDER_CONFIRMATION_CONTENT,
+            String FORGOT_PASSWORD_SUBJECT,
+            String FORGOT_PASSWORD_CONTENT
 
     ) {
         List<Setting> mailServerSetting = repository.findAllByCategory(SettingCategory.MAIL_TEMPLATES);
-        SettingBag bag = new SettingBag(mailServerSetting);
+        MailServerSettingBag bag = new MailServerSettingBag(mailServerSetting);
 
-        if (StringUtils.hasText(CUSTOMER_VERIFIED_SUBJECT)) {
-            bag.update(SettingBag.CUSTOMER_VERIFIED_SUBJECT, CUSTOMER_VERIFIED_SUBJECT, SettingCategory.MAIL_TEMPLATES);
-        }
-
-        if (StringUtils.hasText(CUSTOMER_VERIFIED_CONTENT)) {
-            bag.update(SettingBag.CUSTOMER_VERIFIED_CONTENT, CUSTOMER_VERIFIED_CONTENT, SettingCategory.MAIL_TEMPLATES);
-        }
-
-        if (StringUtils.hasText(ORDER_CONFIRMATION_SUBJECT)) {
-            bag.update(SettingBag.ORDER_CONFIRMATION_SUBJECT, ORDER_CONFIRMATION_SUBJECT, SettingCategory.MAIL_TEMPLATES);
-        }
-
-        if (StringUtils.hasText(ORDER_CONFIRMATION_CONTENT)) {
-            bag.update(SettingBag.ORDER_CONFIRMATION_CONTENT, ORDER_CONFIRMATION_CONTENT, SettingCategory.MAIL_TEMPLATES);
-        }
+        bag.updateMailTemplate(SettingBag.CUSTOMER_VERIFIED_SUBJECT, CUSTOMER_VERIFIED_SUBJECT);
+        bag.updateMailTemplate(SettingBag.CUSTOMER_VERIFIED_CONTENT, CUSTOMER_VERIFIED_CONTENT);
+        bag.updateMailTemplate(SettingBag.ORDER_CONFIRMATION_SUBJECT, ORDER_CONFIRMATION_SUBJECT);
+        bag.updateMailTemplate(SettingBag.ORDER_CONFIRMATION_CONTENT, ORDER_CONFIRMATION_CONTENT);
+        bag.updateMailTemplate(SettingBag.FORGOT_PASSWORD_SUBJECT, FORGOT_PASSWORD_SUBJECT);
+        bag.updateMailTemplate(SettingBag.FORGOT_PASSWORD_CONTENT, FORGOT_PASSWORD_CONTENT);
 
         List<Setting> settings = bag.getSettings();
         saveAll(settings);
@@ -85,42 +78,15 @@ public class SettingService {
     ) {
 
         List<Setting> mailServerSetting = repository.findAllByCategory(SettingCategory.MAIL_SERVICE);
-        SettingBag bag = new SettingBag(mailServerSetting);
-        if (StringUtils.hasText(MAIL_HOST)) {
-            bag.update(SettingBag.MAIL_HOST, MAIL_HOST, SettingCategory.MAIL_SERVICE);
-        }
-
-        if (StringUtils.hasText(MAIL_PORT)) {
-            bag.update(SettingBag.MAIL_PORT, MAIL_PORT, SettingCategory.MAIL_SERVICE);
-        }
-
-        if (StringUtils.hasText(MAIL_USERNAME)) {
-            bag.update(SettingBag.MAIL_USERNAME, MAIL_USERNAME, SettingCategory.MAIL_SERVICE);
-        }
-
-        if (StringUtils.hasText(MAIL_PASSWORD)) {
-            bag.update(SettingBag.MAIL_PASSWORD, MAIL_PASSWORD, SettingCategory.MAIL_SERVICE);
-        }
-
-        if (StringUtils.hasText(MAIL_FROM)) {
-            bag.update(SettingBag.MAIL_FROM, MAIL_FROM, SettingCategory.MAIL_SERVICE);
-        }
-
-        if (StringUtils.hasText(MAIL_SENDER_NAME)) {
-            bag.update(SettingBag.MAIL_SENDER_NAME, MAIL_SENDER_NAME, SettingCategory.MAIL_SERVICE);
-        }
-
-        if (SMTP_AUTH) {
-            bag.update(SettingBag.SMTP_AUTH, "true", SettingCategory.MAIL_SERVICE);
-        } else {
-            bag.update(SettingBag.SMTP_AUTH, "false", SettingCategory.MAIL_SERVICE);
-        }
-
-        if (SMTP_SECURED) {
-            bag.update(SettingBag.SMTP_SECURED, "true", SettingCategory.MAIL_SERVICE);
-        } else {
-            bag.update(SettingBag.SMTP_SECURED, "false", SettingCategory.MAIL_SERVICE);
-        }
+        MailServerSettingBag bag = new MailServerSettingBag(mailServerSetting);
+        bag.updateMailService(SettingBag.MAIL_HOST, MAIL_HOST);
+        bag.updateMailService(SettingBag.MAIL_PORT, MAIL_PORT);
+        bag.updateMailService(SettingBag.MAIL_USERNAME, MAIL_USERNAME);
+        bag.updateMailService(SettingBag.MAIL_PASSWORD, MAIL_PASSWORD);
+        bag.updateMailService(SettingBag.MAIL_FROM, MAIL_FROM);
+        bag.updateMailService(SettingBag.MAIL_SENDER_NAME, MAIL_SENDER_NAME);
+        bag.updateMailService(SettingBag.SMTP_AUTH, String.valueOf(SMTP_AUTH));
+        bag.updateMailService(SettingBag.SMTP_SECURED, String.valueOf(SMTP_SECURED));
 
         List<Setting> settings = bag.getSettings();
         saveAll(settings);
