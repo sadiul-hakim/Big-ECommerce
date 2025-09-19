@@ -19,6 +19,11 @@
                 <li class="nav-item">
                     <a class="nav-link" aria-current="page" th:href="@{'/brands'}">Brands</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" th:href="@{'/cart'}">
+                        <img th:src="@{'/image/cart.png'}" alt="card" class="icon" title="cart"/>
+                    </a>
+                </li>
                 <li class="nav-item dropdown">
                     <a
                             class="nav-link dropdown-toggle d-flex align-items-center"
@@ -39,7 +44,8 @@
                             <hr class="dropdown-divider">
                         </li>
                         <li><a class="dropdown-item"
-                               th:href="@{'/customer/change_password_page?id='+${#authentication.principal.customer.id}}">Change Password</a>
+                               th:href="@{'/customer/change_password_page?id='+${#authentication.principal.customer.id}}">Change
+                            Password</a>
                         </li>
                         <li>
                             <hr class="dropdown-divider">

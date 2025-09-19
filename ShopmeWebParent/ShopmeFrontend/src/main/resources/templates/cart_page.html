@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="en">
+<head th:replace="~{fragment/head :: head}"></head>
+
+<body class="d-flex flex-column min-vh-100">
+<nav th:replace="~{fragment/navbar :: navbar}"></nav>
+
+<div class="container flex-grow-1">
+    <div class="row">
+        <div class="col-md-10 mx-auto p-3">
+            <h2 class="my-2 text-primary">Shopping Cart</h2>
+
+            <ul class="list-group list-group-flush" id="cart">
+                <!-- Loop through cart items -->
+                <li class="list-group-item d-flex" th:each="item : ${cartItems}" th:data-cart-id="${item.id}">
+                    <img th:src="@{'/images/product/' + ${item.product.files[0]}}" alt="" class="icon-md"/>
+                    <div class="ms-4 d-flex justify-content-between align-items-center flex-grow-1">
+                        <div class="d-flex flex-column">
+                            <p class="h6" th:text="${item.product.name}"></p>
+
+                            <div class="d-flex">
+                                <button class="btn btn-danger me-2 delete-btn" th:data-cart-id="${item.id}">
+                                    <img th:src="@{'/image/delete.svg'}" alt="delete" class="icon"/>
+                                </button>
+                                <div class="btn-group" role="group" aria-label="Quantity controls">
+                                    <button type="submit" class="btn btn-outline-primary increment-btn">+</button>
+                                    <input type="number" th:value="${item.quantity}" class="quantity_field" readonly/>
+                                    <button type="submit" class="btn btn-outline-primary decrement-btn">-</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p th:if="${CURRENCY_POSITION == 'before'}">
+                                <span th:text="${CURRENCY_SYMBOL}"></span>
+                                <span class="ms-1 item-price"
+                                      th:text="${numberFormater.format(item.quantity * item.product.discountPrice)}"></span>
+                            </p>
+                            <p th:if="${CURRENCY_POSITION == 'after'}">
+                                <span class="me-1 item-price"
+                                      th:text="${numberFormater.format(item.quantity * item.product.discountPrice)}"></span>
+                                <span th:text="${CURRENCY_SYMBOL}"></span>
+                            </p>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</div>
+<div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+<footer th:replace="~{fragment/footer :: footer}"></footer>
+</body>
+<script th:inline="javascript">
+    const pathContext = /*[[@{/}]]*/ "/Shopme/";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        // Increment buttons
+        document.querySelectorAll(".increment-btn").forEach(btn => {
+            btn.addEventListener("click", async (e) => {
+                const li = e.target.closest("li");
+                const cartItemId = li.dataset.cartId;
+
+                const res = await fetch(`${pathContext}cart/increment-quantity?cartItemId=${cartItemId}`);
+                const data = await res.json();
+
+                li.querySelector(".quantity_field").value = data.quantity;
+                li.querySelector(".item-price").textContent = data.totalPrice;
+            });
+        });
+
+        // Decrement buttons
+        document.querySelectorAll(".decrement-btn").forEach(btn => {
+            btn.addEventListener("click", async (e) => {
+                const li = e.target.closest("li");
+                const cartItemId = li.dataset.cartId;
+
+                const res = await fetch(`${pathContext}cart/decrement-quantity?cartItemId=${cartItemId}`);
+                const data = await res.json();
+
+                if (data.quantity <= 0) {
+                    li.remove();
+                } else {
+                    li.querySelector(".quantity_field").value = data.quantity;
+                    li.querySelector(".item-price").textContent = data.totalPrice;
+                }
+            });
+        });
+
+        // DELETE button
+        document.querySelectorAll(".delete-btn").forEach(btn => {
+            btn.addEventListener("click", async (e) => {
+                const cartItemId = btn.dataset.cartId;
+                const li = btn.closest("li");
+
+                const res = await fetch(`${pathContext}cart/delete-item?cartItemId=${cartItemId}`);
+                const data = await res.json();
+
+                if (res.ok) {
+                    li.remove();
+                    showToast(data.message)
+                } else {
+                    showToast(data.message || "Failed to delete item");
+                }
+            });
+        });
+    });
+
+    function showToast(message) {
+
+        // Bootstrap 5 toast example
+        const toastContainer = document.getElementById("toastContainer");
+        const toastEl = document.createElement("div");
+        toastEl.className = "toast align-items-center text-bg-primary border-0";
+        toastEl.role = "alert";
+        toastEl.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">${message}</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    `;
+        toastContainer.appendChild(toastEl);
+        new bootstrap.Toast(toastEl).show();
+    }
+</script>
+
+
+</html>

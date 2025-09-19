@@ -42,7 +42,7 @@
 
             <img th:if="${product.image == null}"
                  th:src="@{/images/default.png}"
-                 alt="no image available" class="img-fluid" width="100" height="130"/>
+                 alt="no image available" class="img-fluid icon-md"/>
 
             <h5 class="my-1" th:text="${product.name}"></h5>
 
@@ -67,7 +67,8 @@
                 <span th:text="${'('+product.quantity+' items)'}"></span>
             </p>
             <div class="mt-2">
-                <a class="btn btn-primary ms-2" th:disabled="${product.quantity == 0}">
+                <a class="btn btn-primary ms-2 add_to_cart_btn" th:disabled="${product.quantity == 0}"
+                   th:data-url="@{'/cart/add-to-cart?productId='+${product.id}}">
                     [[${product.quantity == 0 ? 'Request To Restock' : 'Add To Cart'}]]
                 </a>
                 <a th:href="@{|/products/view_page/${product.id}|}" class="btn btn-info">See More</a>
@@ -108,6 +109,9 @@
         </div>
     </div>
 </div>
+<div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
 <footer th:replace="~{fragment/footer :: footer}"></footer>
 </body>
+<script th:src="@{/js/addToCart.js}">
+</script>
 </html>
