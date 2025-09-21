@@ -47,7 +47,7 @@ public class SettingFilter implements Filter {
         THOUSAND_POINT_TYPE = THOUSAND_POINT_TYPE.equals("COMMA") ? "," : ".";
 
         NumberFormatter formatter = new NumberFormatter(THOUSAND_POINT_TYPE, DECIMAL_POINT_TYPE, DECIMAL_DIGITS);
-        req.setAttribute("numberFormater", formatter);
+        req.setAttribute(NumberFormatter.FORMATTER_NAME, formatter);
 
         chain.doFilter(request, response);
     }

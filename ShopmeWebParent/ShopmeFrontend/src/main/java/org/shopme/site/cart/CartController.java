@@ -27,10 +27,13 @@ public class CartController {
     private final CartItemService cartItemService;
 
     @GetMapping
-    public String page(Model model) {
+    public String page(Model model, HttpServletRequest request) {
 
+        NumberFormatter numberFormatter = NumberFormatter.getFormatter(request);
         List<CartItem> items = cartItemService.findAllCartItemOfCustomer();
         model.addAttribute("cartItems", items);
+        double totalPrice = items.stream().map(CartItem::getTotalPrice).reduce(0.0, Double::sum);
+        model.addAttribute("totalPrices", numberFormatter.format(totalPrice));
         return "cart_page";
     }
 
@@ -47,7 +50,7 @@ public class CartController {
     @ResponseBody
     @GetMapping("/increment-quantity")
     public ResponseEntity<?> incrementQuantity(@RequestParam int cartItemId, HttpServletRequest request) {
-        NumberFormatter numberFormater = (NumberFormatter) request.getAttribute("numberFormater");
+        NumberFormatter numberFormater = NumberFormatter.getFormatter(request);
         var res = cartItemService.incrementQuantity(cartItemId, numberFormater);
         return ResponseEntity.ok(res);
     }
@@ -55,7 +58,7 @@ public class CartController {
     @ResponseBody
     @GetMapping("/decrement-quantity")
     public ResponseEntity<?> decrementQuantity(@RequestParam int cartItemId, HttpServletRequest request) {
-        NumberFormatter numberFormater = (NumberFormatter) request.getAttribute("numberFormater");
+        NumberFormatter numberFormater = NumberFormatter.getFormatter(request);
         var res = cartItemService.decrementQuantity(cartItemId, numberFormater);
         return ResponseEntity.ok(res);
     }

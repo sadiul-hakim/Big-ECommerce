@@ -8,9 +8,9 @@
 <nav th:replace="~{fragment/navbar :: navbar}"></nav>
 
 <div class="container flex-grow-1">
-    <div class="row">
-        <div class="col-md-10 mx-auto p-3">
-            <h2 class="my-2 text-primary">Shopping Cart</h2>
+    <h2 class="my-2 text-primary">Shopping Cart</h2>
+    <div class="row mt-3">
+        <div class="col-md-9 p-3">
 
             <ul class="list-group list-group-flush" id="cart">
                 <!-- Loop through cart items -->
@@ -36,18 +36,24 @@
                             <p th:if="${CURRENCY_POSITION == 'before'}">
                                 <span th:text="${CURRENCY_SYMBOL}"></span>
                                 <span class="ms-1 item-price"
-                                      th:text="${numberFormater.format(item.quantity * item.product.discountPrice)}"></span>
+                                      th:text="${numberFormater.format(item.getTotalPrice())}"></span>
                             </p>
                             <p th:if="${CURRENCY_POSITION == 'after'}">
                                 <span class="me-1 item-price"
-                                      th:text="${numberFormater.format(item.quantity * item.product.discountPrice)}"></span>
+                                      th:text="${numberFormater.format(item.getTotalPrice())}"></span>
                                 <span th:text="${CURRENCY_SYMBOL}"></span>
                             </p>
                         </div>
                     </div>
                 </li>
             </ul>
-
+        </div>
+        <div class="col-md-3 p-3 card">
+            <h4 th:if="${CURRENCY_POSITION == 'before'}">Estimated Total : <span th:text="${CURRENCY_SYMBOL}"></span>
+                <span th:text="${totalPrices}" class="ms-1"></span></h4>
+            <h4 th:if="${CURRENCY_POSITION == 'after'}">Estimated Total : <span th:text="${totalPrices}" class="me-1"></span> <span
+                    th:text="${CURRENCY_SYMBOL}"></span></h4>
+            <button class="btn btn-primary">Checkout</button>
         </div>
     </div>
 </div>
