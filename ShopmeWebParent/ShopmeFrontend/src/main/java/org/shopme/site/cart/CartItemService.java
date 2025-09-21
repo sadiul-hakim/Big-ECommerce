@@ -32,8 +32,11 @@ public class CartItemService {
     @Transactional
     public Map<String, Object> incrementQuantity(long cartItemId, NumberFormatter numberFormatter) {
 
-        CartItem cartItem = repository.findById(cartItemId)
-                .orElseThrow(() -> new EntityNotFoundException("Could not find cart item with id " + cartItemId));
+        Optional<CartItem> cartItemOpt = repository.findById(cartItemId);
+        if (cartItemOpt.isEmpty()) {
+            return Map.of();
+        }
+        CartItem cartItem = cartItemOpt.get();
         int item = cartItem.getQuantity() + 1;
         cartItem.setQuantity(item);
 
@@ -45,8 +48,11 @@ public class CartItemService {
     @Transactional
     public Map<String, Object> decrementQuantity(long cartItemId, NumberFormatter numberFormatter) {
 
-        CartItem cartItem = repository.findById(cartItemId)
-                .orElseThrow(() -> new EntityNotFoundException("Could not find cart item with id " + cartItemId));
+        Optional<CartItem> cartItemOpt = repository.findById(cartItemId);
+        if (cartItemOpt.isEmpty()) {
+            return Map.of();
+        }
+        CartItem cartItem = cartItemOpt.get();
 
         if (cartItem.getQuantity() <= 1) {
             deleteCartItem(cartItemId);
@@ -85,16 +91,16 @@ public class CartItemService {
 
     public CartItem findItem(int customerId, int productId) throws EntityNotFoundException {
 
-        Customer customer = customerService.findById(customerId)
-                .orElseThrow(() -> new EntityNotFoundException("Could not find customer with id " + customerId));
-        Product product = productService.findById(productId)
-                .orElseThrow(() -> new EntityNotFoundException("Could not find product with id " + productId));
+        Optional<Customer> customer = customerService.findById(customerId);
+        if (customer.isEmpty()) {
+            return null;
+        }
+        Optional<Product> product = productService.findById(productId);
+        if (product.isEmpty()) {
+            return null;
+        }
 
-        return repository.findByCustomerAndProduct(customer, product)
-                .orElseThrow(
-                        () -> new EntityNotFoundException("Could not find cart item with customer id "
-                                + customerId + " product id " + productId)
-                );
+        return repository.findByCustomerAndProduct(customer.get(), product.get()).orElse(null);
     }
 
     public List<CartItem> findAllCartItemOfCustomer() {
@@ -113,5 +119,14 @@ public class CartItemService {
         } catch (Exception ex) {
             return false;
         }
+    }
+
+    public boolean isInCart(int productId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
+        Customer customer = principal.customer();
+
+        CartItem item = findItem(customer.getId(), productId);
+        return item != null;
     }
 }

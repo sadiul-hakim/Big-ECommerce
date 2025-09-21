@@ -67,8 +67,12 @@
                                 th:text="${product.weight}"></span></li>
                     </ul>
                     <div class="mt-2">
-                        <a class="btn btn-primary ms-2" th:disabled="${product.quantity == 0}">
+                        <a class="btn btn-primary ms-2 add_to_cart_btn" th:disabled="${product.quantity == 0}"
+                           th:data-url="@{'/cart/add-to-cart?productId='+${product.id}}" th:if="${!alreadyInCart}">
                             [[${product.quantity == 0 ? 'Request To Restock' : 'Add To Cart'}]]
+                        </a>
+                        <a class="btn btn-primary ms-2" th:if="${alreadyInCart}" th:href="@{/cart}">
+                            Go To Cart
                         </a>
                         <button class="btn btn-info ms-2" onclick="history.back()">Keep Shopping</button>
                     </div>
@@ -97,7 +101,10 @@
         </div>
     </div>
 </div>
+<div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+
 <footer th:replace="~{fragment/footer :: footer}"></footer>
 </body>
 <script th:src="@{'/js/view_product.js'}"></script>
+<script th:src="@{/js/addToCart.js}"></script>
 </html>

@@ -11,6 +11,7 @@ import org.shopme.common.util.CustomDateTimeFormatter;
 import org.shopme.common.util.GeneralSettingBag;
 import org.shopme.common.util.SettingBag;
 import org.shopme.site.brand.BrandService;
+import org.shopme.site.cart.CartItemService;
 import org.shopme.site.category.CategoryService;
 import org.shopme.site.setting.SettingService;
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,7 @@ public class ProductController {
     private final CategoryService categoryService;
     private final BrandService brandService;
     private final SettingService settingService;
+    private final CartItemService cartItemService;
 
     @GetMapping("/categories/{categoryName}")
     public ModelAndView viewByCategory(@PathVariable String categoryName,
@@ -115,9 +117,10 @@ public class ProductController {
         model.addObject("CURRENCY_SYMBOL", settingBag.getValue(SettingBag.CURRENCY_SYMBOL));
         model.addObject("CURRENCY_POSITION", settingBag.getValue(SettingBag.CURRENCY_SYMBOL_POSITION));
         model.addObject("product", p);
-        model.setViewName("view_product");
         model.addObject("dateFormatter", new CustomDateTimeFormatter());
         model.addObject("percentage", ((p.getPrice() - p.getDiscountPrice()) / p.getPrice()) * 100);
+        model.addObject("alreadyInCart", cartItemService.isInCart(id));
+        model.setViewName("view_product");
 
         return model;
     }
