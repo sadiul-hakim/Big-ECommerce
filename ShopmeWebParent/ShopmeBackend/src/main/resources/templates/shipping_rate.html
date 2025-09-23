@@ -1,11 +1,75 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="en">
 <head th:replace="~{fragment/head :: head}">
 </head>
 <body class="d-flex flex-column min-vh-100">
 <nav th:replace="~{fragment/navbar :: navbar}"></nav>
 <div class="container flex-grow-1">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <h2 class="my-3 text-primary">Manage Brands</h2>
 
+            <div class="alert"
+                 th:classappend="${savedSuccessfully} ? 'alert-success' : 'alert-danger'"
+                 th:if="${savingRate}">
+                <span th:text="${message}"></span>
+            </div>
+            <div class="alert"
+                 th:classappend="${deletedSuccessfully} ? 'alert-success' : 'alert-danger'"
+                 th:if="${deletingRate}">
+                <span th:text="${message}"></span>
+            </div>
+
+            <!-- Table Start -->
+            <div th:replace="~{fragment/table :: table(${shippingResult},${tableUrl},~{::#table})}">
+                <table class="table table-hover" id="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Country</th>
+                        <th scope="col">State</th>
+                        <th scope="col">Rate</th>
+                        <th scope="col">Delivery Days</th>
+                        <th scope="col">COD Supported</th>
+                        <th scope="col"><a class="btn btn-light"
+                                           th:href="@{${tableUrl.getCsvUrl()}}"> <img alt="csv"
+                                                                                      th:src="@{'/image/csv.svg'}"
+                                                                                      class="icon"/>
+                        </a> <a th:href="@{${tableUrl.getCreatePageUrl()}}" class="btn btn-dark"> <img
+                                alt="plus" th:src="@{'/image/plus.svg'}" class="icon"/>
+                        </a></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="rate:${shippingResult.data}">
+                        <td th:text="${rate.id}"></td>
+                        <td th:text="${rate.country}"></td>
+                        <td th:text="${rate.state}"></td>
+                        <td th:text="${rate.rate}"></td>
+                        <td th:text="${rate.days}"></td>
+                        <td><img class="icon"
+                                 th:src="@{${rate.codSupported} ? '/image/green.svg' : '/image/red.svg'}"
+                                 alt="status"/></td>
+                        <td>
+                            <a
+                                    th:href="@{/shipping/update_page/{id}(id=${rate.id})}"
+                                    class="btn btn-warning"> <img class="icon" alt="edit"
+                                                                  th:src="@{'/image/edit.svg'}"/>
+                                <!-- Change Password -->
+                            </a>
+                            <a th:href="@{/shipping/delete/{id}(id=${rate.id})}"
+                               class="btn btn-danger"> <img class="icon" alt="delete"
+                                                            th:src="@{'/image/delete.svg'}"/>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Table end  -->
+        </div>
+    </div>
 </div>
 <footer th:replace="~{fragment/footer :: footer}"></footer>
 </body>

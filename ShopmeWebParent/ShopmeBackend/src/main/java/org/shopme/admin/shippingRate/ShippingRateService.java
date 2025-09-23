@@ -36,7 +36,7 @@ public class ShippingRateService {
                 log.warn("ShippingRate with country {} and state {} already exists.", shippingRate.getCountry(),
                         shippingRate.getState());
                 return new JpaResult(JpaResultType.NOT_UNIQUE,
-                        "Category with name same country and state already exists.");
+                        "Rate with name same country and state already exists.");
             }
 
             repository.save(shippingRate);

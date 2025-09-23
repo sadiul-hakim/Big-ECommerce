@@ -20,9 +20,6 @@
                  th:if="${deletingBrand}">
                 <span th:text="${message}"></span>
             </div>
-            <div class="alert alert-danger" th:if="${updatingBrand}">
-                <span th:text="${message}"></span>
-            </div>
 
             <!-- Table Start -->
             <div th:replace="~{fragment/table :: table(${brandResult},${tableUrl},~{::#table})}">

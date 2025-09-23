@@ -29,7 +29,8 @@ public class ShippingController {
 
     private static final String PAGINATION_RESULT = "shippingResult";
     private static final String TABLE_URL = "tableUrl";
-    private static final String PAGE = "rates";
+    private static final String PAGE = "shipping_rate";
+    private static final String PAGE_URL = "shipping";
     private static final String POJO_NAME = "rate";
     private static final String CREATE_PAGE = "create_shipping_rate";
     private static final String SAVED_CONDITION = "savedSuccessfully";
@@ -93,7 +94,7 @@ public class ShippingController {
             model.addAttribute("states", states);
             return CREATE_PAGE;
         } else {
-            return "redirect:/" + PAGE;
+            return "redirect:/" + PAGE_URL;
         }
     }
 
@@ -126,7 +127,7 @@ public class ShippingController {
         redirectAttributes.addFlashAttribute(DELETED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
         redirectAttributes.addFlashAttribute(DELETING_CONDITION, true);
         redirectAttributes.addFlashAttribute(MESSAGE, result.message());
-        return "redirect:/" + PAGE;
+        return "redirect:/" + PAGE_URL;
     }
 
 
