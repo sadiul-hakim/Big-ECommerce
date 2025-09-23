@@ -34,7 +34,8 @@ public class SecurityConfig {
                 "/loginPage",
                 "/registerPage",
                 "/webjars/**",
-                "/forgot_password"
+                "/forgot_password",
+                "/logout"
         };
 
         return http
@@ -55,7 +56,8 @@ public class SecurityConfig {
                         .rememberMeParameter("remember-me"))
                 .logout(logout -> logout.logoutSuccessUrl("/loginPage?logout=true")
                         .logoutUrl("/logout")
-                        .permitAll())
+                        .permitAll()
+                )
                 .build();
     }
 

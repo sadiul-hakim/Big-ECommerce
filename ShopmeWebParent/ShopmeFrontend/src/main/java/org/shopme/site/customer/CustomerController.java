@@ -9,6 +9,7 @@ import org.shopme.common.entity.Customer;
 import org.shopme.common.entity.MailToken;
 import org.shopme.common.enumeration.MailTokenType;
 import org.shopme.common.pojo.ChangePasswordPojo;
+import org.shopme.common.pojo.CustomerRegistrationPojo;
 import org.shopme.common.util.JpaResult;
 import org.shopme.common.util.JpaResultType;
 import org.shopme.common.util.MailServerSettingBag;
@@ -48,6 +49,7 @@ public class CustomerController {
     private static final String UPDATING_PASSWORD = "updatingPassword";
     private static final String UPDATED_PASSWORD = "updatedPassword";
     private static final String SAVING_CONDITION = "savingCustomer";
+    private static final String REGISTRATION_ERROR = "registrationError";
     private static final String MESSAGE = "message";
     private static final String POJO_NAME = "customer";
 
@@ -130,7 +132,7 @@ public class CustomerController {
     }
 
     @GetMapping("/profile")
-    public String profile(@RequestParam int id, Model model) {
+    public String profile(@RequestParam int id, Model model) { // TODO: remove address fields
 
         Optional<Customer> customerOpt = customerService.findById(id);
         if (customerOpt.isEmpty()) {
@@ -179,16 +181,24 @@ public class CustomerController {
     }
 
     @PostMapping("/register")
-    String register(@ModelAttribute @Valid Customer customer, BindingResult result, @RequestParam MultipartFile picture,
-                    Model model, HttpServletRequest request) {
+    String register(@ModelAttribute @Valid CustomerRegistrationPojo customer, BindingResult result, @RequestParam MultipartFile picture,
+                    Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             model.addAttribute("countries", countryRepository.findAll());
             model.addAttribute("states", stateRepository.findAll());
             return "registerPage";
         }
 
-        JpaResult savedResult = customerService.save(customer, picture);
+        JpaResult savedResult = customerService.register(customer, picture);
         Customer entity = (Customer) savedResult.entity();
+
+        if (entity == null || savedResult.type().equals(JpaResultType.FAILED)) {
+
+            redirectAttributes.addFlashAttribute(REGISTRATION_ERROR, true);
+            redirectAttributes.addFlashAttribute(MESSAGE, savedResult.message());
+            redirectAttributes.addFlashAttribute("customer", customer);
+            return "redirect:/registerPage";
+        }
 
         try {
 

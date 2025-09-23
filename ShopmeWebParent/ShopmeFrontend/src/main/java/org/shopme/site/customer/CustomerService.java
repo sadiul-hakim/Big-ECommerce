@@ -1,19 +1,19 @@
 package org.shopme.site.customer;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.shopme.common.entity.Address;
 import org.shopme.common.entity.Customer;
 import org.shopme.common.entity.MailToken;
 import org.shopme.common.enumeration.MailTokenType;
 import org.shopme.common.pojo.ChangePasswordPojo;
+import org.shopme.common.pojo.CustomerRegistrationPojo;
 import org.shopme.common.util.FileUtil;
 import org.shopme.common.util.JpaResult;
 import org.shopme.common.util.JpaResultType;
 import org.shopme.common.util.VerificationCodeGenerator;
+import org.shopme.site.address.AddressService;
 import org.shopme.site.mailToken.MailTokenService;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,30 +34,39 @@ public class CustomerService {
     private final PasswordEncoder encoder;
     private final MailTokenService mailTokenService;
     private final PasswordEncoder passwordEncoder;
+    private final AddressService addressService;
 
-    public JpaResult save(Customer customer, MultipartFile file) {
+    @Transactional
+    public JpaResult register(CustomerRegistrationPojo pojo, MultipartFile file) {
         try {
 
             // Check if customer exists
-            var existingUser = findByEmail(customer.getEmail());
+            var existingUser = findByEmail(pojo.getEmail());
             if (existingUser.isPresent()) {
-                return new JpaResult(JpaResultType.NOT_UNIQUE, "Customer " + customer.getEmail() + " already exists!");
+                return new JpaResult(JpaResultType.NOT_UNIQUE, "Customer " + pojo.getEmail() + " already exists!");
             }
 
+            Customer customer = new Customer(pojo.getEmail(), "", pojo.getFirstname(), pojo.getLastname(),
+                    false);
+
             // Encode the password
-            customer.setPassword(encoder.encode(customer.getPassword()));
+            customer.setPassword(encoder.encode(pojo.getPassword()));
 
             handleFile(file, customer);
+            var savedCustomer = repository.save(customer);
 
-            var savedUser = repository.save(customer);
+            Address primaryAddress = new Address(savedCustomer, pojo.getPhoneNumber(), pojo.getAddress(),
+                    pojo.getCountry(), pojo.getState(), pojo.getPostalCode(), true);
+            addressService.save(primaryAddress);
+
             String token = VerificationCodeGenerator.generateCode(64);
-            mailTokenService.save(savedUser.getId(), token, MailTokenType.EMAIL_VERIFICATION, 1440);
-            return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully saved customer " + savedUser.getEmail(),
-                    savedUser.getId(), savedUser);
+            mailTokenService.save(savedCustomer.getId(), token, MailTokenType.EMAIL_VERIFICATION, 1440);
+            return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully saved customer " + savedCustomer.getEmail(),
+                    savedCustomer.getId(), savedCustomer);
         } catch (Exception ex) {
             log.error("CustomerService.save :: Error Occurred {}", ex.getMessage());
             return new JpaResult(JpaResultType.FAILED,
-                    "Failed to save/update customer: " + customer.getEmail() + ". Please try again!");
+                    "Failed to save/update customer: " + pojo.getEmail() + ". Please try again!");
         }
     }
 
@@ -94,21 +103,6 @@ public class CustomerService {
             }
             if (StringUtils.hasText(customer.getLastname())) {
                 existingCustomer.setLastname(customer.getLastname());
-            }
-            if (StringUtils.hasText(customer.getAddress())) {
-                existingCustomer.setAddress(customer.getAddress());
-            }
-            if (customer.getCountry() != null) {
-                existingCustomer.setCountry(customer.getCountry());
-            }
-            if (customer.getState() != null) {
-                existingCustomer.setState(customer.getState());
-            }
-            if (StringUtils.hasText(customer.getPhoneNumber())) {
-                existingCustomer.setPhoneNumber(customer.getPhoneNumber());
-            }
-            if (StringUtils.hasText(customer.getPostalCode())) {
-                existingCustomer.setPostalCode(customer.getPostalCode());
             }
 
             var savedUser = repository.save(existingCustomer);

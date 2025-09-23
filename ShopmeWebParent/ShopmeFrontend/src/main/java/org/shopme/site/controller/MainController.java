@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.shopme.common.entity.Customer;
 import org.shopme.common.entity.MailToken;
 import org.shopme.common.pojo.ChangePasswordPojo;
+import org.shopme.common.pojo.CustomerRegistrationPojo;
 import org.shopme.common.util.JpaResult;
 import org.shopme.common.util.JpaResultType;
 import org.shopme.site.country.CountryService;
@@ -45,13 +46,15 @@ public class MainController {
     }
 
     @GetMapping("/registerPage")
-    public ModelAndView registerPage(ModelAndView model) {
+    public String registerPage(Model model) {
 
-        model.addObject("states", stateService.findAll());
-        model.addObject("countries", countryService.findAll());
-        model.addObject("customer", new Customer());
-        model.setViewName("registerPage");
-        return model;
+        model.addAttribute("states", stateService.findAll());
+        model.addAttribute("countries", countryService.findAll());
+
+        if (model.getAttribute("customer") == null) {
+            model.addAttribute("customer", new CustomerRegistrationPojo());
+        }
+        return "registerPage";
     }
 
     @GetMapping("/verify")
