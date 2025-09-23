@@ -12,6 +12,7 @@ import org.shopme.common.pojo.PaginationResult;
 import org.shopme.common.util.JpaResult;
 import org.shopme.common.util.JpaResultType;
 import org.shopme.common.util.PageUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private static final int USER_LIST_LIMIT = 10;
+
+    @Value("${app.table.page.size:35}")
+    private int PAGE_SIZE;
     private static final String FILE_PATH = "/user/";
     private static final String DEFAULT_PHOTO_NAME = "default_user.svg";
 
@@ -124,7 +127,7 @@ public class UserService {
     }
 
     public PaginationResult findAllPaginated(int pageNumber) {
-        var page = userRepository.findAll(PageRequest.of(pageNumber, USER_LIST_LIMIT));
+        var page = userRepository.findAll(PageRequest.of(pageNumber, PAGE_SIZE));
         return PageUtil.prepareResult(page);
     }
 
@@ -146,7 +149,6 @@ public class UserService {
         userRepository.delete(user.get());
         return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully deleted user.");
     }
-
 
 
     public byte[] csvData() {

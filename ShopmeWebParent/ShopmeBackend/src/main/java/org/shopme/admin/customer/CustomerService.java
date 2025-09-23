@@ -8,6 +8,7 @@ import org.shopme.common.util.FileUtil;
 import org.shopme.common.util.JpaResult;
 import org.shopme.common.util.JpaResultType;
 import org.shopme.common.util.PageUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -21,20 +22,21 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CustomerService {
 
-    private static final int CUSTOMER_LIST_LIMIT = 10;
+    @Value("${app.table.page.size:35}")
+    private int PAGE_SIZE;
     private static final String FILE_PATH = "/customer/";
     private static final String DEFAULT_PHOTO_NAME = "default.svg";
 
     private final CustomerRepository repository;
 
     public PaginationResult findAllPaginated(int pageNumber) {
-        var page = repository.findAll(PageRequest.of(pageNumber, CUSTOMER_LIST_LIMIT));
+        var page = repository.findAll(PageRequest.of(pageNumber, PAGE_SIZE));
         return PageUtil.prepareResult(page);
     }
 
     public PaginationResult searchCustomer(String text, int pageNum) {
         var page = repository.findAllByFirstnameContainingOrLastnameContainingOrEmailContaining(text, text, text,
-                PageRequest.of(pageNum, CUSTOMER_LIST_LIMIT));
+                PageRequest.of(pageNum, PAGE_SIZE));
         return PageUtil.prepareResult(page);
     }
 

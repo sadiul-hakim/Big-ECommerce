@@ -8,6 +8,7 @@ import org.shopme.common.pojo.PaginationResult;
 import org.shopme.common.util.JpaResult;
 import org.shopme.common.util.JpaResultType;
 import org.shopme.common.util.PageUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,9 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-    private static final int PAGE_SIZE = 10;
+
+    @Value("${app.table.page.size:35}")
+    private int PAGE_SIZE;
     private static final String FILE_PATH = "/product/";
 
     private final ProductRepository repository;
@@ -142,7 +145,7 @@ public class ProductService {
 
     public PaginationResult search(String text, int pageNumber) {
         try {
-            Page<Product> page = repository.findAllByNameContainingOrAliasContainingOrShortDescriptionContainingOrFullDescriptionContainingOrCategoryContainingOrBrandContaining(text, text, text, text,text,text, PageRequest.of(pageNumber, 100));
+            Page<Product> page = repository.findAllByNameContainingOrAliasContainingOrShortDescriptionContainingOrFullDescriptionContainingOrCategoryContainingOrBrandContaining(text, text, text, text, text, text, PageRequest.of(pageNumber, 100));
 
             List<Product> products = page.getContent();
             for (Product product : products) {

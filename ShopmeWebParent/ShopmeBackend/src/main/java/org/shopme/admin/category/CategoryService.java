@@ -7,6 +7,7 @@ import org.shopme.common.pojo.PaginationResult;
 import org.shopme.common.util.JpaResult;
 import org.shopme.common.util.JpaResultType;
 import org.shopme.common.util.PageUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,8 @@ import java.util.StringJoiner;
 @RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository repository;
-    private static final int PAGE_SIZE = 10;
+    @Value("${app.table.page.size:35}")
+    private int PAGE_SIZE;
 
     public JpaResult save(Category category) {
 

@@ -10,6 +10,7 @@ import org.shopme.common.pojo.PaginationResult;
 import org.shopme.common.util.JpaResult;
 import org.shopme.common.util.JpaResultType;
 import org.shopme.common.util.PageUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,8 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class BrandService {
-    private static final int PAGE_SIZE = 10;
+    @Value("${app.table.page.size:35}")
+    private int PAGE_SIZE;
     private static final String FILE_PATH = "/brand/";
     private static final String DEFAULT_PHOTO_NAME = "brand_logo.png";
 
