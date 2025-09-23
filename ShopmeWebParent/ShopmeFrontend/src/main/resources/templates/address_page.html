@@ -29,10 +29,16 @@
                                  alt="status"/>
                         </a>
 
-                        <a th:href="@{/address/update_page/{id}(id=${address.id})}">
-                            <img class="icon" alt="edit"
-                                 th:src="@{'/image/edit.svg'}"/>
-                        </a>
+                        <div>
+                            <a th:href="@{/address/update_page/{id}(id=${address.id})}">
+                                <img class="icon" alt="edit"
+                                     th:src="@{'/image/edit.svg'}"/>
+                            </a>
+                            <a th:href="@{/address/delete/{id}(id=${address.id})}">
+                                <img class="icon" alt="delete"
+                                     th:src="@{'/image/delete.svg'}"/>
+                            </a>
+                        </div>
                     </div>
 
                     <h3>

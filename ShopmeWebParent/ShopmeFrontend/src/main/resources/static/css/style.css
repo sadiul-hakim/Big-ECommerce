@@ -40,3 +40,7 @@ body {
     text-align: center;
     width: 50px;
 }
+
+a{
+    text-decoration: none;
+}

@@ -99,6 +99,21 @@ public class AddressController {
         return "create_address_page";
     }
 
+    @GetMapping("/delete/{id}")
+    public String deleteAddress(@PathVariable long id, RedirectAttributes redirectAttributes) {
+
+        Optional<Address> optional = addressService.findById(id);
+        if (optional.isEmpty()) {
+            return "redirect:/" + PAGE_URL;
+        }
+
+        JpaResult result = addressService.delete(id);
+        redirectAttributes.addFlashAttribute(SAVING_CONDITION, true);
+        redirectAttributes.addFlashAttribute(SAVED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
+        redirectAttributes.addFlashAttribute(MESSAGE, result.message());
+        return "redirect:/" + PAGE_URL;
+    }
+
     @GetMapping("/set-primary/{id}")
     public String setPrimary(@PathVariable long id, RedirectAttributes redirectAttributes) {
 
