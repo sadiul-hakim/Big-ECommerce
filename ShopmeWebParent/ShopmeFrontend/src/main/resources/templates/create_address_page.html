@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="en">
+<head th:replace="~{fragment/head :: head}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<nav th:replace="~{fragment/navbar :: navbar}"></nav>
+<div class="container flex-grow-1">
+    <div class="row">
+        <div class="col-md-10 mx-auto card mt-4 p-4">
+            <form th:action="@{'/address/save'}"
+                  method="post" th:object="${pojo}" enctype="multipart/form-data">
+                <h2
+                        class="my-3 text-primary d-flex justify-content-center align-items-center">
+                    Update Your Information
+                </h2>
+
+                <input type="hidden" name="id" th:value="${pojo.id}"/>
+
+                <div>
+                    <label for="phone">Phone*</label>
+                    <input type="text"
+                           class="form-control" name="phone" id="phone"
+                           th:field="*{phoneNumber}"
+                           min="5" max="20" required/>
+                </div>
+                <br/>
+                <div>
+                    <label for="alternativePhone">Alternative Phone</label>
+                    <input type="text"
+                           class="form-control"
+                           name="alternativePhone"
+                           id="alternativePhone"
+                           th:field="*{alternativePhoneNumber}"
+                           min="5" max="20"/>
+                </div>
+                <br/>
+                <div>
+                    <label for="country">Country*</label> <select type="text"
+                                                                  class="form-control" id="country" name="country"
+                                                                  th:field="*{country}" required>
+                    <option value="">--Select Your Country--</option>
+                    <option th:each="country : ${countries}"
+                            th:value="${country.id}" th:text="${country.name}"></option>
+                </select>
+                    <div th:if="${#fields.hasErrors('country')}" th:errors="*{country}" class="text-danger"></div>
+                </div>
+                <br/>
+                <div>
+                    <label for="state">State*</label> <select type="text"
+                                                              class="form-control" id="state" name="state"
+                                                              th:field="*{state}" required>
+                    <option value="">--Select Your State--</option>
+                    <option th:each="state : ${states}" th:value="${state.id}"
+                            th:text="${state.name}"></option>
+                </select>
+                    <div th:if="${#fields.hasErrors('state')}" th:errors="*{state}" class="text-danger"></div>
+                </div>
+                <br/>
+                <div>
+                    <label for="address">Address*</label>
+                    <textarea type="text"
+                              class="form-control" name="address" id="address"
+                              th:field="*{address}"
+                              required
+                    >
+                    </textarea>
+                </div>
+                <br/>
+                <div>
+                    <label for="postalCode">Postal Code*</label>
+                    <input type="number"
+                           class="form-control" name="postalCode"
+                           id="postalCode"
+                           th:field="*{postalCode}"
+                           required
+                    />
+                </div>
+                <br/>
+                <div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="reset" class="btn btn-danger">Clean</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<footer th:replace="~{fragment/footer :: footer}"></footer>
+</body>
+</html>

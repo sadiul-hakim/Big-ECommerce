@@ -45,10 +45,10 @@ public class CustomerController {
     private final SettingService settingService;
     private final MailTokenService mailTokenService;
 
-    private static final String SAVED_CONDITION = "savedSuccessfully";
     private static final String UPDATING_PASSWORD = "updatingPassword";
     private static final String UPDATED_PASSWORD = "updatedPassword";
     private static final String SAVING_CONDITION = "savingCustomer";
+    private static final String SAVED_CONDITION = "savedSuccessfully";
     private static final String REGISTRATION_ERROR = "registrationError";
     private static final String MESSAGE = "message";
     private static final String POJO_NAME = "customer";
@@ -132,7 +132,7 @@ public class CustomerController {
     }
 
     @GetMapping("/profile")
-    public String profile(@RequestParam int id, Model model) { // TODO: remove address fields
+    public String profile(@RequestParam int id, Model model) {
 
         Optional<Customer> customerOpt = customerService.findById(id);
         if (customerOpt.isEmpty()) {
@@ -149,8 +149,6 @@ public class CustomerController {
             }
         }
 
-        model.addAttribute("countries", countryRepository.findAll());
-        model.addAttribute("states", stateRepository.findAll());
         model.addAttribute(POJO_NAME, customer);
         model.addAttribute(SAVING_CONDITION, false);
         model.addAttribute(SAVED_CONDITION, false);

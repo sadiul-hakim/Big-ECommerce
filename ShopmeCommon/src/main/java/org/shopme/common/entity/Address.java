@@ -32,6 +32,12 @@ public class Address {
 
     @NotNull
     @NotEmpty
+    @Size(min = 11, max = 15)
+    @Column(length = 15)
+    private String alternativePhoneNumber;
+
+    @NotNull
+    @NotEmpty
     @Size(max = 150)
     @Column(length = 150, nullable = false)
     private String address;
@@ -52,10 +58,12 @@ public class Address {
 
     private boolean selected;
 
-    public Address(Customer customer, String phoneNumber, String address, Country country, State state, String postalCode,
+    public Address(Customer customer, String phoneNumber, String alternativePhoneNumber, String address, Country country,
+                   State state, String postalCode,
                    boolean selected) {
         this.customer = customer;
         this.phoneNumber = phoneNumber;
+        this.alternativePhoneNumber = alternativePhoneNumber;
         this.address = address;
         this.country = country;
         this.state = state;

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="en">
+<head th:replace="~{fragment/head :: head}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<nav th:replace="~{fragment/navbar :: navbar}"></nav>
+<div class="container flex-grow-1">
+    <div class="row">
+        <div class="col-md-10 mx-auto mt-4">
+            <h1 class="text-primary">Address Book</h1>
+
+            <div class="alert my-2"
+                 th:classappend="${savedSuccessfully} ? 'alert-success' : 'alert-danger'"
+                 th:if="${savingAddress}">
+                <span th:text="${message}"></span>
+            </div>
+
+            <div class="my-2 d-flex justify-content-end align-items-center">
+                <a th:href="@{'/address/create_page'}" class="btn btn-primary">New Address</a>
+            </div>
+
+            <div class="d-flex flex-wrap">
+                <div th:each="address : ${addresses}" class="p-3 card m-1">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a th:href="@{/address/set-primary/{id}(id=${address.id})}">
+                            <img class="icon"
+                                 th:src="@{${address.selected} ? '/image/green.svg' : '/image/red.svg'}"
+                                 alt="status"/>
+                        </a>
+
+                        <a th:href="@{/address/update_page/{id}(id=${address.id})}">
+                            <img class="icon" alt="edit"
+                                 th:src="@{'/image/edit.svg'}"/>
+                        </a>
+                    </div>
+
+                    <h3>
+                        <span th:text="${address.country.name}"></span>,
+                        <span th:text="${address.state.name}"></span>
+                    </h3>
+                    <p th:text="${address.address}" class="text-muted my-2"></p>
+                    <p>
+                        <span th:text="${address.phoneNumber}"></span>,
+                        <span th:text="${address.alternativePhoneNumber}"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="~{fragment/footer :: footer}"></footer>
+</body>
+</html>
