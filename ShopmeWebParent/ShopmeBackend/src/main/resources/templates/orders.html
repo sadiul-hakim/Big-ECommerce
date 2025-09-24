@@ -52,7 +52,10 @@
                                                             th:src="@{'/image/delete.svg'}"/>
                             </a>
                             <button type="button" class="btn btn-info details-btn"
-                                    th:data-order-id="${order.id}">Details</button>
+                                    th:data-order-id="${order.id}">
+                                <img class="icon" alt="info"
+                                     th:src="@{'/image/info.png'}"/>
+                            </button>
                         </td>
                     </tr>
                     </tbody>
