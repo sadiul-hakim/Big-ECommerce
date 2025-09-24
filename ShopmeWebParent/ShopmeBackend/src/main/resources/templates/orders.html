@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="en">
+<head th:replace="~{fragment/head :: head}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<nav th:replace="~{fragment/navbar :: navbar}"></nav>
+<div class="container flex-grow-1">
+    <div class="row">
+        <div class="col-md-10 mt-5 mx-auto d-flex flex-column justify-content-center align-items-center">
+            <h1>Orders</h1>
+        </div>
+    </div>
+</div>
+<footer th:replace="~{fragment/footer :: footer}"></footer>
+</body>
+</html>

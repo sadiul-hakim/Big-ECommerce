@@ -27,6 +27,16 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotNull
+    @Size(max = 45)
+    @Column(length = 45, nullable = false)
+    private String firstName;
+
+    @NotNull
+    @Size(max = 45)
+    @Column(length = 45, nullable = false)
+    private String lastName;
+
     // The Address of the customer and the address of the order is not the same.
     // Because a Customer can change his address anytime, that would change the order address.\
     // So, we have to keep static address in the order table even though they are duplicates.
@@ -34,7 +44,7 @@ public class Order {
     @NotNull
     @NotEmpty
     @Size(min = 11, max = 15)
-    @Column(length = 15, nullable = false, unique = true)
+    @Column(length = 15, nullable = false)
     private String phoneNumber;
 
     @NotNull
@@ -50,14 +60,17 @@ public class Order {
     private String address;
 
     @NotNull
+    @Size(max = 45)
     @Column(length = 45, nullable = false)
     private String country;
 
     @NotNull
+    @Size(max = 45)
     @Column(length = 45, nullable = false)
     private String state;
 
     @NotNull
+    @Size(max = 45)
     @Column(length = 45, nullable = false)
     private String city;
 
@@ -86,6 +99,6 @@ public class Order {
     @ManyToOne
     private Customer customer;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private Set<OrderDetails> details = new HashSet<>();
 }

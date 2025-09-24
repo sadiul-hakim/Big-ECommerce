@@ -28,7 +28,7 @@
                 <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN','ROLE_SALESPERSON')"><a class="nav-link" aria-current="page"
                                         th:href="@{/shipping}">Shipping</a></li>
                 <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN','ROLE_SALESPERSON','ROLE_SHIPPER')"><a class="nav-link" aria-current="page"
-                                        href="#">Orders</a></li>
+                                        th:href="@{/orders}">Orders</a></li>
                 <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN','ROLE_SALESPERSON')"><a class="nav-link" aria-current="page"
                                         href="#">Sales Report</a></li>
                 <li class="nav-item" sec:authorize="hasAnyAuthority('ROLE_ADMIN','ROLE_EDITOR')"><a class="nav-link" aria-current="page"
