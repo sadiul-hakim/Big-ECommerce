@@ -13,8 +13,8 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
 
     Optional<Address> findByCustomerAndSelected(Customer customer, boolean selected);
 
-    Page<Address> findAllByPhoneNumberContainingOrAddressContainingOrPostalCodeContaining(
+    Page<Address> findAllByPhoneNumberContainingOrAddressContainingOrPostalCodeContainingOrCityContaining(
             String phoneNumber,
-            String address, String postalCode, Pageable pageable
+            String address, String postalCode, String city, Pageable pageable
     );
 }

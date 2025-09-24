@@ -34,6 +34,9 @@ public class AddressPojo {
     private State state;
 
     @NotNull
+    private String city;
+
+    @NotNull
     @NotEmpty
     @Size(max = 10)
     private String postalCode;

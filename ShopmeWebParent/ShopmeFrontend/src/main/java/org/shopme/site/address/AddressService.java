@@ -74,6 +74,10 @@ public class AddressService {
             oldAddress.setPostalCode(address.getPostalCode());
         }
 
+        if (StringUtils.hasText(address.getCity())) {
+            oldAddress.setCity(address.getCity());
+        }
+
         return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully saved address.");
     }
 
@@ -84,7 +88,7 @@ public class AddressService {
             CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
             Customer customer = principal.customer();
             Address address = new Address(customer, pojo.getPhoneNumber(), pojo.getAlternativePhoneNumber(), pojo.getAddress(), pojo.getCountry(),
-                    pojo.getState(), pojo.getPostalCode(), pojo.isSelected());
+                    pojo.getState(), pojo.getCity(), pojo.getPostalCode(), pojo.isSelected());
             repository.save(address);
 
             return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully saved Address.");

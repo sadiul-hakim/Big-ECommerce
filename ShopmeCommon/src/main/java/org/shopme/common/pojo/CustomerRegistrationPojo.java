@@ -41,6 +41,10 @@ public class CustomerRegistrationPojo {
     private State state;
 
     @NotNull
+    @Size(max = 45)
+    private String city;
+
+    @NotNull
     @NotEmpty
     @Size(max = 10)
     private String postalCode;

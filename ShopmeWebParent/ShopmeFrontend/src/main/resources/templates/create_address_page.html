@@ -68,8 +68,18 @@
                 </div>
                 <br/>
                 <div>
+                    <label for="city">City*</label>
+                    <input type="text"
+                           class="form-control" name="city"
+                           id="city"
+                           th:field="*{city}"
+                           required
+                    />
+                </div>
+                <br/>
+                <div>
                     <label for="postalCode">Postal Code*</label>
-                    <input type="number"
+                    <input type="text"
                            class="form-control" name="postalCode"
                            id="postalCode"
                            th:field="*{postalCode}"

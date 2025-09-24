@@ -51,8 +51,8 @@ public class AddressService {
     }
 
     public PaginationResult search(String text, int pageNumber) {
-        Page<Address> page = repository.findAllByPhoneNumberContainingOrAddressContainingOrPostalCodeContaining(
-                text, text, text,
+        Page<Address> page = repository.findAllByPhoneNumberContainingOrAddressContainingOrPostalCodeContainingOrCityContaining(
+                text, text, text, text,
                 PageRequest.of(pageNumber, PAGE_SIZE)
         );
         return PageUtil.prepareResult(page);
@@ -60,7 +60,7 @@ public class AddressService {
 
     public byte[] csvData() {
         var addresses = repository.findAll();
-        StringBuilder data = new StringBuilder("Id,Customer,phoneNumber,alternativePhoneNumber,address,country,state,postalCode,selected\n");
+        StringBuilder data = new StringBuilder("Id,Customer,phoneNumber,alternativePhoneNumber,address,country,state,city,postalCode,selected\n");
         for (var address : addresses) {
             data.append(address.getId())
                     .append(",")
@@ -75,6 +75,8 @@ public class AddressService {
                     .append(address.getCountry().getName())
                     .append(",")
                     .append(address.getState().getName())
+                    .append(",")
+                    .append(address.getCity())
                     .append(",")
                     .append(address.getPostalCode())
                     .append(",")

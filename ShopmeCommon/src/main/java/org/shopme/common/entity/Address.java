@@ -51,6 +51,10 @@ public class Address {
     private State state;
 
     @NotNull
+    @Column(length = 45,nullable = false)
+    private String city;
+
+    @NotNull
     @NotEmpty
     @Size(max = 10)
     @Column(length = 10, nullable = false)
@@ -59,7 +63,7 @@ public class Address {
     private boolean selected;
 
     public Address(Customer customer, String phoneNumber, String alternativePhoneNumber, String address, Country country,
-                   State state, String postalCode,
+                   State state, String city, String postalCode,
                    boolean selected) {
         this.customer = customer;
         this.phoneNumber = phoneNumber;
@@ -69,5 +73,6 @@ public class Address {
         this.state = state;
         this.postalCode = postalCode;
         this.selected = selected;
+        this.city = city;
     }
 }

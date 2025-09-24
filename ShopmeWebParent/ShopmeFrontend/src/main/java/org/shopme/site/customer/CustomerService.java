@@ -56,7 +56,7 @@ public class CustomerService {
             var savedCustomer = repository.save(customer);
 
             Address primaryAddress = new Address(savedCustomer, pojo.getPhoneNumber(), "", pojo.getAddress(),
-                    pojo.getCountry(), pojo.getState(), pojo.getPostalCode(), true);
+                    pojo.getCountry(), pojo.getState(), pojo.getCity(), pojo.getPostalCode(), true);
             addressService.save(primaryAddress);
 
             String token = VerificationCodeGenerator.generateCode(64);
