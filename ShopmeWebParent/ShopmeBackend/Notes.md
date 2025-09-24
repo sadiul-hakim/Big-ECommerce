@@ -1,4 +1,4 @@
-1. OneToOne == One user has one address and only that use has that address. So just put the address id in the user
+1. OneToOne == One user has one address and only that user has that address. So just put the address id in the user
    table.
 2. OneToMany / ManyToOne == One user can have many orders, but each order belongs to exactly one user. Add a user_id
    foreign key column in the orders table.
