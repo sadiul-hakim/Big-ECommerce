@@ -1,0 +1,156 @@
+<div th:fragment="modalContent">
+
+    <!-- Bootstrap nav tabs -->
+    <ul class="nav nav-tabs" id="orderTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab"
+                    data-bs-target="#overview" type="button" role="tab">Overview
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="products-tab" data-bs-toggle="tab"
+                    data-bs-target="#products" type="button" role="tab">Products
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="shipping-tab" data-bs-toggle="tab"
+                    data-bs-target="#shipping" type="button" role="tab">Shipping
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="track-tab" data-bs-toggle="tab"
+                    data-bs-target="#track" type="button" role="tab">Track
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab contents -->
+    <div class="tab-content mt-3">
+
+        <!-- Overview -->
+        <div class="tab-pane fade show active p-3" id="overview" role="tabpanel">
+            <dl class="row order-overview">
+                <dt class="col-sm-4">Order ID:</dt>
+                <dd class="col-sm-8" th:text="${order.id}"></dd>
+
+                <dt class="col-sm-4">Customer:</dt>
+                <dd class="col-sm-8" th:text="${order.customer.fullName}"></dd>
+
+                <dt class="col-sm-4">Product Cost:</dt>
+                <dd class="col-sm-8" th:if="${CURRENCY_POSITION == 'before'}">
+                    <span th:text="${CURRENCY_SYMBOL}"></span>
+                    <span th:text="${numberFormatter.format(order.productCost)}"></span>
+                </dd>
+                <dd class="col-sm-8" th:if="${CURRENCY_POSITION == 'after'}">
+                    <span th:text="${numberFormatter.format(order.productCost)}"></span>
+                    <span th:text="${CURRENCY_SYMBOL}"></span>
+                </dd>
+
+                <dt class="col-sm-4">Subtotal:</dt>
+                <dd class="col-sm-8" th:if="${CURRENCY_POSITION == 'before'}">
+                    <span th:text="${CURRENCY_SYMBOL}"></span>
+                    <span th:text="${numberFormatter.format(order.subtotal)}"></span>
+                </dd>
+                <dd class="col-sm-8" th:if="${CURRENCY_POSITION == 'after'}">
+                    <span th:text="${numberFormatter.format(order.subtotal)}"></span>
+                    <span th:text="${CURRENCY_SYMBOL}"></span>
+                </dd>
+
+                <dt class="col-sm-4">Shipping Cost:</dt>
+                <dd class="col-sm-8" th:if="${CURRENCY_POSITION == 'before'}">
+                    <span th:text="${CURRENCY_SYMBOL}"></span>
+                    <span th:text="${numberFormatter.format(order.shippingCost)}"></span>
+                </dd>
+                <dd class="col-sm-8" th:if="${CURRENCY_POSITION == 'after'}">
+                    <span th:text="${numberFormatter.format(order.shippingCost)}"></span>
+                    <span th:text="${CURRENCY_SYMBOL}"></span>
+                </dd>
+
+                <dt class="col-sm-4">Tax:</dt>
+                <dd class="col-sm-8" th:if="${CURRENCY_POSITION == 'before'}">
+                    <span th:text="${CURRENCY_SYMBOL}"></span>
+                    <span th:text="${numberFormatter.format(order.tax)}"></span>
+                </dd>
+                <dd class="col-sm-8" th:if="${CURRENCY_POSITION == 'after'}">
+                    <span th:text="${numberFormatter.format(order.tax)}"></span>
+                    <span th:text="${CURRENCY_SYMBOL}"></span>
+                </dd>
+
+                <dt class="col-sm-4">Total:</dt>
+                <dd class="col-sm-8" th:if="${CURRENCY_POSITION == 'before'}">
+                    <span th:text="${CURRENCY_SYMBOL}"></span>
+                    <span th:text="${numberFormatter.format(order.total)}"></span>
+                </dd>
+                <dd class="col-sm-8" th:if="${CURRENCY_POSITION == 'after'}">
+                    <span th:text="${numberFormatter.format(order.total)}"></span>
+                    <span th:text="${CURRENCY_SYMBOL}"></span>
+                </dd>
+
+                <dt class="col-sm-4">Payment Method:</dt>
+                <dd class="col-sm-8" th:text="${order.paymentMethod}"></dd>
+
+                <dt class="col-sm-4">Status:</dt>
+                <dd class="col-sm-8" th:text="${order.status}"></dd>
+
+                <dt class="col-sm-4">Order Date:</dt>
+                <dd class="col-sm-8" th:text="${#temporals.format(order.orderTime, 'yyyy-MM-dd HH:mm:ss')}"></dd>
+            </dl>
+        </div>
+
+        <!-- Products -->
+        <div class="tab-pane fade" id="products" role="tabpanel">
+            <div th:each="detail, stat : ${order.details}" class="mb-3 border-bottom pb-2 d-flex align-items-center">
+                <img th:src="@{'/images/product/'+${detail.product.files[0]}}" th:alt="${detail.product.files[0]}"
+                     class="icon-md me-2">
+                <div class="flex-grow-1">
+                    <p th:text="${detail.product.name}" class="dashed_hr mt-1 fw-bold"></p>
+                    <p class="dashed_hr mt-1"><span>Product Cost: </span><span th:text="${detail.productCost}"></span>
+                    </p>
+                    <p class="dashed_hr mt-1"><span>Subtotal: </span><span th:text="${detail.subtotal}"></span></p>
+                    <p class="dashed_hr mt-1"><span>Shipping: </span><span th:text="${detail.shippingCost}"></span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shipping -->
+        <div class="tab-pane fade p-3" id="shipping" role="tabpanel">
+            <dl class="row order-overview">
+                <dt class="col-sm-4">Deliver Days:</dt>
+                <dd class="col-sm-8" th:text="${order.deliveryDays}"></dd>
+
+                <dt class="col-sm-4">Expected Delivery Date:</dt>
+                <dd class="col-sm-8" th:text="${#temporals.format(order.deliveryDate, 'yyyy-MM-dd')}"></dd>
+
+                <dt class="col-sm-4">First Name:</dt>
+                <dd class="col-sm-8" th:text="${order.firstName}"></dd>
+
+                <dt class="col-sm-4">Last Name:</dt>
+                <dd class="col-sm-8" th:text="${order.lastName}"></dd>
+
+                <dt class="col-sm-4">Phone:</dt>
+                <dd class="col-sm-8" th:text="${order.phoneNumber}"></dd>
+
+                <dt class="col-sm-4">Address:</dt>
+                <dd class="col-sm-8" th:text="${order.address}"></dd>
+
+                <dt class="col-sm-4">City:</dt>
+                <dd class="col-sm-8" th:text="${order.city}"></dd>
+
+                <dt class="col-sm-4">State:</dt>
+                <dd class="col-sm-8" th:text="${order.state}"></dd>
+
+                <dt class="col-sm-4">Country:</dt>
+                <dd class="col-sm-8" th:text="${order.country}"></dd>
+
+                <dt class="col-sm-4">Postal Code:</dt>
+                <dd class="col-sm-8" th:text="${order.postalCode}"></dd>
+            </dl>
+        </div>
+
+
+        <!-- Track -->
+        <div class="tab-pane fade" id="track" role="tabpanel">
+            <p>🚚 Shipment tracking info goes here</p>
+        </div>
+    </div>
+</div>

@@ -7,22 +7,44 @@
     font-style: normal;
 }
 
-body{
-	font-family: 'Overlock', Arial, serif !important;
-	background:#eee;
+body {
+    font-family: 'Overlock', Arial, serif !important;
+    background: #eee;
 }
 
-.footer{
-	/*position: absolute;*/
-	/*bottom:0;*/
-	/*left:0;*/
-	/*right:0;*/
-
-	margin-top: 10px;
+.footer {
+    margin-top: 10px;
 }
 
 
-.icon{
-	width:25px;
-	height:25px;
+.icon {
+    width: 25px;
+    height: 25px;
+}
+
+
+.icon-md {
+    width: 130px;
+    height: 100px;
+}
+
+.icon_lg {
+    width: 150px;
+    height: 150px;
+}
+
+.order-overview dd {
+    border-bottom: 1px dashed rgba(144, 148, 152, 0.89); /* Bootstrap’s gray-dark */
+    margin-bottom: .5rem;
+    padding-bottom: .5rem;
+}
+
+.order-overview dd:last-child {
+    border-bottom: none; /* remove border for last item */
+}
+
+.dashed_hr{
+    border-bottom: 1px dashed rgba(144, 148, 152, 0.89); /* Bootstrap’s gray-dark */
+    margin-bottom: .5rem;
+    padding-bottom: .5rem;
 }

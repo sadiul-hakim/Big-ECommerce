@@ -6,6 +6,7 @@ import org.shopme.common.entity.Currency;
 import org.shopme.common.util.*;
 import org.shopme.common.entity.Setting;
 import org.shopme.common.enumeration.SettingCategory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,11 +27,13 @@ public class SettingService {
         return repository.findAll();
     }
 
+    @Cacheable("SettingService.getGeneralSettingBag")
     public GeneralSettingBag getGeneralSettingBag() {
         List<Setting> settings = repository.findAllByCategoryIn(List.of(SettingCategory.GENERAL, SettingCategory.CURRENCY));
         return new GeneralSettingBag(settings);
     }
 
+    @Cacheable("SettingService.getCurrencySettingBag")
     public CurrencySettingBag getCurrencySettingBag() {
         List<Setting> settings = repository.findAllByCategoryIn(List.of(SettingCategory.CURRENCY));
         return new CurrencySettingBag(settings);

@@ -7,11 +7,96 @@
 <nav th:replace="~{fragment/navbar :: navbar}"></nav>
 <div class="container flex-grow-1">
     <div class="row">
-        <div class="col-md-10 mt-5 mx-auto d-flex flex-column justify-content-center align-items-center">
-            <h1>Orders</h1>
+        <div class="col-md-10 mx-auto">
+            <h2 class="my-3 text-primary">Manage Orders</h2>
+
+            <!-- Table Start -->
+            <div th:replace="~{fragment/table :: table(${result},${tableUrl},~{::#table},false,false)}">
+                <table class="table table-hover" id="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Order Time</th>
+                        <th scope="col">Destination</th>
+                        <th scope="col">Payment Method</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">
+                            <a class="btn btn-light"
+                               th:href="@{${tableUrl.getCsvUrl()}}"> <img alt="csv"
+                                                                          th:src="@{'/image/csv.svg'}"
+                                                                          class="icon"/>
+                            </a>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="order:${result.data}">
+                        <td th:text="${order.id}"></td>
+                        <td th:text="${order.customer.getFullName()}"></td>
+                        <td th:text="${order.total}"></td>
+                        <td th:text="${#temporals.format(order.orderTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td th:text="${order.address}"></td>
+                        <td th:text="${order.paymentMethod.name()}"></td>
+                        <td th:text="${order.status.name()}"></td>
+                        <td>
+                            <a
+                                    th:href="@{/orders/update_page/{id}(id=${order.id})}"
+                                    class="btn btn-warning"> <img class="icon" alt="edit"
+                                                                  th:src="@{'/image/edit.svg'}"/>
+                                <!-- Change Password -->
+                            </a>
+                            <a th:href="@{/orders/delete/{id}(id=${order.id})}"
+                               class="btn btn-danger"> <img class="icon" alt="delete"
+                                                            th:src="@{'/image/delete.svg'}"/>
+                            </a>
+                            <button type="button" class="btn btn-info details-btn"
+                                    th:data-order-id="${order.id}">Details</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Table end  -->
         </div>
     </div>
 </div>
+
+<!-- Single reusable modal -->
+<div class="modal fade" id="orderModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Order Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="orderModalBody">
+                <!-- Fragment loads here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <footer th:replace="~{fragment/footer :: footer}"></footer>
 </body>
+<script>
+    document.querySelectorAll('.details-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.dataset.orderId;
+
+            let pathContent = /*[[@{/}]]*/"";
+
+            fetch(`${pathContent}orders/${id}/details`)
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById('orderModalBody').innerHTML = html;
+                    new bootstrap.Modal(document.getElementById('orderModal')).show();
+                });
+        });
+    });
+</script>
 </html>

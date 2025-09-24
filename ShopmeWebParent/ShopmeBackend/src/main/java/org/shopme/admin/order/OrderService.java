@@ -36,4 +36,8 @@ public class OrderService {
         );
         return PageUtil.prepareResult(page);
     }
+
+    public Order findById(long id) {
+        return repository.findById(id).orElse(null);
+    }
 }
