@@ -49,7 +49,11 @@ public class BrandController {
     }
 
     @GetMapping("/search")
-    public ModelAndView searchUsers(@RequestParam(defaultValue = "") String text, @RequestParam(defaultValue = "0") int page, ModelAndView model) {
+    public ModelAndView searchUsers(
+            @RequestParam(defaultValue = "") String text,
+            @RequestParam(defaultValue = "0") int page,
+            ModelAndView model
+    ) {
         var brandResult = service.searchCategory(text, page);
         model.addObject(PAGINATION_RESULT, brandResult);
         model.addObject(TABLE_URL, pageUrl);

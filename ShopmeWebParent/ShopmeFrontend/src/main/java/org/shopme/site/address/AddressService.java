@@ -131,6 +131,15 @@ public class AddressService {
         }
 
         Address address = optional.get();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
+        Customer customer = principal.customer();
+
+        if (!customer.getEmail().equals(address.getCustomer().getEmail())) {
+            return new JpaResult(JpaResultType.NOT_ALLOWED, "You are not allowed to delete this address.");
+        }
+
         if (address.isSelected()) {
             return new JpaResult(JpaResultType.FAILED, "The address is the primary address.");
         }

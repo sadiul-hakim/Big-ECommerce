@@ -42,7 +42,8 @@ public class SecurityConfig {
         String[] salesPersonAccess = {
                 "/customers/**",
                 "/shipping/**",
-                "/reports/**"
+                "/reports/**",
+                "/address/**"
         };
 
         String[] assistantAccess = {

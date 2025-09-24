@@ -22,7 +22,7 @@
             </div>
 
             <!-- Table Start -->
-            <div th:replace="~{fragment/table :: table(${userResult},${tableUrl},~{::#table})}">
+            <div th:replace="~{fragment/table :: table(${userResult},${tableUrl},~{::#table},false,false)}">
                 <table class="table table-hover" id="table">
                     <thead>
                     <tr>

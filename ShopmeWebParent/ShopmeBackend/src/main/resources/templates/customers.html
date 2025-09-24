@@ -22,7 +22,7 @@
             </div>
 
             <!-- Table Start -->
-            <div th:replace="~{fragment/table :: table(${customerResult},${tableUrl},~{::#table})}">
+            <div th:replace="~{fragment/table :: table(${customerResult},${tableUrl},~{::#table},false,false)}">
                 <table class="table table-hover" id="table">
                     <thead>
                     <tr>
@@ -42,7 +42,7 @@
                     <tr th:each="customer:${customerResult.data}">
                         <td>
                             <img alt="user"
-                                 th:src="@{${customer.photo == null || customer.photo.equals('default_user.svg') ? '/images/user/default.svg' : '/images/user/'+customer.photo}}"
+                                 th:src="@{${customer.photo == null || customer.photo.equals('default_user.svg') ? '/images/customer/default.svg' : '/images/customer/'+customer.photo}}"
                                  width="50" height="50"/>
                         </td>
                         <td th:text="${customer.firstname}"></td>
@@ -52,14 +52,26 @@
                                  th:src="@{${customer.enabled} ? '/image/green.svg' : '/image/red.svg'}"
                                  alt="status"/></td>
                         <td>
-                            <!-- Edit Button --> <a
-                                th:href="@{/customers/update_page/{id}(id=${customer.id})}"
-                                class="btn btn-warning"> <img class="icon" alt="edit"
-                                                              th:src="@{'/image/edit.svg'}"/> <!-- Change Password -->
-                        </a> <a th:href="@{/customers/delete/{id}(id=${customer.id})}"
-                                class="btn btn-danger"> <img class="icon" alt="delete"
-                                                             th:src="@{'/image/delete.svg'}"/>
-                        </a>
+                            <!-- Address Button -->
+                            <a
+                                    th:href="@{/address/{customerId}(customerId=${customer.id})}"
+                                    class="btn btn-primary">
+                                <img class="icon" alt="address"
+                                     th:src="@{'/image/address.png'}"/>
+                            </a>
+                            <!-- Edit Button -->
+                            <a
+                                    th:href="@{/customers/update_page/{id}(id=${customer.id})}"
+                                    class="btn btn-warning">
+                                <img class="icon" alt="edit"
+                                     th:src="@{'/image/edit.svg'}"/>
+                            </a>
+                            <!-- Change Password -->
+                            <a th:href="@{/customers/delete/{id}(id=${customer.id})}"
+                               class="btn btn-danger">
+                                <img class="icon" alt="delete"
+                                     th:src="@{'/image/delete.svg'}"/>
+                            </a>
                         </td>
                     </tr>
                     </tbody>

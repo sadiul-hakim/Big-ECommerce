@@ -58,21 +58,6 @@ public class CustomerService {
             if (StringUtils.hasText(customer.getLastname())) {
                 existingCustomer.setLastname(customer.getLastname());
             }
-            if (StringUtils.hasText(customer.getAddress())) {
-                existingCustomer.setAddress(customer.getAddress());
-            }
-            if (customer.getCountry() != null) {
-                existingCustomer.setCountry(customer.getCountry());
-            }
-            if (customer.getState() != null) {
-                existingCustomer.setState(customer.getState());
-            }
-            if (StringUtils.hasText(customer.getPhoneNumber())) {
-                existingCustomer.setPhoneNumber(customer.getPhoneNumber());
-            }
-            if (StringUtils.hasText(customer.getPostalCode())) {
-                existingCustomer.setPostalCode(customer.getPostalCode());
-            }
 
             // For primitives/booleans, check separately
             existingCustomer.setEnabled(customer.isEnabled());
@@ -124,15 +109,6 @@ public class CustomerService {
                     .append(",")
                     .append(user.getJoined())
                     .append(",")
-                    .append(user.getPhoneNumber())
-                    .append(",")
-                    .append(user.getCountry())
-                    .append(",")
-                    .append(user.getState())
-                    .append(",")
-                    .append(user.getAddress())
-                    .append(",")
-                    .append(user.getPostalCode())
                     .append("\n");
         }
 
