@@ -2,6 +2,7 @@ package org.shopme.admin.setting;
 
 import lombok.RequiredArgsConstructor;
 import org.shopme.admin.currency.CurrencyRepository;
+import org.shopme.admin.service.CacheService;
 import org.shopme.common.entity.Currency;
 import org.shopme.common.util.*;
 import org.shopme.common.entity.Setting;
@@ -20,20 +21,24 @@ public class SettingService {
     private static final String FILE_PATH = "/logo/";
     private static final String DEFAULT_PHOTO_NAME = "logo.webp";
 
+    private static final String GENERIC_SETTING_CACHE = "SettingService.getGeneralSettingBag";
+    private static final String CURRENCY_SETTING_CACHE = "SettingService.getCurrencySettingBag";
+
     private final SettingRepository repository;
     private final CurrencyRepository currencyRepository;
+    private final CacheService cacheService;
 
     public List<Setting> findAll() {
         return repository.findAll();
     }
 
-    @Cacheable("SettingService.getGeneralSettingBag")
+    @Cacheable(GENERIC_SETTING_CACHE)
     public GeneralSettingBag getGeneralSettingBag() {
         List<Setting> settings = repository.findAllByCategoryIn(List.of(SettingCategory.GENERAL, SettingCategory.CURRENCY));
         return new GeneralSettingBag(settings);
     }
 
-    @Cacheable("SettingService.getCurrencySettingBag")
+    @Cacheable(CURRENCY_SETTING_CACHE)
     public CurrencySettingBag getCurrencySettingBag() {
         List<Setting> settings = repository.findAllByCategoryIn(List.of(SettingCategory.CURRENCY));
         return new CurrencySettingBag(settings);
@@ -46,6 +51,7 @@ public class SettingService {
 
     public void saveAll(Iterable<Setting> settings) {
         repository.saveAll(settings);
+        clearCache();
     }
 
     public void saveTemplate(
@@ -69,6 +75,7 @@ public class SettingService {
 
         List<Setting> settings = bag.getSettings();
         saveAll(settings);
+        clearCache();
     }
 
     public void saveMailServerSettings(
@@ -95,6 +102,7 @@ public class SettingService {
 
         List<Setting> settings = bag.getSettings();
         saveAll(settings);
+        clearCache();
     }
 
     public void saveGeneralSettings(MultipartFile SITE_LOGO,
@@ -152,5 +160,11 @@ public class SettingService {
 
         List<Setting> settings = settingBag.getSettings();
         saveAll(settings);
+        clearCache();
+    }
+
+    private void clearCache() {
+        cacheService.clearCache(GENERIC_SETTING_CACHE);
+        cacheService.clearCache(CURRENCY_SETTING_CACHE);
     }
 }
