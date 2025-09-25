@@ -51,11 +51,14 @@
                                  th:src="@{${address.selected} ? '/image/green.svg' : '/image/red.svg'}"
                                  alt="status"/></td>
                         <td>
-                            <a th:href="@{/address/delete/{id}(id=${address.id})}"
-                               class="btn btn-danger">
+                            <button class="btn btn-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteConfirmationModal"
+                                    th:attr="data-url=@{/address/delete/{id}(id=${address.id})}"
+                            >
                                 <img class="icon" alt="delete"
                                      th:src="@{'/image/delete.svg'}"/>
-                            </a>
+                            </button>
                         </td>
                     </tr>
                     </tbody>
@@ -65,6 +68,15 @@
         </div>
     </div>
 </div>
+<div th:replace="~{fragment/confirmation_modal :: deleteConfirmationModal}"></div>
 <footer th:replace="~{fragment/footer :: footer}"></footer>
 </body>
+<script>
+    const modal = document.getElementById('deleteConfirmationModal');
+    modal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; // the button that triggered the modal
+        const url = button.getAttribute('data-url');
+        document.getElementById('confirmDeleteBtn').setAttribute('href', url);
+    });
+</script>
 </html>

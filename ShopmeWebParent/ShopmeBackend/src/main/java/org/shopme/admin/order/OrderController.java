@@ -7,6 +7,8 @@ import org.shopme.common.entity.Setting;
 import org.shopme.common.pojo.PaginationResult;
 import org.shopme.common.pojo.TableUrlPojo;
 import org.shopme.common.util.CurrencySettingBag;
+import org.shopme.common.util.JpaResult;
+import org.shopme.common.util.JpaResultType;
 import org.shopme.common.util.NumberFormatter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +26,8 @@ public class OrderController {
     private static final String RESULT = "result";
     private static final String PAGE = "orders";
     private static final String ERROR = "error";
+    private static final String DELETING_ORDER = "deletingOrder";
+    private static final String DELETED_ORDER = "deletedOrder";
     private static final String MESSAGE = "message";
     private static final String TABLE_URL = "tableUrl";
 
@@ -73,5 +77,15 @@ public class OrderController {
 
         mav.addAttribute("order", order);
         return "fragment/order_modal :: modalContent";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable long id, RedirectAttributes redirectAttributes) {
+        JpaResult res = service.delete(id);
+        redirectAttributes.addFlashAttribute(DELETING_ORDER, true);
+        redirectAttributes.addFlashAttribute(DELETED_ORDER, res.type().equals(JpaResultType.SUCCESSFUL));
+        redirectAttributes.addFlashAttribute(MESSAGE, res.message());
+
+        return "redirect:/" + PAGE;
     }
 }

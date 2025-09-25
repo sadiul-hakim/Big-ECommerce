@@ -10,6 +10,12 @@
         <div class="col-md-10 mx-auto">
             <h2 class="my-3 text-primary">Manage Orders</h2>
 
+            <div class="alert"
+                 th:classappend="${deletedOrder} ? 'alert-success' : 'alert-danger'"
+                 th:if="${deletingOrder}">
+                <span th:text="${message}"></span>
+            </div>
+
             <!-- Table Start -->
             <div th:replace="~{fragment/table :: table(${result},${tableUrl},~{::#table},false,false)}">
                 <table class="table table-hover" id="table">
@@ -41,20 +47,24 @@
                         <td th:text="${order.paymentMethod.name()}"></td>
                         <td th:text="${order.status.name()}"></td>
                         <td>
+                            <button type="button" class="btn btn-info details-btn"
+                                    th:data-order-id="${order.id}">
+                                <img class="icon" alt="info"
+                                     th:src="@{'/image/info.png'}"/>
+                            </button>
                             <a
                                     th:href="@{/orders/update_page/{id}(id=${order.id})}"
                                     class="btn btn-warning"> <img class="icon" alt="edit"
                                                                   th:src="@{'/image/edit.svg'}"/>
                                 <!-- Change Password -->
                             </a>
-                            <a th:href="@{/orders/delete/{id}(id=${order.id})}"
-                               class="btn btn-danger"> <img class="icon" alt="delete"
-                                                            th:src="@{'/image/delete.svg'}"/>
-                            </a>
-                            <button type="button" class="btn btn-info details-btn"
-                                    th:data-order-id="${order.id}">
-                                <img class="icon" alt="info"
-                                     th:src="@{'/image/info.png'}"/>
+                            <button class="btn btn-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteConfirmationModal"
+                                    th:attr="data-url=@{/orders/delete/{id}(id=${order.id})}"
+                            >
+                                <img class="icon" alt="delete"
+                                     th:src="@{'/image/delete.svg'}"/>
                             </button>
                         </td>
                     </tr>
@@ -83,7 +93,7 @@
         </div>
     </div>
 </div>
-
+<div th:replace="~{fragment/confirmation_modal :: deleteConfirmationModal}"></div>
 <footer th:replace="~{fragment/footer :: footer}"></footer>
 </body>
 <script>
@@ -100,6 +110,13 @@
                     new bootstrap.Modal(document.getElementById('orderModal')).show();
                 });
         });
+    });
+
+    const modal = document.getElementById('deleteConfirmationModal');
+    modal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; // the button that triggered the modal
+        const url = button.getAttribute('data-url');
+        document.getElementById('confirmDeleteBtn').setAttribute('href', url);
     });
 </script>
 </html>

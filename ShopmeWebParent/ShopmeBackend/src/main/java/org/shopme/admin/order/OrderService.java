@@ -6,6 +6,8 @@ import org.shopme.common.entity.Order;
 import org.shopme.common.enumeration.OrderStatus;
 import org.shopme.common.enumeration.PaymentMethod;
 import org.shopme.common.pojo.PaginationResult;
+import org.shopme.common.util.JpaResult;
+import org.shopme.common.util.JpaResultType;
 import org.shopme.common.util.PageUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -39,5 +41,15 @@ public class OrderService {
 
     public Order findById(long id) {
         return repository.findById(id).orElse(null);
+    }
+
+    public JpaResult delete(long id) {
+        try {
+            repository.deleteById(id);
+            return new JpaResult(JpaResultType.SUCCESSFUL, "Successfully deleted order.");
+        } catch (Exception ex) {
+            log.error("Deleting order, error {}", ex.getMessage());
+            return new JpaResult(JpaResultType.FAILED, "Failed to delete order.");
+        }
     }
 }

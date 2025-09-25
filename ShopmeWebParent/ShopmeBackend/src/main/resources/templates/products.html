@@ -79,11 +79,15 @@
                                     class="btn btn-warning"> <img class="icon" alt="edit"
                                                                   th:src="@{'/image/edit.svg'}"/>
 
-                            </a> <a th:href="@{/products/delete/{id}(id=${product.id})}"
-                                    sec:authorize="hasAnyAuthority('ROLE_EDITOR','ROLE_ADMIN')"
-                                    class="btn btn-danger"> <img class="icon" alt="delete"
-                                                                 th:src="@{'/image/delete.svg'}"/>
-                        </a>
+                            </a>
+                            <button class="btn btn-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteConfirmationModal"
+                                    th:attr="data-url=@{/products/delete/{id}(id=${product.id})}"
+                            >
+                                <img class="icon" alt="delete"
+                                     th:src="@{'/image/delete.svg'}"/>
+                            </button>
                         </td>
                     </tr>
                     </tbody>
@@ -93,6 +97,15 @@
         </div>
     </div>
 </div>
- <footer th:replace="~{fragment/footer :: footer}"></footer>
+<div th:replace="~{fragment/confirmation_modal :: deleteConfirmationModal}"></div>
+<footer th:replace="~{fragment/footer :: footer}"></footer>
 </body>
+<script>
+    const modal = document.getElementById('deleteConfirmationModal');
+    modal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; // the button that triggered the modal
+        const url = button.getAttribute('data-url');
+        document.getElementById('confirmDeleteBtn').setAttribute('href', url);
+    });
+</script>
 </html>
