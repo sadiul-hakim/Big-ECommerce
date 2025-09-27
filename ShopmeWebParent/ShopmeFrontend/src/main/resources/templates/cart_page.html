@@ -29,7 +29,7 @@
                         </div>
 
                         <div class="btn-group" role="group" aria-label="Quantity controls">
-                            <button type="submit" class="btn btn-outline-primary increment-btn">+</button>
+                            <button type="submit" class="quantity_btn increment-btn">+</button>
                             <input
                                     type="text"
                                     th:value="${item.quantity}"
@@ -38,7 +38,7 @@
                                     min="1"
                                     max="99"
                             />
-                            <button type="submit" class="btn btn-outline-primary decrement-btn">-</button>
+                            <button type="submit" class="quantity_btn decrement-btn">-</button>
                         </div>
 
                         <div>
@@ -137,5 +137,4 @@
     const pathContext = /*[[@{/}]]*/ "/Shopme/";
 </script>
 <script th:src="@{/js/cart_page.js}"></script>
-
 </html>

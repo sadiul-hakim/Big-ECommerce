@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark"
      th:fragment="navbar">
-    <div class="container-fluid">
+    <div class="container">
         <a class="navbar-brand" th:href="@{'/'}"> <img
                 th:src="@{|/images/logo/${SITE_LOGO}|}" alt="logo" width="50" height="50"/>
             <span th:text="${SITE_NAME}"></span>
@@ -37,19 +37,21 @@
 
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item"
-                               th:href="@{'/customer/profile?id='+${#authentication.principal.customer.id}}">Profile</a>
+                        <li><a class="dropdown-item d-flex align-items-center"
+                               th:href="@{'/customer/profile?id='+${#authentication.principal.customer.id}}">
+                            <img th:src="@{/image/profile.svg}" alt="profile" class="icon"/>Profile
+                        </a>
                         </li>
-                        <li><a class="dropdown-item"
-                               th:href="@{'/address'}">Address
-                            Book</a>
+                        <li><a class="dropdown-item d-flex align-items-center"
+                               th:href="@{'/address'}">
+                            <img th:src="@{/image/address_book.svg}" alt="address book" class="icon"/> Address Book</a>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item"
-                               th:href="@{'/customer/change_password_page?id='+${#authentication.principal.customer.id}}">Change
-                            Password</a>
+                        <li><a class="dropdown-item d-flex align-items-center"
+                               th:href="@{'/customer/change_password_page?id='+${#authentication.principal.customer.id}}">
+                            <img th:src="@{/image/key.svg}" alt="key" class="icon"/> Change Password</a>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
@@ -58,8 +60,9 @@
                             <form th:action="@{/logout}" method="post">
                                 <input type="hidden" th:name="${_csrf.parameterName}"
                                        th:value="${_csrf.token}"/>
-                                <button type="submit" class="nav-link text-dark"
-                                        aria-current="page">Logout
+                                <button type="submit" class="nav-link text-dark d-flex align-items-center"
+                                        aria-current="page">
+                                    <img th:src="@{/image/logout.svg}" alt="logout" class="icon"/> <span>Logout</span>
                                 </button>
                             </form>
                         </li>

@@ -36,18 +36,25 @@ body {
     height: 150px;
 }
 
-.quantity_field{
-    text-align: center;
-    width: 50px;
-}
-
-a{
+a {
     text-decoration: none;
 }
 
 
-.dashed_hr{
+.dashed_hr {
     border-bottom: 1px dashed rgba(144, 148, 152, 0.89); /* Bootstrap’s gray-dark */
     margin-bottom: .5rem;
     padding-bottom: .5rem;
+}
+
+.quantity_btn {
+    font-size: 17px;
+    background-color: #e5e0e0;
+    border: 1px #e5e0e0 solid;
+}
+
+.quantity_field {
+    text-align: center;
+    width: 38px;
+    border: 1px #e5e0e0 solid;
 }
