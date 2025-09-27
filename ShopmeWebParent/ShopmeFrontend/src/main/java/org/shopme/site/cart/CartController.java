@@ -72,18 +72,12 @@ public class CartController {
     }
 
     @ResponseBody
-    @GetMapping("/increment-quantity")
-    public ResponseEntity<?> incrementQuantity(@RequestParam int cartItemId, HttpServletRequest request) {
+    @GetMapping("/update-quantity")
+    public ResponseEntity<?> updateQuantity(@RequestParam int cartItemId, @RequestParam int quantity,
+                                            @RequestParam boolean replace,
+                                            HttpServletRequest request) {
         NumberFormatter numberFormater = NumberFormatter.getFormatter(request);
-        var res = cartItemService.incrementQuantity(cartItemId, numberFormater);
-        return ResponseEntity.ok(res);
-    }
-
-    @ResponseBody
-    @GetMapping("/decrement-quantity")
-    public ResponseEntity<?> decrementQuantity(@RequestParam int cartItemId, HttpServletRequest request) {
-        NumberFormatter numberFormater = NumberFormatter.getFormatter(request);
-        var res = cartItemService.decrementQuantity(cartItemId, numberFormater);
+        var res = cartItemService.updateQuantity(cartItemId, quantity, replace, numberFormater);
         return ResponseEntity.ok(res);
     }
 

@@ -30,7 +30,14 @@
 
                         <div class="btn-group" role="group" aria-label="Quantity controls">
                             <button type="submit" class="btn btn-outline-primary increment-btn">+</button>
-                            <input type="number" th:value="${item.quantity}" class="quantity_field" readonly/>
+                            <input
+                                    type="text"
+                                    th:value="${item.quantity}"
+                                    class="quantity_field"
+                                    title="Please enter a value between 1 and 99"
+                                    min="1"
+                                    max="99"
+                            />
                             <button type="submit" class="btn btn-outline-primary decrement-btn">-</button>
                         </div>
 
@@ -128,87 +135,7 @@
 </body>
 <script th:inline="javascript">
     const pathContext = /*[[@{/}]]*/ "/Shopme/";
-
-    document.addEventListener("DOMContentLoaded", () => {
-
-        const totalItemsPrice = document.getElementById("totalItemsPrice");
-        const paymentTotal = document.getElementById("paymentTotal");
-
-        // Increment buttons
-        document.querySelectorAll(".increment-btn").forEach(btn => {
-            btn.addEventListener("click", async (e) => {
-                const li = e.target.closest("li");
-                const cartItemId = li.dataset.cartId;
-
-                const res = await fetch(`${pathContext}cart/increment-quantity?cartItemId=${cartItemId}`);
-                const data = await res.json();
-
-                li.querySelector(".quantity_field").value = data.quantity;
-                li.querySelector(".item-price").textContent = data.totalPrice;
-                li.querySelector(".item-actual-price").textContent = data.actualPrice;
-                totalItemsPrice.textContent = data.totalItemsPrice;
-                paymentTotal.textContent = data.paymentTotal;
-            });
-        });
-
-        // Decrement buttons
-        document.querySelectorAll(".decrement-btn").forEach(btn => {
-            btn.addEventListener("click", async (e) => {
-                const li = e.target.closest("li");
-                const cartItemId = li.dataset.cartId;
-
-                const res = await fetch(`${pathContext}cart/decrement-quantity?cartItemId=${cartItemId}`);
-                const data = await res.json();
-
-                if (data.quantity <= 0) {
-                    li.remove();
-                } else {
-                    li.querySelector(".quantity_field").value = data.quantity;
-                    li.querySelector(".item-price").textContent = data.totalPrice;
-                    li.querySelector(".item-actual-price").textContent = data.actualPrice;
-                }
-                totalItemsPrice.textContent = data.totalItemsPrice;
-                paymentTotal.textContent = data.paymentTotal;
-            });
-        });
-
-        // DELETE button
-        document.querySelectorAll(".delete-btn").forEach(btn => {
-            btn.addEventListener("click", async (e) => {
-                const cartItemId = btn.dataset.cartId;
-                const li = btn.closest("li");
-
-                const res = await fetch(`${pathContext}cart/delete-item?cartItemId=${cartItemId}`);
-                const data = await res.json();
-
-                if (res.ok) {
-                    li.remove();
-                    showToast(data.message)
-                } else {
-                    showToast(data.message || "Failed to delete item");
-                }
-            });
-        });
-    });
-
-    function showToast(message) {
-
-        // Bootstrap 5 toast example
-        const toastContainer = document.getElementById("toastContainer");
-        const toastEl = document.createElement("div");
-        toastEl.className = "toast align-items-center text-bg-primary border-0";
-        toastEl.role = "alert";
-        toastEl.innerHTML = `
-        <div class="d-flex">
-            <div class="toast-body">${message}</div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto"
-                    data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-    `;
-        toastContainer.appendChild(toastEl);
-        new bootstrap.Toast(toastEl).show();
-    }
 </script>
-
+<script th:src="@{/js/cart_page.js}"></script>
 
 </html>

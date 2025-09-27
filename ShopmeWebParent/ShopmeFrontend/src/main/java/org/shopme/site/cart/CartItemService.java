@@ -32,46 +32,19 @@ public class CartItemService {
     private final ShippingRateService shippingRateService;
 
     @Transactional
-    public Map<String, Object> incrementQuantity(long cartItemId, NumberFormatter numberFormatter) {
+    public Map<String, Object> updateQuantity(long cartItemId, int quantity, boolean replace,
+                                              NumberFormatter numberFormatter) {
 
         Optional<CartItem> cartItemOpt = repository.findById(cartItemId);
         if (cartItemOpt.isEmpty()) {
             return Map.of();
         }
         CartItem cartItem = cartItemOpt.get();
-        int item = cartItem.getQuantity() + 1;
-        cartItem.setQuantity(item);
-
-        var price = cartItem.getQuantity() * cartItem.getProduct().getDiscountPrice();
-        var actualPrice = cartItem.getQuantity() * cartItem.getProduct().getPrice();
-        double estimatedTotalPrices = getTotalItemsPriceOfCustomer();
-        double paymentTotal = getPaymentTotal();
-
-        return Map.of(
-                "quantity", cartItem.getQuantity(),
-                "totalPrice", numberFormatter.format(price),
-                "actualPrice", numberFormatter.format(actualPrice),
-                "estimatedTotalPrices", numberFormatter.format(estimatedTotalPrices),
-                "paymentTotal", numberFormatter.format(paymentTotal)
-        );
-    }
-
-    @Transactional
-    public Map<String, Object> decrementQuantity(long cartItemId, NumberFormatter numberFormatter) {
-
-        Optional<CartItem> cartItemOpt = repository.findById(cartItemId);
-        if (cartItemOpt.isEmpty()) {
-            return Map.of();
+        if (replace) {
+            cartItem.setQuantity(quantity);
+        } else {
+            cartItem.setQuantity(cartItem.getQuantity() + quantity);
         }
-        CartItem cartItem = cartItemOpt.get();
-
-        if (cartItem.getQuantity() <= 1) {
-            deleteCartItem(cartItemId);
-            return Map.of("quantity", 0, "totalPrice", 0);
-        }
-
-        int item = cartItem.getQuantity() - 1;
-        cartItem.setQuantity(item);
 
         var price = cartItem.getQuantity() * cartItem.getProduct().getDiscountPrice();
         var actualPrice = cartItem.getQuantity() * cartItem.getProduct().getPrice();
