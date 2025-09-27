@@ -1,0 +1,88 @@
+<div class="tab-pane fade p-3" id="addressTabContent" role="tabpanel" aria-labelledby="addressTab"
+     th:fragment="addressSetting(countries,states)">
+
+    <ul class="nav nav-tabs" id="addressTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="countryTab" data-bs-toggle="tab"
+                    data-bs-target="#countriesTabContent"
+                    type="button" role="tab" aria-controls="countriesTabContent" aria-selected="true">
+                Country
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="stateTab" data-bs-toggle="tab"
+                    data-bs-target="#statesTabContent"
+                    type="button" role="tab" aria-controls="statesTabContent" aria-selected="false">
+                State
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="cityTab" data-bs-toggle="tab"
+                    data-bs-target="#cityTabContent"
+                    type="button" role="tab" aria-controls="cityTabContent" aria-selected="false">
+                City
+            </button>
+        </li>
+    </ul>
+
+
+    <div class="tab-content" id="addressTab">
+
+        <div class="tab-pane fade p-3 show active" id="countriesTabContent" role="tabpanel" aria-labelledby="countryTab">
+            <form th:action="@{/settings/save_country}" class="row p-2" method="post">
+                <div class="col-12 d-flex">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <input type="text" name="name" placeholder="Country Name"
+                           class="form-control" required/>
+                    <input type="text" name="code" placeholder="Country Code"
+                           class="form-control ms-1" required/>
+                    <button type="submit" class="btn btn-primary ms-1">Add</button>
+                </div>
+            </form>
+            <div class="row p-2" style="height: 300px;overflow: auto">
+                <ul class="list-group list-group-flush bg-light p-2">
+                    <li th:each="c:${countries}" class="d-flex justify-content-between list-group-item">
+                        <div>
+                            <span class="fs-5" th:text="${c.name}"></span> | <span th:text="${c.code}"
+                                                                                   class="text-muted"></span>
+                        </div>
+                        <a class="btn btn-danger ms-1" th:href="@{|/settings/delete_country/${c.name}|}">Delete</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="tab-pane fade p-3" id="statesTabContent" role="tabpanel" aria-labelledby="stateTab">
+            <form th:action="@{/settings/save_state}" class="row p-2" method="post">
+                <div class="col-12 d-flex">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <input type="text" name="name" placeholder="State Name"
+                           class="form-control" required/>
+                    <select class="form-control ms-1" name="country" required>
+                        <option th:each="c:${countries}" th:value="${c.name}" th:text="${c.name}">
+                        </option>
+                    </select>
+                    <button type="submit" class="btn btn-primary ms-1">Add</button>
+                </div>
+            </form>
+            <div class="row p-2" style="height: 300px;overflow: auto">
+                <ul class="list-group list-group-flush bg-light p-2">
+                    <li th:each="s:${states}" class="d-flex justify-content-between list-group-item">
+                        <div>
+                            <span class="fs-5" th:text="${s.name}"></span> | <span
+                                th:text="${s.country}"
+                                class="text-muted"></span>
+                        </div>
+                        <a class="btn btn-danger ms-1"
+                           th:href="@{|/settings/delete_state/${s.id}|}">Delete</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="tab-pane fade p-3" id="cityTabContent" role="tabpanel" aria-labelledby="cityTab">
+            <!-- City content -->
+        </div>
+    </div>
+
+</div>

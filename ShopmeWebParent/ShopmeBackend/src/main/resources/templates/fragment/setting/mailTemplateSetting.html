@@ -11,8 +11,8 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="forgotPasswordTab" data-bs-toggle="tab"
-                    data-bs-target="#forgotPasswordTabTabContent"
-                    type="button" role="tab" aria-controls="forgotPasswordTabTab" aria-selected="false">
+                    data-bs-target="#forgotPasswordTabContent"
+                    type="button" role="tab" aria-controls="forgotPasswordTab" aria-selected="false">
                 Forgot Password
             </button>
         </li>
@@ -50,7 +50,7 @@
                 </div>
             </form>
         </div>
-        <div class="tab-pane fade p-3" id="forgotPasswordTabTabContent" role="tabpanel"
+        <div class="tab-pane fade p-3" id="forgotPasswordTabContent" role="tabpanel"
              aria-labelledby="forgotPasswordTab">
             <form th:action="@{/settings/save-mail-template}" id="forgotPasswordForm" method="post">
                 <div>

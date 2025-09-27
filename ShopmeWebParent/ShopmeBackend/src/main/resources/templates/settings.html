@@ -29,17 +29,23 @@
                         General
                     </button>
                 </li>
+                <!--                <li class="nav-item" role="presentation">-->
+                <!--                    <button class="nav-link" id="countriesTab" data-bs-toggle="tab"-->
+                <!--                            data-bs-target="#countriesTabContent"-->
+                <!--                            type="button" role="tab" aria-controls="countriesTab" aria-selected="false">-->
+                <!--                        Countries-->
+                <!--                    </button>-->
+                <!--                </li>-->
+                <!--                <li class="nav-item" role="presentation">-->
+                <!--                    <button class="nav-link" id="statesTab" data-bs-toggle="tab" data-bs-target="#statesTabContent"-->
+                <!--                            type="button" role="tab" aria-controls="statesTab" aria-selected="false">-->
+                <!--                        States-->
+                <!--                    </button>-->
+                <!--                </li>-->
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="countriesTab" data-bs-toggle="tab"
-                            data-bs-target="#countriesTabContent"
-                            type="button" role="tab" aria-controls="countriesTab" aria-selected="false">
-                        Countries
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="statesTab" data-bs-toggle="tab" data-bs-target="#statesTabContent"
-                            type="button" role="tab" aria-controls="statesTab" aria-selected="false">
-                        States
+                    <button class="nav-link" id="addressTab" data-bs-toggle="tab" data-bs-target="#addressTabContent"
+                            type="button" role="tab" aria-controls="addressTab" aria-selected="false">
+                        Address
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
@@ -67,11 +73,11 @@
                 <div th:replace="~{fragment/setting/generalSetting :: generalSetting(${currencies},${generalSetting})}">
 
                 </div>
-                <div th:replace="~{fragment/setting/countrySetting :: countrySetting(${countries})}">
-
-                </div>
-                <div th:replace="~{fragment/setting/stateSetting :: stateSetting(${countries},${states})}">
-
+                <!--                <div th:replace="~{fragment/setting/countrySetting :: countrySetting(${countries})}">-->
+                <!--                </div>-->
+                <!--                <div th:replace="~{fragment/setting/stateSetting :: stateSetting(${countries},${states})}">-->
+                <!--                </div>-->
+                <div th:replace="~{fragment/setting/addressSetting :: addressSetting(${countries},${states})}">
                 </div>
                 <div th:replace="~{fragment/setting/mailServerSetting :: mailServerSetting(${mailServerSetting})}">
 
@@ -134,7 +140,7 @@
         }
 
         // Refresh editor2 when its tab is shown
-        document.querySelector('button[data-bs-target="#forgotPasswordTabTabContent"]')
+        document.querySelector('button[data-bs-target="#forgotPasswordTabContent"]')
             .addEventListener('shown.bs.tab', () => {
                 editor2.refresh();
             });
