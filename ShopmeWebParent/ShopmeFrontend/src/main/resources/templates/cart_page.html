@@ -59,6 +59,11 @@
                 </div>
 
                 <div th:unless="${noActiveAddress}">
+                    <div class="d-flex justify-content-end">
+                        <a th:href="@{/address}" title="edit address" class="fw-bold text-primary">
+                            Change
+                        </a>
+                    </div>
                     <h3>
                         <span th:text="${activeAddress.country.name}"></span>,
                         <span th:text="${activeAddress.state.name}"></span>,
