@@ -30,9 +30,7 @@ public class Address {
     @Column(length = 15, nullable = false, unique = true)
     private String phoneNumber;
 
-    @NotNull
-    @NotEmpty
-    @Size(min = 11, max = 15)
+    @Size(max = 15)
     @Column(length = 15)
     private String alternativePhoneNumber;
 

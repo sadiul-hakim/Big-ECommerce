@@ -28,4 +28,8 @@ public class CartItem {
     public double getTotalPrice() {
         return quantity * product.getDiscountPrice();
     }
+
+    public double getActualTotalPrice() {
+        return quantity * product.getPrice();
+    }
 }

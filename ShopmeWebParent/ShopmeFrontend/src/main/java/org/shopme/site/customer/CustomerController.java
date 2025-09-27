@@ -179,7 +179,7 @@ public class CustomerController {
     }
 
     @PostMapping("/register")
-    String register(@ModelAttribute @Valid CustomerRegistrationPojo customer, BindingResult result, @RequestParam MultipartFile picture,
+    String register(@ModelAttribute("customer") @Valid CustomerRegistrationPojo customer, BindingResult result, @RequestParam MultipartFile picture,
                     Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             model.addAttribute("countries", countryRepository.findAll());

@@ -21,39 +21,74 @@
                             <p class="h6" th:text="${item.product.name}"></p>
 
                             <div class="d-flex">
-                                <button class="btn btn-danger me-2 delete-btn" th:data-cart-id="${item.id}">
-                                    <img th:src="@{'/image/delete.svg'}" alt="delete" class="icon"/>
-                                </button>
-                                <div class="btn-group" role="group" aria-label="Quantity controls">
-                                    <button type="submit" class="btn btn-outline-primary increment-btn">+</button>
-                                    <input type="number" th:value="${item.quantity}" class="quantity_field" readonly/>
-                                    <button type="submit" class="btn btn-outline-primary decrement-btn">-</button>
-                                </div>
+
+                                <img th:src="@{'/image/wishlist.png'}" alt="wishlist" class="icon me-2"
+                                     th:data-cart-id="${item.id}" title="wishlist"/>
+                                <img th:src="@{'/image/delete.svg'}" alt="delete" class="icon delete-btn"
+                                     th:data-cart-id="${item.id}" title="delete"/>
                             </div>
                         </div>
 
+                        <div class="btn-group" role="group" aria-label="Quantity controls">
+                            <button type="submit" class="btn btn-outline-primary increment-btn">+</button>
+                            <input type="number" th:value="${item.quantity}" class="quantity_field" readonly/>
+                            <button type="submit" class="btn btn-outline-primary decrement-btn">-</button>
+                        </div>
+
                         <div>
-                            <p th:if="${CURRENCY_POSITION == 'before'}">
-                                <span th:text="${CURRENCY_SYMBOL}"></span>
+                            <p class="m-0">
+                                <span th:text="${CURRENCY_SYMBOL}" th:if="${CURRENCY_POSITION == 'before'}"></span>
                                 <span class="ms-1 item-price"
                                       th:text="${numberFormater.format(item.getTotalPrice())}"></span>
+                                <span th:text="${CURRENCY_SYMBOL}" th:if="${CURRENCY_POSITION == 'after'}"></span>
                             </p>
-                            <p th:if="${CURRENCY_POSITION == 'after'}">
-                                <span class="me-1 item-price"
-                                      th:text="${numberFormater.format(item.getTotalPrice())}"></span>
-                                <span th:text="${CURRENCY_SYMBOL}"></span>
+                            <p th:if="${item.getActualTotalPrice() != item.getTotalPrice()}" class="m-0">
+                                <span th:text="${CURRENCY_SYMBOL}" th:if="${CURRENCY_POSITION == 'before'}"></span>
+                                <span class="ms-1 item-actual-price text-danger text-decoration-line-through"
+                                      th:text="${numberFormater.format(item.getActualTotalPrice())}"></span>
+                                <span th:text="${CURRENCY_SYMBOL}" th:if="${CURRENCY_POSITION == 'after'}"></span>
                             </p>
                         </div>
                     </div>
                 </li>
             </ul>
         </div>
-        <div class="col-md-3 p-3 card">
-            <h4 th:if="${CURRENCY_POSITION == 'before'}">Estimated Total : <span th:text="${CURRENCY_SYMBOL}"></span>
-                <span th:text="${totalPrices}" class="ms-1"></span></h4>
-            <h4 th:if="${CURRENCY_POSITION == 'after'}">Estimated Total : <span th:text="${totalPrices}" class="me-1"></span> <span
-                    th:text="${CURRENCY_SYMBOL}"></span></h4>
-            <button class="btn btn-primary">Checkout</button>
+        <div class="col-md-3">
+            <div class="p-3 card">
+                <div th:if="${noActiveAddress}" class="alert alert-danger">
+                    <span th:text="${message}"></span>
+                </div>
+
+                <div th:unless="${noActiveAddress}">
+                    <h3>
+                        <span th:text="${activeAddress.country.name}"></span>,
+                        <span th:text="${activeAddress.state.name}"></span>,
+                        <span th:text="${activeAddress.city}"></span>
+                    </h3>
+                    <p th:text="${activeAddress.address}" class="text-muted my-2"></p>
+                    <p>
+                        <span th:text="${activeAddress.phoneNumber}"></span>,
+                        <span th:text="${activeAddress.alternativePhoneNumber}"></span>
+                    </p>
+                </div>
+
+                <p th:if="${shippingAvailable}" class="d-flex align-items-center">
+                    <img th:src="@{'/image/yes.png'}" alt="ok" class="icon" title="available"/>
+                    <span class="text-success ms-1">Shipping available</span>
+                </p>
+                <p th:unless="${shippingAvailable}" class="d-flex align-items-center">
+                    <img th:src="@{'/image/no.png'}" alt="ok" class="icon" title="Not available"/>
+                    <span class="text-danger ms-1">Shipping is not available in this area</span>
+                </p>
+            </div>
+            <div class="p-3 card mt-2">
+                <h5>Estimated Total :
+                    <span th:text="${CURRENCY_SYMBOL}" th:if="${CURRENCY_POSITION == 'before'}"></span>
+                    <span th:text="${totalPrices}" class="ms-1"></span>
+                    <span th:if="${CURRENCY_POSITION == 'after'}" th:text="${CURRENCY_SYMBOL}"></span>
+                </h5>
+                <button class="btn btn-primary">Checkout</button>
+            </div>
         </div>
     </div>
 </div>
@@ -75,6 +110,7 @@
 
                 li.querySelector(".quantity_field").value = data.quantity;
                 li.querySelector(".item-price").textContent = data.totalPrice;
+                li.querySelector(".item-actual-price").textContent = data.actualPrice;
             });
         });
 
@@ -92,6 +128,7 @@
                 } else {
                     li.querySelector(".quantity_field").value = data.quantity;
                     li.querySelector(".item-price").textContent = data.totalPrice;
+                    li.querySelector(".item-actual-price").textContent = data.actualPrice;
                 }
             });
         });

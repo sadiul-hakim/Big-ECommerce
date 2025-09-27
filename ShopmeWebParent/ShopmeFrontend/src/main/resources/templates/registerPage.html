@@ -81,14 +81,22 @@
                         </div>
                         <br/>
                         <div>
-                            <label for="state">State</label> <select type="text"
-                                                                     class="form-control" id="state" name="state"
-                                                                     th:field="*{state}" required>
-                            <option value="">--Select Your State--</option>
-                            <option th:each="state : ${states}" th:value="${state.id}"
-                                    th:text="${state.name}"></option>
-                        </select>
+                            <label for="state">State</label>
+                            <select type="text"
+                                    class="form-control" id="state" name="state"
+                                    th:field="*{state}" required>
+                                <option value="">--Select Your State--</option>
+                                <option th:each="state : ${states}" th:value="${state.id}"
+                                        th:text="${state.name}"></option>
+                            </select>
                             <div th:if="${#fields.hasErrors('state')}" th:errors="*{state}" class="text-danger"></div>
+                        </div>
+                        <br/>
+                        <div>
+                            <label for="city">City</label>
+                            <input type="text" name="city" id="city" class="form-control" th:field="*{city}" required/>
+                            <div th:if="${#fields.hasErrors('city')}" th:errors="*{city}"
+                                 class="text-danger"></div>
                         </div>
                         <br/>
                         <div>

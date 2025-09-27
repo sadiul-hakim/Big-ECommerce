@@ -41,8 +41,9 @@ public class CartItemService {
         cartItem.setQuantity(item);
 
         var price = cartItem.getQuantity() * cartItem.getProduct().getDiscountPrice();
+        var actualPrice = cartItem.getQuantity() * cartItem.getProduct().getPrice();
         return Map.of("quantity", cartItem.getQuantity(), "totalPrice",
-                numberFormatter.format(price));
+                numberFormatter.format(price), "actualPrice", numberFormatter.format(actualPrice));
     }
 
     @Transactional
@@ -63,8 +64,9 @@ public class CartItemService {
         cartItem.setQuantity(item);
 
         var price = cartItem.getQuantity() * cartItem.getProduct().getDiscountPrice();
+        var actualPrice = cartItem.getQuantity() * cartItem.getProduct().getPrice();
         return Map.of("quantity", cartItem.getQuantity(), "totalPrice",
-                numberFormatter.format(price));
+                numberFormatter.format(price), "actualPrice", numberFormatter.format(actualPrice));
     }
 
     @Transactional

@@ -98,6 +98,14 @@ public class AddressService {
         }
     }
 
+    public Address currentCustomerActiveAddress() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
+        Customer customer = principal.customer();
+        return repository.findByCustomerAndSelected(customer, true)
+                .orElse(null);
+    }
+
     public List<Address> currentCustomerAddress() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -17,9 +17,7 @@ public class AddressPojo {
     @Size(min = 11, max = 15)
     private String phoneNumber;
 
-    @NotNull
-    @NotEmpty
-    @Size(min = 11, max = 15)
+    @Size(max = 15)
     private String alternativePhoneNumber;
 
     @NotNull

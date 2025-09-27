@@ -2,10 +2,13 @@ package org.shopme.site.cart;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.shopme.common.entity.Address;
 import org.shopme.common.entity.CartItem;
 import org.shopme.common.util.JpaResult;
 import org.shopme.common.util.JpaResultType;
 import org.shopme.common.util.NumberFormatter;
+import org.shopme.site.address.AddressService;
+import org.shopme.site.shipping.ShippingRateService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,15 +27,30 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CartController {
 
+    private static final String NO_ACTIVE_ADDRESS = "noActiveAddress";
+    private static final String MESSAGE = "message";
+
     private final CartItemService cartItemService;
+    private final AddressService addressService;
+    private final ShippingRateService shippingRateService;
 
     @GetMapping
     public String page(Model model, HttpServletRequest request) {
 
         NumberFormatter numberFormatter = NumberFormatter.getFormatter(request);
         List<CartItem> items = cartItemService.findAllCartItemOfCustomer();
-        model.addAttribute("cartItems", items);
         double totalPrice = items.stream().map(CartItem::getTotalPrice).reduce(0.0, Double::sum);
+        Address address = addressService.currentCustomerActiveAddress();
+
+        if (address == null) {
+            model.addAttribute(NO_ACTIVE_ADDRESS, true);
+            model.addAttribute(MESSAGE, "Please select and address.");
+        }
+
+        boolean shippingAvailable = shippingRateService.shippingAvailable();
+        model.addAttribute("shippingAvailable", shippingAvailable);
+        model.addAttribute("activeAddress", address);
+        model.addAttribute("cartItems", items);
         model.addAttribute("totalPrices", numberFormatter.format(totalPrice));
         return "cart_page";
     }
