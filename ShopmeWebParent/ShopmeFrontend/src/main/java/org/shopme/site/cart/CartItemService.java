@@ -1,17 +1,18 @@
 package org.shopme.site.cart;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.shopme.common.entity.CartItem;
 import org.shopme.common.entity.Customer;
 import org.shopme.common.entity.Product;
+import org.shopme.common.entity.ShippingRate;
 import org.shopme.common.util.JpaResult;
 import org.shopme.common.util.JpaResultType;
 import org.shopme.common.util.NumberFormatter;
 import org.shopme.site.customer.CustomerService;
 import org.shopme.site.product.ProductService;
 import org.shopme.site.security.CustomUserDetails;
+import org.shopme.site.shipping.ShippingRateService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class CartItemService {
     private final ProductService productService;
     private final CustomerService customerService;
     private final CartItemRepository repository;
+    private final ShippingRateService shippingRateService;
 
     @Transactional
     public Map<String, Object> incrementQuantity(long cartItemId, NumberFormatter numberFormatter) {
@@ -42,8 +44,16 @@ public class CartItemService {
 
         var price = cartItem.getQuantity() * cartItem.getProduct().getDiscountPrice();
         var actualPrice = cartItem.getQuantity() * cartItem.getProduct().getPrice();
-        return Map.of("quantity", cartItem.getQuantity(), "totalPrice",
-                numberFormatter.format(price), "actualPrice", numberFormatter.format(actualPrice));
+        double estimatedTotalPrices = getTotalItemsPriceOfCustomer();
+        double paymentTotal = getPaymentTotal();
+
+        return Map.of(
+                "quantity", cartItem.getQuantity(),
+                "totalPrice", numberFormatter.format(price),
+                "actualPrice", numberFormatter.format(actualPrice),
+                "estimatedTotalPrices", numberFormatter.format(estimatedTotalPrices),
+                "paymentTotal", numberFormatter.format(paymentTotal)
+        );
     }
 
     @Transactional
@@ -65,8 +75,16 @@ public class CartItemService {
 
         var price = cartItem.getQuantity() * cartItem.getProduct().getDiscountPrice();
         var actualPrice = cartItem.getQuantity() * cartItem.getProduct().getPrice();
-        return Map.of("quantity", cartItem.getQuantity(), "totalPrice",
-                numberFormatter.format(price), "actualPrice", numberFormatter.format(actualPrice));
+        double estimatedTotalPrices = getTotalItemsPriceOfCustomer();
+        double paymentTotal = getPaymentTotal();
+
+        return Map.of(
+                "quantity", cartItem.getQuantity(),
+                "totalPrice", numberFormatter.format(price),
+                "actualPrice", numberFormatter.format(actualPrice),
+                "estimatedTotalPrices", numberFormatter.format(estimatedTotalPrices),
+                "paymentTotal", numberFormatter.format(paymentTotal)
+        );
     }
 
     @Transactional
@@ -111,6 +129,37 @@ public class CartItemService {
         CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
         Customer customer = principal.customer();
         return repository.findAllByCustomer(customer);
+    }
+
+    public double getTotalItemsPriceOfCustomer() {
+        List<CartItem> items = findAllCartItemOfCustomer();
+        return items.stream().map(CartItem::getTotalPrice).reduce(0.0, Double::sum);
+    }
+
+    public double getTotalItemsPriceOfCustomer(List<CartItem> items) {
+        return items.stream().map(CartItem::getTotalPrice).reduce(0.0, Double::sum);
+    }
+
+    public double getPaymentTotal(List<CartItem> items) {
+        double totalItemsPrice = getTotalItemsPriceOfCustomer(items);
+        Optional<ShippingRate> shippingRateOptional = shippingRateService.currentCustomerShipping();
+        if (shippingRateOptional.isEmpty()) {
+            return totalItemsPrice;
+        }
+
+        ShippingRate shippingRate = shippingRateOptional.get();
+        return totalItemsPrice + shippingRate.getRate();
+    }
+
+    public double getPaymentTotal() {
+        double totalItemsPrice = getTotalItemsPriceOfCustomer();
+        Optional<ShippingRate> shippingRateOptional = shippingRateService.currentCustomerShipping();
+        if (shippingRateOptional.isEmpty()) {
+            return totalItemsPrice;
+        }
+
+        ShippingRate shippingRate = shippingRateOptional.get();
+        return totalItemsPrice + shippingRate.getRate();
     }
 
     public boolean deleteCartItem(long cartItemId) {

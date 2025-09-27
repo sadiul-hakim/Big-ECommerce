@@ -8,7 +8,6 @@
 <nav th:replace="~{fragment/navbar :: navbar}"></nav>
 
 <div class="container flex-grow-1">
-    <h2 class="my-2 text-primary">Shopping Cart</h2>
     <div class="row mt-3">
         <div class="col-md-9 p-3">
 
@@ -38,13 +37,13 @@
                         <div>
                             <p class="m-0">
                                 <span th:text="${CURRENCY_SYMBOL}" th:if="${CURRENCY_POSITION == 'before'}"></span>
-                                <span class="ms-1 item-price"
+                                <span class="ms-1 item-price fw-bold"
                                       th:text="${numberFormater.format(item.getTotalPrice())}"></span>
                                 <span th:text="${CURRENCY_SYMBOL}" th:if="${CURRENCY_POSITION == 'after'}"></span>
                             </p>
                             <p th:if="${item.getActualTotalPrice() != item.getTotalPrice()}" class="m-0">
                                 <span th:text="${CURRENCY_SYMBOL}" th:if="${CURRENCY_POSITION == 'before'}"></span>
-                                <span class="ms-1 item-actual-price text-danger text-decoration-line-through"
+                                <span class="ms-1 item-actual-price text-danger text-decoration-line-through fw-bold"
                                       th:text="${numberFormater.format(item.getActualTotalPrice())}"></span>
                                 <span th:text="${CURRENCY_SYMBOL}" th:if="${CURRENCY_POSITION == 'after'}"></span>
                             </p>
@@ -82,12 +81,39 @@
                 </p>
             </div>
             <div class="p-3 card mt-2">
-                <h5>Estimated Total :
-                    <span th:text="${CURRENCY_SYMBOL}" th:if="${CURRENCY_POSITION == 'before'}"></span>
-                    <span th:text="${totalPrices}" class="ms-1"></span>
-                    <span th:if="${CURRENCY_POSITION == 'after'}" th:text="${CURRENCY_SYMBOL}"></span>
-                </h5>
-                <button class="btn btn-primary">Checkout</button>
+                <h5 class="m-0">Checkout Summery :</h5>
+                <hr/>
+                <p class="dashed_hr d-flex justify-content-between align-items-center">
+                    <span>
+                        Product Total :
+                    </span>
+                    <span>
+                        <span th:text="${CURRENCY_SYMBOL}" th:if="${CURRENCY_POSITION == 'before'}"></span>
+                        <span th:text="${totalItemsPrice}" class="ms-1" id="totalItemsPrice"></span>
+                        <span th:if="${CURRENCY_POSITION == 'after'}" th:text="${CURRENCY_SYMBOL}"></span>
+                    </span>
+                </p>
+                <p class="dashed_hr d-flex justify-content-between align-items-center" th:if="${shippingAvailable}">
+                    <span>
+                        Shipping Total :
+                    </span>
+                    <span>
+                        <span th:text="${CURRENCY_SYMBOL}" th:if="${CURRENCY_POSITION == 'before'}"></span>
+                        <span th:text="${shipping.rate}" class="ms-1"></span>
+                        <span th:if="${CURRENCY_POSITION == 'after'}" th:text="${CURRENCY_SYMBOL}"></span>
+                    </span>
+                </p>
+                <p class="d-flex justify-content-between align-items-center">
+                    <span class="fw-bold">
+                        Payment Total :
+                    </span>
+                    <span>
+                        <span th:text="${CURRENCY_SYMBOL}" th:if="${CURRENCY_POSITION == 'before'}"></span>
+                        <span th:text="${paymentTotal}" class="ms-1" id="paymentTotal"></span>
+                        <span th:if="${CURRENCY_POSITION == 'after'}" th:text="${CURRENCY_SYMBOL}"></span>
+                    </span>
+                </p>
+                <button class="btn btn-primary" th:disabled="${!shippingAvailable}">Checkout</button>
             </div>
         </div>
     </div>
@@ -99,6 +125,10 @@
     const pathContext = /*[[@{/}]]*/ "/Shopme/";
 
     document.addEventListener("DOMContentLoaded", () => {
+
+        const totalItemsPrice = document.getElementById("totalItemsPrice");
+        const paymentTotal = document.getElementById("paymentTotal");
+
         // Increment buttons
         document.querySelectorAll(".increment-btn").forEach(btn => {
             btn.addEventListener("click", async (e) => {
@@ -111,6 +141,8 @@
                 li.querySelector(".quantity_field").value = data.quantity;
                 li.querySelector(".item-price").textContent = data.totalPrice;
                 li.querySelector(".item-actual-price").textContent = data.actualPrice;
+                totalItemsPrice.textContent = data.totalItemsPrice;
+                paymentTotal.textContent = data.paymentTotal;
             });
         });
 
@@ -130,6 +162,8 @@
                     li.querySelector(".item-price").textContent = data.totalPrice;
                     li.querySelector(".item-actual-price").textContent = data.actualPrice;
                 }
+                totalItemsPrice.textContent = data.totalItemsPrice;
+                paymentTotal.textContent = data.paymentTotal;
             });
         });
 

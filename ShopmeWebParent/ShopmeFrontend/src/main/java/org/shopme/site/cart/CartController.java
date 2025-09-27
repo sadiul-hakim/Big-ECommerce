@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.shopme.common.entity.Address;
 import org.shopme.common.entity.CartItem;
+import org.shopme.common.entity.ShippingRate;
 import org.shopme.common.util.JpaResult;
 import org.shopme.common.util.JpaResultType;
 import org.shopme.common.util.NumberFormatter;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/cart")
@@ -39,19 +41,23 @@ public class CartController {
 
         NumberFormatter numberFormatter = NumberFormatter.getFormatter(request);
         List<CartItem> items = cartItemService.findAllCartItemOfCustomer();
-        double totalPrice = items.stream().map(CartItem::getTotalPrice).reduce(0.0, Double::sum);
+        double totalItemsPrice = cartItemService.getTotalItemsPriceOfCustomer(items);
         Address address = addressService.currentCustomerActiveAddress();
+        double paymentTotal = cartItemService.getPaymentTotal(items);
 
         if (address == null) {
             model.addAttribute(NO_ACTIVE_ADDRESS, true);
             model.addAttribute(MESSAGE, "Please select and address.");
         }
 
-        boolean shippingAvailable = shippingRateService.shippingAvailable();
-        model.addAttribute("shippingAvailable", shippingAvailable);
+        Optional<ShippingRate> shippingRateOptional = shippingRateService.currentCustomerShipping();
+        shippingRateOptional.ifPresent(shippingRate -> model.addAttribute("shipping", shippingRate));
+
+        model.addAttribute("paymentTotal", numberFormatter.format(paymentTotal));
+        model.addAttribute("shippingAvailable", shippingRateOptional.isPresent());
         model.addAttribute("activeAddress", address);
         model.addAttribute("cartItems", items);
-        model.addAttribute("totalPrices", numberFormatter.format(totalPrice));
+        model.addAttribute("totalItemsPrice", numberFormatter.format(totalItemsPrice));
         return "cart_page";
     }
 

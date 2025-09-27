@@ -17,6 +17,16 @@ public class ShippingRateService {
     private final AddressService addressService;
     private final ShippingRateRepository repository;
 
+    public Optional<ShippingRate> currentCustomerShipping() {
+        Address address = addressService.currentCustomerActiveAddress();
+        if (address == null) {
+            return Optional.empty();
+        }
+
+        return repository.findByCountryAndState(address.getCountry().getName(),
+                address.getState().getName());
+    }
+
     public boolean shippingAvailable() {
         Address address = addressService.currentCustomerActiveAddress();
         if (address == null) {

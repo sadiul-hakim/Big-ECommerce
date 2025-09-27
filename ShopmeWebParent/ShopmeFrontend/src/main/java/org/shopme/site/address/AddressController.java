@@ -56,7 +56,7 @@ public class AddressController {
     }
 
     @PostMapping("/save")
-    public String saveAddress(@ModelAttribute @Valid AddressPojo addressPojo, BindingResult result,
+    public String saveAddress(@ModelAttribute("pojo") @Valid AddressPojo pojo, BindingResult result,
                               RedirectAttributes redirectAttributes, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("countries", countryRepository.findAll());
@@ -64,8 +64,8 @@ public class AddressController {
             return "create_address_page";
         }
 
-        JpaResult jpaResult = addressPojo.getId() == 0 ? addressService.save(addressPojo) :
-                addressService.update(addressPojo);
+        JpaResult jpaResult = pojo.getId() == 0 ? addressService.save(pojo) :
+                addressService.update(pojo);
 
         redirectAttributes.addFlashAttribute(SAVING_CONDITION, true);
         redirectAttributes.addFlashAttribute(SAVED_CONDITION, jpaResult.type().equals(JpaResultType.SUCCESSFUL));

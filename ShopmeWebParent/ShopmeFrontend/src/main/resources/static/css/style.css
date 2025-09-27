@@ -44,3 +44,10 @@ body {
 a{
     text-decoration: none;
 }
+
+
+.dashed_hr{
+    border-bottom: 1px dashed rgba(144, 148, 152, 0.89); /* Bootstrap’s gray-dark */
+    margin-bottom: .5rem;
+    padding-bottom: .5rem;
+}
