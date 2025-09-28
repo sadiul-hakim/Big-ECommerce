@@ -2,16 +2,16 @@ package org.shopme.site.cart;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.shopme.common.entity.CartItem;
-import org.shopme.common.entity.Customer;
-import org.shopme.common.entity.Product;
-import org.shopme.common.entity.ShippingRate;
+import org.shopme.common.entity.*;
+import org.shopme.common.util.CurrencySettingBag;
 import org.shopme.common.util.JpaResult;
 import org.shopme.common.util.JpaResultType;
 import org.shopme.common.util.NumberFormatter;
+import org.shopme.site.currency.CurrencyService;
 import org.shopme.site.customer.CustomerService;
 import org.shopme.site.product.ProductService;
 import org.shopme.site.security.CustomUserDetails;
+import org.shopme.site.setting.SettingService;
 import org.shopme.site.shipping.ShippingRateService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +30,8 @@ public class CartItemService {
     private final CustomerService customerService;
     private final CartItemRepository repository;
     private final ShippingRateService shippingRateService;
+    private final SettingService settingService;
+    private final CurrencyService currencyService;
 
     @Transactional
     public Map<String, Object> updateQuantity(long cartItemId, int quantity, boolean replace,
@@ -71,9 +73,21 @@ public class CartItemService {
             return new JpaResult(JpaResultType.FAILED, "Customer or Product does not exist.");
         }
 
+        CurrencySettingBag currencySettingBag = settingService.getCurrencySettingBag();
+        String currencyId = currencySettingBag.getCurrencyId();
+
+        Currency currency = null;
+        if (currencyId != null) {
+            currency = currencyService.findById(Long.parseLong(currencyId));
+        }
+
+        if (currency == null) {
+            return new JpaResult(JpaResultType.FAILED, "No selected currency.");
+        }
+
         Product product = productOpt.get();
         CartItem cartItem = repository.findByCustomerAndProduct(customer, product)
-                .orElse(new CartItem(0, customer, product, 0));
+                .orElse(new CartItem(0, customer, product, currency.getCode(), 0));
 
         cartItem.setQuantity(cartItem.getQuantity() + 1);
         repository.save(cartItem);
@@ -143,6 +157,15 @@ public class CartItemService {
         } catch (Exception ex) {
             return false;
         }
+    }
+
+    public boolean emptyCartOfCustomer() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
+        Customer customer = principal.customer();
+        repository.deleteAllByCustomer(customer);
+
+        return true;
     }
 
     public boolean isInCart(int productId) {

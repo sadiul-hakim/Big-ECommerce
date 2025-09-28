@@ -3,6 +3,7 @@ package org.shopme.site.setting;
 import lombok.RequiredArgsConstructor;
 import org.shopme.common.entity.Setting;
 import org.shopme.common.enumeration.SettingCategory;
+import org.shopme.common.util.CurrencySettingBag;
 import org.shopme.common.util.GeneralSettingBag;
 import org.shopme.common.util.MailServerSettingBag;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,11 @@ public class SettingService {
     public GeneralSettingBag getGeneralSettingBag() {
         List<Setting> settings = repository.findAllByCategoryIn(List.of(SettingCategory.GENERAL, SettingCategory.CURRENCY));
         return new GeneralSettingBag(settings);
+    }
+
+    public CurrencySettingBag getCurrencySettingBag() {
+        List<Setting> settings = repository.findAllByCategoryIn(List.of(SettingCategory.CURRENCY));
+        return new CurrencySettingBag(settings);
     }
 
     public MailServerSettingBag getMailServerSettingBag() {

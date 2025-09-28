@@ -23,6 +23,8 @@ public class CartItem {
     @ManyToOne
     private Product product;
 
+    private String currency;
+
     private int quantity;
 
     public double getTotalPrice() {

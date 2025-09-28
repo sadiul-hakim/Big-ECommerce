@@ -15,7 +15,7 @@ import lombok.Setter;
 public class OrderDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private int quantity;
     private float productCost;
@@ -23,9 +23,34 @@ public class OrderDetails {
     private float unitPrice;
     private float subtotal;
 
+    @Column(length = 20, nullable = false)
+    private String currency;
+
     @ManyToOne
     private Product product;
 
     @ManyToOne
     private Order order;
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+
+        if (this == o) {
+            return true;
+        }
+
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+
+        return id != null && id.equals(((OrderDetails) o).id);
+    }
+
+    @Override
+    public int hashCode() {
+        return 2025;
+    }
 }

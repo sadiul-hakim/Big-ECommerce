@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="en">
+<head th:replace="~{fragment/head :: head}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<nav th:replace="~{fragment/navbar :: navbar}" sec:authorize="${isAuthenticated()}"></nav>
+<nav th:replace="~{fragment/unauthorizedNavbar :: unauthorizedNavbar}" sec:authorize="${!isAuthenticated()}"></nav>
+<div class="container flex-grow-1">
+    <div class="row mt-3">
+        <div class="col-md-9 p-3">
+            <div class="card">
+                <div class="card-header">
+                    <p class="card-title mb-0">
+                        <span class="fs-5">Payment Method</span>
+                        <span class="fs-6 text-muted">(Please select a payment method)</span>
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <!-- COD -->
+                        <label class="list-group-item d-flex align-items-center">
+                            <input type="radio" name="paymentMethod" value="COD" class="form-check-input me-3" checked>
+                            <div>
+                                <img th:src="@{/image/cod.png}" alt="COD" width="40" class="me-2">
+                                <strong>Cash on Delivery</strong>
+                                <div class="small text-muted">Pay in cash when you receive the product</div>
+                            </div>
+                        </label>
+
+                        <!-- bKash -->
+                        <label class="list-group-item d-flex align-items-center">
+                            <input type="radio" name="paymentMethod" value="STRIPE" class="form-check-input me-3">
+                            <div>
+                                <img th:src="@{/image/stripe.png}" alt="stripe" width="40" class="me-2">
+                                <strong> (Card Payment)</strong>
+                                <div class="small text-muted">Pay securely with Stripe</div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Terms Checkbox -->
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" id="termsCheck" checked>
+                        <label class="form-check-label" for="termsCheck">
+                            I agree with <a href="#">terms & conditions</a>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="p-3 card">
+
+                <div>
+                    <h3>
+                        <span th:text="${address.country.name}"></span>,
+                        <span th:text="${address.state.name}"></span>,
+                        <span th:text="${address.city}"></span>
+                    </h3>
+                    <p th:text="${address.address}" class="text-muted my-2"></p>
+                    <p>
+                        <span th:text="${address.phoneNumber}"></span>,
+                        <span th:text="${address.alternativePhoneNumber}"></span>
+                    </p>
+                </div>
+            </div>
+            <div class="p-3 card mt-2">
+                <h5 class="m-0">Checkout Summery :</h5>
+                <hr/>
+                <p class="dashed_hr d-flex justify-content-between align-items-center">
+                    <span>
+                        Product Total :
+                    </span>
+                    <span>
+                        <span th:text="${CURRENCY_SYMBOL}" th:if="${CURRENCY_POSITION == 'before'}"></span>
+                        <span th:text="${totalItemsPrice}" class="ms-1" id="totalItemsPrice"></span>
+                        <span th:if="${CURRENCY_POSITION == 'after'}" th:text="${CURRENCY_SYMBOL}"></span>
+                    </span>
+                </p>
+                <p class="dashed_hr d-flex justify-content-between align-items-center" th:if="${shippingAvailable}">
+                    <span>
+                        Shipping Total :
+                    </span>
+                    <span>
+                        <span th:text="${CURRENCY_SYMBOL}" th:if="${CURRENCY_POSITION == 'before'}"></span>
+                        <span th:text="${shipping.rate}" class="ms-1"></span>
+                        <span th:if="${CURRENCY_POSITION == 'after'}" th:text="${CURRENCY_SYMBOL}"></span>
+                    </span>
+                </p>
+                <p class="d-flex justify-content-between align-items-center">
+                    <span class="fw-bold">
+                        Payment Total :
+                    </span>
+                    <span>
+                        <span th:text="${CURRENCY_SYMBOL}" th:if="${CURRENCY_POSITION == 'before'}"></span>
+                        <span th:text="${paymentTotal}" class="ms-1" id="paymentTotal"></span>
+                        <span th:if="${CURRENCY_POSITION == 'after'}" th:text="${CURRENCY_SYMBOL}"></span>
+                    </span>
+                </p>
+                <p id="termsError" class="text-danger my-2 d-none">Please agree with the conditions</p>
+                <p id="methodError" class="text-danger my-2 d-none">Please select a payment method</p>
+                <a class="btn btn-primary" id="confirmOrderBtn" href="#">Confirm Order</a>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="~{fragment/footer :: footer}"></footer>
+</body>
+<script>
+    const context = /*[[@{/}]]*/ "";
+    const confirmBtn = document.getElementById("confirmOrderBtn");
+    const termsCheck = document.getElementById("termsCheck");
+    const termsError = document.getElementById("termsError");
+    const methodError = document.getElementById("methodError");
+    const radios = document.querySelectorAll('input[name="paymentMethod"]');
+
+    confirmBtn.addEventListener("click", function (e) {
+        e.preventDefault(); // stop default empty link
+        if (!validate()) return; // reuse your validation
+
+        const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked');
+        if (selectedMethod) {
+            // Redirect to /checkout/{method}
+            window.location.href = context + selectedMethod.value;
+        }
+    });
+
+    function validate() {
+        const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked');
+        let valid = true;
+
+        // Terms condition validation
+        if (!termsCheck.checked) {
+            termsError.classList.remove("d-none");
+            valid = false;
+        } else {
+            termsError.classList.add("d-none");
+        }
+
+        // Payment method validation
+        if (!selectedMethod) {
+            methodError.classList.remove("d-none");
+            valid = false;
+        } else {
+            methodError.classList.add("d-none");
+        }
+
+        // Enable/disable confirm button
+        if (!valid) {
+            confirmBtn.classList.add('disabled-link');
+        } else {
+            confirmBtn.classList.remove('disabled-link')
+        }
+
+        return valid;
+    }
+
+    // Validate when changing terms or method
+    termsCheck.addEventListener("change", validate);
+    radios.forEach(radio => radio.addEventListener("change", validate));
+
+    // Initial state
+    validate();
+</script>
+</html>

@@ -3,7 +3,7 @@ package org.shopme.common.util;
 public record JpaResult(
         JpaResultType type,
         String message,
-        int entityId,
+        Object entityId,
         Object entity
 ) {
 
@@ -17,5 +17,13 @@ public record JpaResult(
 
     public JpaResult(JpaResultType type, String message, int entityId) {
         this(type, message, entityId, null);
+    }
+
+    public int getIntegerId() {
+        if (entityId instanceof Integer id) {
+            return id;
+        } else {
+            return 0;
+        }
     }
 }

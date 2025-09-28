@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum PaymentMethod {
-    COD, CREDIT_CARD;
+    COD, STRIPE;
 
     public static PaymentMethod findByName(String name) {
         for (PaymentMethod value : values()) {

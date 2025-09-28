@@ -73,7 +73,7 @@ public class ProductController {
     ) {
 
         var result = updating ? service.update(product) : service.save(product);
-        service.handleFiles(result.entityId(), firstImage, secondImage, thirdImage, fourthImage);
+        service.handleFiles(result.getIntegerId(), firstImage, secondImage, thirdImage, fourthImage);
 
         redirectAttributes.addFlashAttribute(SAVED_CONDITION, result.type().equals(JpaResultType.SUCCESSFUL));
         redirectAttributes.addFlashAttribute(SAVING_CONDITION, true);
@@ -209,8 +209,8 @@ public class ProductController {
         }
 
         GeneralSettingBag generalSetting = settingService.getGeneralSettingBag();
-        model.addObject("currency",generalSetting.getValue(SettingBag.CURRENCY_SYMBOL));
-        model.addObject("currencyPosition",generalSetting.getValue(SettingBag.CURRENCY_SYMBOL_POSITION));
+        model.addObject("currency", generalSetting.getValue(SettingBag.CURRENCY_SYMBOL));
+        model.addObject("currencyPosition", generalSetting.getValue(SettingBag.CURRENCY_SYMBOL_POSITION));
         model.addObject("product", product.get());
         model.setViewName("view_product");
 

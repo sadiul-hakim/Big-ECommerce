@@ -11,8 +11,11 @@ import lombok.Setter;
 import org.shopme.common.enumeration.OrderStatus;
 import org.shopme.common.enumeration.PaymentMethod;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 @Entity
@@ -21,11 +24,13 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "orders")
-public class Order {
+public class Order implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private String id;
 
     @NotNull
     @Size(max = 45)
@@ -99,6 +104,25 @@ public class Order {
     @ManyToOne
     private Customer customer;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<OrderDetails> details = new HashSet<>();
+
+    public void addDetails(OrderDetails details) {
+        this.details.add(details);
+        details.setOrder(this);
+    }
+
+    public void removeDetails(OrderDetails details) {
+        details.setOrder(null);
+        this.details.remove(details);
+    }
+
+    public void removeAllDetails() {
+        Iterator<OrderDetails> iterator = this.details.iterator();
+        while (iterator.hasNext()) {
+            OrderDetails orderDetails = iterator.next();
+            orderDetails.setOrder(null);
+            iterator.remove();
+        }
+    }
 }

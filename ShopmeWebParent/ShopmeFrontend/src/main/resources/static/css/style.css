@@ -58,3 +58,9 @@ a {
     width: 38px;
     border: 1px #e5e0e0 solid;
 }
+
+.disabled-link {
+    pointer-events: none;   /* Prevent click */
+    opacity: 0.6;           /* Visual effect */
+    cursor: not-allowed;    /* Disabled cursor */
+}

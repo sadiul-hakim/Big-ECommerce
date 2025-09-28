@@ -8,9 +8,15 @@
 <nav th:replace="~{fragment/navbar :: navbar}"></nav>
 
 <div class="container flex-grow-1">
-    <div class="row mt-3">
+    <div class="row mt-5 d-flex justify-content-center align-items-center" th:unless="${!cartItems.isEmpty()}">
+        <div class="col-md-9 p-5 mt-4 d-flex justify-content-center flex-column align-items-center">
+            <img th:src="@{/image/empty-cart.png}" class="icon_lg" alt="empty cart"/>
+            <h4 class="my1">Your Cart is Empty</h4>
+            <a th:href="@{/}" class="btn btn-primary">Discover Products</a>
+        </div>
+    </div>
+    <div class="row mt-3" th:if="${!cartItems.isEmpty()}">
         <div class="col-md-9 p-3">
-
             <ul class="list-group list-group-flush" id="cart">
                 <!-- Loop through cart items -->
                 <li class="list-group-item d-flex" th:each="item : ${cartItems}" th:data-cart-id="${item.id}">
@@ -125,7 +131,13 @@
                         <span th:if="${CURRENCY_POSITION == 'after'}" th:text="${CURRENCY_SYMBOL}"></span>
                     </span>
                 </p>
-                <button class="btn btn-primary" th:disabled="${!shippingAvailable or noActiveAddress}">Checkout</button>
+                <a
+                        class="btn btn-primary"
+                        th:classappend="${!shippingAvailable or noActiveAddress ? 'disabled-link' : ''}"
+                        th:href="@{'/checkout/page'}"
+                >
+                    Checkout
+                </a>
             </div>
         </div>
     </div>
