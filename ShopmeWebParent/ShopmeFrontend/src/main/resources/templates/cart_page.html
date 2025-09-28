@@ -61,16 +61,16 @@
         </div>
         <div class="col-md-3">
             <div class="p-3 card">
+                <div class="d-flex justify-content-end">
+                    <a th:href="@{/address}" title="edit address" class="fw-bold text-primary">
+                        Change
+                    </a>
+                </div>
                 <div th:if="${noActiveAddress}" class="alert alert-danger">
                     <span th:text="${message}"></span>
                 </div>
 
                 <div th:unless="${noActiveAddress}">
-                    <div class="d-flex justify-content-end">
-                        <a th:href="@{/address}" title="edit address" class="fw-bold text-primary">
-                            Change
-                        </a>
-                    </div>
                     <h3>
                         <span th:text="${activeAddress.country.name}"></span>,
                         <span th:text="${activeAddress.state.name}"></span>,
@@ -125,7 +125,7 @@
                         <span th:if="${CURRENCY_POSITION == 'after'}" th:text="${CURRENCY_SYMBOL}"></span>
                     </span>
                 </p>
-                <button class="btn btn-primary" th:disabled="${!shippingAvailable}">Checkout</button>
+                <button class="btn btn-primary" th:disabled="${!shippingAvailable or noActiveAddress}">Checkout</button>
             </div>
         </div>
     </div>

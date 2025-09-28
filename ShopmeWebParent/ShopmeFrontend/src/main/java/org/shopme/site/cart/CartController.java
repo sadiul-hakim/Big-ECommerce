@@ -53,6 +53,7 @@ public class CartController {
         Optional<ShippingRate> shippingRateOptional = shippingRateService.currentCustomerShipping();
         shippingRateOptional.ifPresent(shippingRate -> model.addAttribute("shipping", shippingRate));
 
+        model.addAttribute(NO_ACTIVE_ADDRESS, false);
         model.addAttribute("paymentTotal", numberFormatter.format(paymentTotal));
         model.addAttribute("shippingAvailable", shippingRateOptional.isPresent());
         model.addAttribute("activeAddress", address);
