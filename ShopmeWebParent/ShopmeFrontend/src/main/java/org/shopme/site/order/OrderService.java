@@ -1,15 +1,14 @@
 package org.shopme.site.order;
 
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.shopme.common.entity.*;
+import org.shopme.common.enumeration.MailTokenType;
 import org.shopme.common.enumeration.OrderStatus;
 import org.shopme.common.enumeration.PaymentMethod;
 import org.shopme.common.pojo.PaginationResult;
-import org.shopme.common.util.CurrencySettingBag;
-import org.shopme.common.util.JpaResult;
-import org.shopme.common.util.JpaResultType;
-import org.shopme.common.util.PageUtil;
+import org.shopme.common.util.*;
 import org.shopme.site.address.AddressService;
 import org.shopme.site.cart.CartItemRepository;
 import org.shopme.site.cart.CartItemService;
@@ -17,16 +16,20 @@ import org.shopme.site.currency.CurrencyService;
 import org.shopme.site.security.CustomUserDetails;
 import org.shopme.site.setting.SettingService;
 import org.shopme.site.shipping.ShippingRateService;
+import org.shopme.site.util.AppUtility;
 import org.shopme.site.util.OrderIdGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +42,7 @@ public class OrderService {
     private final CartItemService cartItemService;
     private final AddressService addressService;
     private final ShippingRateService shippingRateService;
+    private final SettingService settingService;
 
     public Order findById(long id) {
         return repository.findById(id).orElse(null);
@@ -104,6 +108,7 @@ public class OrderService {
 
         repository.save(order);
         cartItemService.emptyCartOfCustomer();
+        sendConfirmationMail(customer, order, "#");
         return new JpaResult(JpaResultType.SUCCESSFUL, "Order is placed successfully.", order.getId(), order);
     }
 
@@ -114,6 +119,39 @@ public class OrderService {
         } catch (Exception ex) {
             log.error("Deleting order, error {}", ex.getMessage());
             return new JpaResult(JpaResultType.FAILED, "Failed to delete order.");
+        }
+    }
+
+    private void sendConfirmationMail(Customer entity, Order order, String orderUrl) {
+        MailServerSettingBag mailServerSettingBag = settingService.getMailServerSettingBag();
+        JavaMailSenderImpl javaMailSender = AppUtility.prepareMailSender(mailServerSettingBag);
+
+        String toAddress = entity.getEmail();
+        String subject = mailServerSettingBag.getOrderConfirmationSubject();
+        String content = mailServerSettingBag.getOrderConfirmationContent();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy - HH:mm");
+
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+            helper.setFrom(mailServerSettingBag.getFromAddress(), mailServerSettingBag.getSenderName());
+            helper.setTo(toAddress);
+            helper.setSubject(subject);
+
+            content = content.replace("[[name]]", entity.getFullName());
+            content = content.replace("[[orderId]]", order.getId());
+            content = content.replace("[[orderTime]]", formatter.format(order.getOrderTime()));
+            content = content.replace("[[shipTo]]", order.getAddress());
+            content = content.replace("[[total]]", order.getTotal() + "");
+            content = content.replace("[[paymentMethod]]", order.getPaymentMethod().name());
+            content = content.replace("[[orderLink]]", orderUrl);
+            helper.setText(content, true);
+
+            javaMailSender.send(message);
+            log.info("Sent verification email to {}", entity.getEmail());
+        } catch (Exception e) {
+            log.error("Failed to send verification email to {} , error {}", entity.getEmail(), e.getMessage());
         }
     }
 }
