@@ -38,7 +38,7 @@ public class StripeService {
                 servletRequest.getContextPath();
 
         String successUrl = baseUrl + "/order/place/STRIPE";
-        String cancelUrl = baseUrl + "/checkout/page";
+        String cancelUrl = baseUrl + "/checkout/page"; // todo: show some message may be
 
         Optional<ShippingRate> shippingRateOptional = shippingRateService.currentCustomerShipping();
         if (shippingRateOptional.isEmpty()) {

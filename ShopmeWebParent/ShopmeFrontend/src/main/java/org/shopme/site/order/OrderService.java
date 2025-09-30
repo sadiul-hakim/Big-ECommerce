@@ -101,7 +101,7 @@ public class OrderService {
             orderDetails.setShippingCost(shippingRate.getRate());
             orderDetails.setUnitPrice(item.getProduct().getDiscountPrice());
             orderDetails.setSubtotal(item.getProduct().getDiscountPrice() + shippingRate.getRate());
-            orderDetails.setProduct(item.getProduct());
+            orderDetails.setProduct(item.getProduct()); // TODO: decrease available product
             orderDetails.setCurrency(item.getCurrency());
             order.addDetails(orderDetails);
         }
